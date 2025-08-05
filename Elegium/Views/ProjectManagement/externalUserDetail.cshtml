@@ -1,0 +1,1671 @@
+﻿
+
+
+<style>
+    .emptyImage_overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        text-align: center;
+        background-color: rgba(0,0,0,.6);
+        color: #fff;
+        transition: opacity linear .5s;
+        opacity: 1;
+        font-size: 15px;
+        font-family: 'Work Sans',sans-serif;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        line-height: 300px;
+        display: block;
+    }
+    .thumbnail_overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        text-align: center;
+        background-color: rgba(0,0,0,.6);
+        color: #fff;
+        transition: opacity linear .5s;
+        opacity: 0;
+        font-size: 15px;
+        font-family: 'Work Sans',sans-serif;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        line-height: 220px;
+        display: block;
+    }
+
+    .cat-image:hover .thumbnail_overlay {
+        opacity: 1;
+    }
+
+
+
+    textarea:focus .comment_info {
+        display: block !important;
+    }
+
+    textarea:focus {
+        border: 1px #0d96ce solid !important;
+    }
+
+
+
+    textarea {
+      /*  height: 160px !important;*/
+        background: none;
+        border: 0;
+        border: 1px #888 solid;
+        color: #363636;
+        padding: 5px 10px;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -moz-transition: border .3s linear;
+        -o-transition: border .3s linear;
+        -webkit-transition: border .3s linear;
+        transition: border .3s linear;
+        font-size: 12px;
+        font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+        border-radius: 5px;
+    }
+
+    .mentions-input-box {
+        font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+        color: #000;
+        margin-bottom: 16px;
+        font-size: 12px;
+    }
+
+        .mentions-input-box textarea {
+            color: #000;
+            font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+            font-size: 12px;
+        }
+
+    .mentions > div > strong {
+        border-bottom: 2px solid #0d96ce;
+        background: none !important;
+    }
+
+    .mentions-input-box .mentions-autocomplete-list {
+        display: none;
+        background: #d6d9db;
+        position: absolute;
+        left: 0;
+        right: 0;
+        z-index: 10000;
+        margin-top: -5px;
+    }
+
+        .mentions-input-box .mentions-autocomplete-list ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        .mentions-input-box .mentions-autocomplete-list li {
+            padding: 0 5px 0 0;
+            margin: 0 0 1px;
+            width: auto;
+            height: 30px;
+            line-height: 30px;
+            overflow: hidden;
+            cursor: pointer;
+            list-style: none;
+            white-space: nowrap;
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 400;
+            transition: background linear .5s;
+        }
+
+            .mentions-input-box .mentions-autocomplete-list li > img,
+            .mentions-input-box .mentions-autocomplete-list li > div.icon {
+                width: 24px;
+                height: 24px;
+                float: left;
+                margin: 3px 10px 3px 3px;
+                border-radius: 3px;
+                -moz-background-origin: 3px;
+            }
+
+            .mentions-input-box .mentions-autocomplete-list li em {
+                font-weight: bold;
+                font-style: none;
+            }
+
+            .mentions-input-box .mentions-autocomplete-list li b {
+                font-weight: normal;
+            }
+
+            .mentions-input-box .mentions-autocomplete-list li:hover,
+            .mentions-input-box .mentions-autocomplete-list li.active {
+                background-color: #0d96ce;
+                color: #fff;
+            }
+
+
+    .option.ui-select-choices-row-inner {
+        transition: background linear .3s;
+        background: #f2f2f2 !important;
+        margin-top: 5px !important;
+        border-radius: 10px !important;
+    }
+
+        .option.ui-select-choices-row-inner:hover {
+            background: #0d96ce !important;
+            color: #fff !important;
+        }
+
+    a.mention {
+        font-weight: bold;
+        color: #363636;
+    }
+
+    .ui-select-choices-group-label {
+        font-size: 20px !important;
+    }
+
+    [data-selectable] {
+        margin-left: 10px !important;
+    }
+
+    .task.overdue {
+        border-left: 10px solid #c91212 !important;
+        border-right: 10px solid #c91212 !important;
+    }
+
+    .task.completed {
+        border-left: 10px solid #02cc54 !important;
+        border-right: 10px solid #02cc54 !important;
+    }
+
+    .task.pending {
+        border-left: 10px solid #ffcd01 !important;
+        border-right: 10px solid #ffcd01 !important;
+    }
+
+        .task.pending .tasks_status_symbol .symbol, .task.pending .row.clearfix .tasks_status_symbol.symbol_without_hover {
+            color: #ffcd01;
+            opacity: 1 !important;
+        }
+
+    .task.conflicted .tasks_status_symbol .symbol, .task.overdue .row.clearfix .tasks_status_symbol .symbol, .task.conflicted .tasks_status_symbol.symbol_without_hover, .task.overdue .tasks_status_symbol.symbol_without_hover {
+        color: #c91212;
+        opacity: 1 !important;
+    }
+
+    .task.completed .tasks_status_symbol .symbol, .task.completed .row.clearfix .tasks_status_symbol.symbol_without_hover {
+        color: #02cc54;
+        opacity: 1 !important;
+    }
+
+    .tasks_status_symbol a {
+        font-size: 25px !important;
+    }
+
+    .project-hover-files {
+        visibility: hidden;
+        display: flex;
+    }
+
+        .project-hover-files::before {
+            visibility: visible;
+            font-size: 20px;
+            position: absolute !important;
+            opacity: 1 !important;
+            border: 3px dashed #0c0;
+            height: 100%;
+            width: 100%;
+            display: inline-block;
+            content: "";
+        }
+
+        .project-hover-files::after {
+            content: "Drop your files here!";
+            position: absolute !important;
+            height: 20px;
+            visibility: visible;
+            top: 70%;
+            margin-left: 42%;
+        }
+
+    .filetype {
+        pointer-events: none;
+        width: 100% !important;
+        height: 130px;
+        display: block;
+        /* position: absolute; */
+        top: 0;
+        left: 0;
+        background: #272727;
+        color: #fff;
+        text-align: center;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+        .filetype.preview .extention {
+            font-size: 35px;
+            line-height: 130px;
+        }
+
+        .filetype .extention {
+            pointer-events: all;
+            font-family: 'Work Sans',sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 90%;
+            display: inline-block;
+            line-height: 55px;
+            font-size: 15px;
+        }
+
+    #uppy-uploader {
+        font-size: 12px;
+        display: none;
+        width: 300px !important;
+        right: 60px;
+        bottom: 20px;
+        border-radius: 10px;
+        padding: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,.5);
+        background: #272727 !important;
+        z-index: 1;
+        display: block;
+        position: fixed;
+    }
+
+    .pagination > li {
+        margin: 0 0 3px 15px !important;
+    }
+
+        .pagination > li.active {
+            font-weight: bold !important;
+        }
+</style>
+
+<div class="section-body" style="max-width:1300px" ui-view="">
+
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-xl-2 col-lg-3 col-md-5">
+                <div class="row clearfix">
+                    <div class="col-sm-12 p-0">
+                        <div class="img-fluid pointer-event cat-image border-radius-10"
+                             style="height: 225px;
+                                    background-image: url(/api/UserProfiles/GetFileThumbnail/{{defaultImage}}/300/300);
+                                    background-size: cover;
+                                    background-repeat: no-repeat;
+                                    -webkit-transition: background-image 1s ease-in-out;
+                                    transition: background-image 1s ease-in-out;" ng-click="setDocCatThumbnail()">
+                            <div class="emptyImage_overlay" ng-if="!defaultImage">
+                                <input type="file" accept="image/*" hidden id="idEmptyImage" />
+                                <i class="fa fa-user fa-2x" style="font-size:100px;">
+                                </i>
+
+                            </div>
+                            <div class="thumbnail_overlay">
+                                <input type="file" accept="image/*" hidden id="idDocCatThumbnailFile" />
+                                <i class="fa fa-edit fa-2x">
+                                </i>
+                                Select thumbnail
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2 clearfix">
+                    <div class="col-sm-12 text-break">
+                        <label class="h5">
+                            {{externalUser.Name}}
+                        </label>
+                    </div>
+                    <div class="col-12 mt-2">
+                        <small>{{externalUser.Position.Name}}&nbsp;&nbsp;</small>
+                       
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-10 col-lg-9 col-md-7">
+                <div class="d-flex justify-content-between align-items-center" style="width:97%; margin-left:3%;">
+                    <ul class="nav nav-tabs page-header-tab">
+                        <li class="nav-item"><a class="nav-link active" id="users-tab" data-toggle="tab" data-target="#profile" ng-click="setClass()">General Info</a></li>
+                        <li class="nav-item"><a class="nav-link" id="external-contact-tab" data-toggle="tab" data-target="#images-file" ng-click="setClass()">Images & Files</a></li>
+                        <li class="nav-item"><a class="nav-link" id="external-contact-tab" data-toggle="tab" data-target="#contacts" ng-click="setClass()">Contacts</a></li>
+                        <li class="nav-item"><a class="nav-link" id="external-contact-tab" data-toggle="tab" data-target="#note" ng-click="setClass()">Note</a></li>
+                        <li class="nav-item"><a class="nav-link" id="external-contact-tab" data-toggle="tab" data-target="#contract" ng-click="setClass()">Contract Info</a></li>
+                        <li class="nav-item"><a class="nav-link" id="external-contact-tab" data-toggle="tab" data-target="#draft-contract" ng-click="setClass()">Draft Contract</a></li>
+                    </ul>
+                    <div class="header-action d-md-flex">
+                       
+                    </div>
+                </div>
+                <div class="row clearfix" style="width:97%; margin-left:3%;">
+                    <div class="col-12">
+
+                        <div class="tab-content">
+
+                            <div class="tab-pane fade show active" id="profile">
+                                <div class="row clearfix">
+
+                                    <div class="col-12">
+
+                                        <div class="card">
+
+                                            <div class="card-body">
+
+                                                <div class="row" ng-if="editExternalUser">
+                                                    <div class="col-12">
+                                                        <a href="javascript:void(0)" ng-click="close()"
+                                                           class="btn btn-danger btn-sm float-right ml-2">
+                                                            <i class="fa fa-times"></i> Close
+                                                        </a>
+                                                        <a href="javascript:void(0)" ng-click="updateExternalUser(externalUser)"
+                                                           class="btn btn-success btn-sm float-right">
+                                                            <i class=" fe fe-save"></i> Save
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Name</label>
+                                                                    <input type="text" class="form-control" ng-model="externalUser.Name">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Positions</label>
+                                                                    <select class="form-control custom-select" ng-options="x.Id as x.Name for x in workingPositions"
+                                                                            ng-model="externalUser.PositionId" ng-change="getCitiesOfCountry(userProfile.CompanyCountryId, 'company')">
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6" ng-show="false">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Display position '{{externalUser.Position.Name}}'</label>
+                                                                    <input type="text" class="form-control" ng-model="externalUser.PositionDescription" placeholder="First Name">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Department</label>
+                                                                    <select class="form-control custom-select" ng-options="x.Id as x.Name for x in departments"
+                                                                            ng-model="externalUser.DepartmentId">
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Phone(home)</label>
+                                                                    <input type="text" class="form-control" ng-model="externalUser.PhoneHome" placeholder="201-555-5555">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Phone(mobile)</label>
+                                                                    <input type="text" class="form-control" ng-model="externalUser.PhoneMobile" placeholder="201-555-5555">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Phone(office)</label>
+                                                                    <input type="text" class="form-control" ng-model="externalUser.PhoneOffice" placeholder="201-555-5555">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Fax</label>
+                                                                    <input type="text" class="form-control" ng-model="externalUser.Fax" placeholder="201-555-5555">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Email</label>
+                                                                    <input type="text" class="form-control" ng-model="externalUser.Email" placeholder="Email">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="card-status bg-blue"></div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <h3 class="card-title"><i class="fa fa-address-card"></i> Address</h3>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Street</label>
+                                                                    <input type="text" class="form-control" ng-model="externalUser.UserStreet">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="row">
+                                                                    <div class="col-sm-12 col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">City and State/Prov</label>
+                                                                            <input type="text" class="form-control" ng-model="externalUser.UserCity">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-12 col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">
+                                                                                Postal code
+                                                                            </label>
+                                                                            <input type="text" class="form-control" ng-model="externalUser.UserPostalCode">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Country</label>
+                                                                    <select class="form-control custom-select" ng-options="x.Id as x.Name for x in countries"
+                                                                            ng-model="externalUser.UserCountryId">
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-sm-12">
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="card-status bg-blue"></div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <h3 class="card-title"><i class="fa fa-university"></i> Company</h3>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Name</label>
+                                                                    <input type="text" class="form-control" ng-model="externalUser.CompanyName">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Street</label>
+                                                                    <input type="text" class="form-control" ng-model="externalUser.CompanyStreet">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="row">
+                                                                    <div class="col-sm-12 col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">City and State/Prov</label>
+                                                                            <input type="text" class="form-control" ng-model="externalUser.CompanyCity">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-12 col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">
+                                                                                Postal code
+                                                                            </label>
+                                                                            <input type="text" class="form-control" ng-model="externalUser.CompanyPostalCode">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Country</label>
+                                                                    <select class="form-control custom-select" ng-options="x.Id as x.Name for x in countries"
+                                                                            ng-model="externalUser.CompanyCountryId">
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-sm-12">
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="card-status bg-blue"></div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <h3 class="card-title"><i class="fa fa-wrench"></i> Skills</h3>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Certificates</label>
+                                                                    <textarea name="txtProjectDetail" ng-model="externalUser.Certificates"
+                                                                              class="form-control" rows="4"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Education & Training</label>
+                                                                    <textarea name="txtProjectDetail" ng-model="externalUser.EducationTraining"
+                                                                              class="form-control" rows="4"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">CV</label>
+                                                                    <textarea name="txtProjectDetail" ng-model="externalUser.CV"
+                                                                              class="form-control" rows="4"></textarea>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-sm-12">
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="card-status bg-blue"></div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <h3 class="card-title"><i class="fa fa-fire"></i> Food</h3>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+
+                                                                    <label class="custom-switch">
+                                                                        <input type="checkbox" ng-model="externalUser.IsVegetarian" name="custom-switch-checkbox" class="custom-switch-input">
+                                                                        <span class="custom-switch-indicator"></span>
+                                                                        <span class="custom-switch-description">Vegetarian</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+
+                                                                    <label class="custom-switch">
+                                                                        <input type="checkbox" ng-model="externalUser.IsVegan" name="custom-switch-checkbox" class="custom-switch-input">
+                                                                        <span class="custom-switch-indicator"></span>
+                                                                        <span class="custom-switch-description">Vegan</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+
+                                                                    <label class="custom-switch">
+                                                                        <input type="checkbox" ng-model="externalUser.IsHalal" name="custom-switch-checkbox" class="custom-switch-input">
+                                                                        <span class="custom-switch-indicator"></span>
+                                                                        <span class="custom-switch-description">Halal</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+
+                                                                    <label class="custom-switch">
+                                                                        <input type="checkbox" ng-model="externalUser.IsKosher" name="custom-switch-checkbox" class="custom-switch-input">
+                                                                        <span class="custom-switch-indicator"></span>
+                                                                        <span class="custom-switch-description">Kosher</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Allergies</label>
+                                                                    <textarea name="txtProjectDetail" ng-model="externalUser.Allergies"
+                                                                              class="form-control" rows="4"></textarea>
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="card-status bg-blue"></div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <h3 class="card-title"><i class="fa fa-car"></i> Driving license</h3>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+
+                                                                    <label class="custom-switch">
+                                                                        <input type="checkbox" ng-model="externalUser.IsDrivingLicense" name="custom-switch-checkbox" class="custom-switch-input">
+                                                                        <span class="custom-switch-indicator"></span>
+                                                                        <span class="custom-switch-description">Driving license</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">
+                                                                        Driving license classes
+                                                                    </label>
+                                                                    <textarea name="txtProjectDetail" ng-model="externalUser.DrivingLicenseClasses"
+                                                                              class="form-control" rows="4"></textarea>
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" ng-if="!editExternalUser">
+                                                    <div class="col-sm-12 col-md-12">
+                                                        <div class="col-12">
+                                                            <a href="javascript:void(0)" ng-click="editUser()" class="btn btn-primary btn-sm float-right">
+                                                                <i class=" fa fa-pencil-square-o"></i> Edit Info
+                                                            </a>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Department</label>
+                                                                    {{externalUser.Department.Name}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Phone(home)</label>
+                                                                    {{externalUser.PhoneHome}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Phone(mobile)</label>
+                                                                    {{externalUser.PhoneMobile}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Phone(office)</label>
+                                                                    {{externalUser.PhoneOffice}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Fax</label>
+                                                                    {{externalUser.PhoneOffice}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Email</label>
+                                                                    {{externalUser.Email}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="card-status bg-blue"></div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <h3 class="card-title"><i class="fa fa-address-card"></i> Address</h3>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Street</label>
+                                                                    {{externalUser.UserStreet}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="row">
+                                                                    <div class="col-sm-12 col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">City and State/Prov</label>
+                                                                            {{externalUser.UserCity}}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-12 col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">
+                                                                                Postal code
+                                                                            </label>
+                                                                            {{externalUser.UserPostalCode}}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Country</label>
+                                                                    {{externalUser.UserCountry.Name}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-sm-12">
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="card-status bg-blue"></div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <h3 class="card-title"><i class="fa fa-university"></i> Company</h3>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Name</label>
+                                                                    {{externalUser.CompanyName}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Street</label>
+                                                                    {{externalUser.CompanyStreet}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="row">
+                                                                    <div class="col-sm-12 col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">City and State/Prov</label>
+                                                                            {{externalUser.CompanyCity}}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-12 col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">
+                                                                                Postal code
+                                                                            </label>
+                                                                            {{externalUser.CompanyPostalCode}}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Country</label>
+                                                                    {{externalUser.CompanyCountryName}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-sm-12">
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="card-status bg-blue"></div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <h3 class="card-title"><i class="fa fa-wrench"></i> Skills</h3>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Certificates</label>
+                                                                    {{externalUser.Certificates}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Education & Training</label>
+                                                                    {{externalUser.EducationTraining}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">CV</label>
+                                                                    {{externalUser.CV}}
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-sm-12">
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="card-status bg-blue"></div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <h3 class="card-title"><i class="fa fa-fire"></i> Food</h3>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+
+                                                                    <label class="custom-switch">
+                                                                        <input type="checkbox" disabled ng-model="externalUser.IsVegetarian" name="custom-switch-checkbox" class="custom-switch-input">
+                                                                        <span class="custom-switch-indicator"></span>
+                                                                        <span class="custom-switch-description">Vegetarian</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+
+                                                                    <label class="custom-switch">
+                                                                        <input type="checkbox" disabled ng-model="externalUser.IsVegan" name="custom-switch-checkbox" class="custom-switch-input">
+                                                                        <span class="custom-switch-indicator"></span>
+                                                                        <span class="custom-switch-description">Vegan</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+
+                                                                    <label class="custom-switch">
+                                                                        <input type="checkbox" disabled ng-model="externalUser.IsHalal" name="custom-switch-checkbox" class="custom-switch-input">
+                                                                        <span class="custom-switch-indicator"></span>
+                                                                        <span class="custom-switch-description">Halal</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+
+                                                                    <label class="custom-switch">
+                                                                        <input type="checkbox" disabled ng-model="externalUser.IsKosher" name="custom-switch-checkbox" class="custom-switch-input">
+                                                                        <span class="custom-switch-indicator"></span>
+                                                                        <span class="custom-switch-description">Kosher</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Allergies</label>
+                                                                    {{externalUser.Allergies}}
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="card-status bg-blue"></div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <h3 class="card-title"><i class="fa fa-car"></i> Driving license</h3>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+
+                                                                    <label class="custom-switch">
+                                                                        <input type="checkbox" disabled ng-model="externalUser.IsDrivingLicense" name="custom-switch-checkbox" class="custom-switch-input">
+                                                                        <span class="custom-switch-indicator"></span>
+                                                                        <span class="custom-switch-description">Driving license</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">
+                                                                        Driving license classes
+                                                                    </label>
+                                                                    {{externalUser.DrivingLicenseClasses}}
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="tab-pane fade show" id="images-file">
+                                <div class="row clearfix">
+
+                                    <div class="col-12">
+
+                                        
+                                                <div class="row clearfix">
+                                                    <div class="col-sm-12">
+                                                        <div class="progressFiles">
+
+                                                        </div>
+                                                        <div id="draggableContainerFiles">
+                                                            <div id="uppy-uploader" class="w-100 uppy-uploader" ng-show="hasFilesinExternalUser">
+
+                                                            </div>
+                                                            <input type="file" multiple hidden id="externalUserFilesFile" />
+                                                            <div class="row clearfix mb-3" ng-if="externalUserFiles.length>0">
+                                                                <div class="col-sm-12">
+                                                                    <button type="button" class="btn btn-success" data-toggle="collapse" ng-click="openExternalUserFilesDialog()" data-target="#createFiles" aria-expanded="false" aria-controls="collapseExample">
+                                                                        Add file <i class="fa fa-plus-circle"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix" ng-if="externalUserFiles.length==0">
+                                                                <div class="col-sm-12">
+                                                                    <div class="list-empty text-center d-block p-3" style="border: 3px dashed #ccc;">
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12">
+                                                                                        <span class="material-icons font-20">
+                                                                                            insert_drive_file
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12">
+                                                                                        <span class="col-form-label">
+                                                                                            There are no files yet. You can drop files here.
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-12 mt-3">
+                                                                                <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#createLink" aria-expanded="false" ng-click="openExternalUserFilesDialog()" aria-controls="collapseExample">
+                                                                                    Add file <i class="fa fa-plus-circle"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix">
+                                                                <div class="col-sm-6 col-md-4 col-lg-3 col-xxl-2 col-xxxl-2 mb-3" ng-repeat="file in externalUserFiles" style="height:160px !important">
+                                                                    <div class="card">
+                                                                        <div class="cursor-pointer" ng-click="openFileViewer(file, files)">
+                                                                            <div ng-if="file.Type=='image'" class="img-fluid pointer-event cat-image"
+                                                                                 style="height: 130px;
+                                                                                        background-image: url('/api/UserProfiles/GetFileThumbnail/{{file.FileId}}/200/200');
+                                                                                        background-size: cover;
+                                                                                        background-repeat: no-repeat;
+                                                                                        transition: background-image 1s ease-in-out;
+                                                                                        border-top-left-radius: 5px;
+                                                                                        border-top-right-radius: 5px; ">
+                                                                            </div>
+                                                                            <div ng-if="file.Type!='image'" class="preview filetype filetype_json" style="pointer-events: all;">
+                                                                                <span class="extention" style="pointer-events: all;"> <i class="fa fa-file"></i> {{file.Extension}}</span>
+                                                                            </div>
+                                                                            <div ng-if="file.LatestVersion" class="tags hide_in_colorlist" style=" position: absolute; right: 10px; top: 10px; color: #fff; font-size: 10px;">
+                                                                                <span class="bg-dark text-white" style="padding: 2px 4px; border-radius: 5px;">{{file.LatestVersion}}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="card-body p-1">
+                                                                            <div class="row clearfix">
+                                                                                <div class="col-10 text-nowrap overflow-ellipsis" title="{{file.Name}}" data-toggle="tooltip" data-placement="top" tooltip>
+                                                                                    {{file.Name}}
+                                                                                </div>
+                                                                                <div class="col-2 text-right">
+                                                                                    <div class="item-action dropdown">
+                                                                                        <a href="javascript:void(0)" data-toggle="dropdown" class="icon" aria-expanded="false">
+                                                                                            <i class="fe fe-more-vertical"></i>
+                                                                                        </a>
+                                                                                        <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                                            <a href="javascript:void(0)" ng-click="deleteExternalUserFile($event,file)" class="dropdown-item">
+                                                                                                <i class="fa fa-trash">
+                                                                                                </i> Delete
+                                                                                            </a>
+                                                                                            <a href="javascript:void(0)" ng-if="false" ng-click="makeDefault($event,file)" class="dropdown-item">
+                                                                                                <i class="fa fa-file-picture-o">
+                                                                                                </i> Select Thumbnail
+                                                                                            </a>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                          
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane fade show" id="contacts">
+                                <div class="row clearfix">
+
+                                    <div class="col-12">
+
+                                        <div class="card">
+                                            <div class="card-header">
+
+                                                <div class="card-options">
+                                                    <a href="javascript:void(0)" ng-click="addExternalUserContact()" class="btn btn-primary btn-sm">
+                                                        <i class=" fe fe-user-plus"></i> Add Contact
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <label class="text-center form-label" ng-if="externalUserContacts.length==0">No contact to show!</label>
+                                                <div class="table-responsive-sm">
+                                                    <table class="table table-hover table-vcenter mb-0 table_custom spacing8 text-nowrap">
+
+                                                        <tbody>
+
+                                                            <tr ng-repeat="contact in externalUserContacts">
+
+
+                                                                <td class="d-flex cursor-pointer">
+                                                                    <div ng-hide="contact.IsEdit">
+                                                                        {{contact.Name}}
+                                                                        <small><br />{{contact.Position}}</small>
+                                                                    </div>
+                                                                    <div ng-show="contact.IsEdit">
+                                                                        <div class="row">
+
+                                                                            <div class="col-sm-12 col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Name</label>
+                                                                                    <input type="text" class="form-control border" ng-model="contact.Name">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-12 col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Position</label>
+                                                                                    <input type="text" class="form-control border" ng-model="contact.Position">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-12 col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Phone(home)</label>
+                                                                                    <input type="text" class="form-control border" ng-model="contact.PhoneHome" placeholder="201-555-5555">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-12 col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Phone(mobile)</label>
+                                                                                    <input type="text" class="form-control border" ng-model="contact.PhoneMobile" placeholder="201-555-5555">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-12 col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Phone(office)</label>
+                                                                                    <input type="text" class="form-control border" ng-model="contact.PhoneOffice" placeholder="201-555-5555">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-12 col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Fax</label>
+                                                                                    <input type="text" class="form-control border" ng-model="contact.Fax" placeholder="201-555-5555">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-12 col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Email</label>
+                                                                                    <input type="text" class="form-control border" ng-model="contact.Email" placeholder="Email">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-12 col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <a href="javascript:void(0)" ng-click="closeExternalUserContact()"
+                                                                                       class="btn btn-danger btn-sm float-right ml-2">
+                                                                                        <i class="fa fa-times"></i> Close
+                                                                                    </a>
+                                                                                    <a href="javascript:void(0)" ng-hide="contact.IsNew" ng-click="updateExternalUserContact(contact)"
+                                                                                       class="btn btn-success btn-sm float-right">
+                                                                                        <i class=" fe fe-save"></i> Update
+                                                                                    </a>
+                                                                                    <a href="javascript:void(0)" ng-show="contact.IsNew" ng-click="createExternalUserContact(contact)"
+                                                                                       class="btn btn-success btn-sm float-right">
+                                                                                        <i class=" fe fe-save"></i> Create
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                </td>
+                                                                <td style="width:30px;" ng-hide="contact.IsEdit">
+                                                                    <button type="button" class="btn btn-icon btn-sm" ng-click="deleteExternalUserContact(contact)" title="Delete"
+                                                                            data-type="confirm">
+                                                                        <i class="fa fa-trash-o text-danger"></i>
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-icon btn-sm" ng-click="editExternalUserContact(contact)" title="Edit"
+                                                                            data-type="confirm">
+                                                                        <i class="fa fa-pencil-square-o text-primary"></i>
+                                                                    </button>
+                                                                </td>
+
+
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="tab-pane fade show" id="note">
+                                <div class="row clearfix">
+
+                                    <div class="col-12">
+
+                                        <div class="card">
+
+                                            <div class="card-body">
+                                                <div class="row" ng-if="editExternalUserNote">
+                                                    <div class="col-12">
+                                                        <a href="javascript:void(0)" ng-click="close()"
+                                                           class="btn btn-danger btn-sm float-right ml-2">
+                                                            <i class="fa fa-times"></i> Close
+                                                        </a>
+                                                        <a href="javascript:void(0)" ng-click="updateExternalUser(externalUser)"
+                                                           class="btn btn-success btn-sm float-right">
+                                                            <i class=" fe fe-save"></i> Save
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">
+                                                                        Note
+                                                                    </label>
+                                                                    <textarea name="txtProjectDetail" ng-model="externalUser.Note"
+                                                                              class="form-control" rows="4"></textarea>
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" ng-if="!editExternalUserNote">
+                                                    <div class="col-sm-12 col-md-12">
+                                                        <div class="col-12">
+                                                            <a href="javascript:void(0)" ng-click="editNote()" class="btn btn-primary btn-sm float-right">
+                                                                <i class="fa fa-pencil-square-o"></i> Edit
+                                                            </a>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">
+                                                                        Note
+                                                                    </label>
+                                                                    {{externalUser.Note}}
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="tab-pane fade show" id="contract">
+
+                                <div class="row clearfix">
+
+                                    <div class="col-12">
+
+                                        <div class="card">
+
+                                            <div class="card-body">
+                                                <div class="row clearfix">
+                                                    <div class="col-12">
+                                                        <a href="javascript:void(0)" ng-click="updateExternalUser(externalUser)" class="btn btn-primary btn-sm float-right">
+                                                            <i class=" fe fe-save"></i> Save
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Contains LOI</label>
+                                                            <div class="input-group">
+                                                                @*<div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="icon-calendar"></i></span>
+                                        </div>*@
+                                                                @*<input data-provide="datepicker" data-date-autoclose="true" ng-model="crewUser.Crew.ContainsLOI"  >*@
+                                                                <input type="date" class="form-control icon-svg" value="" ng-model="externalUser.ContainsLOI" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Contains deal memo</label>
+                                                            <div class="input-group">
+                                                                @*<div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="icon-calendar"></i></span>
+                                        </div>
+                                        <input data-provide="datepicker" data-date-autoclose="true" ng-model="crewUser.Crew.ContainsDealMemo" class="form-control">*@
+                                                                <input type="date" class="form-control icon-svg" value="" ng-model="externalUser.ContainsDealMemo" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Contract created</label>
+                                                            <div class="input-group">
+                                                                @*<div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="icon-calendar"></i></span>
+                                        </div>
+                                        <input data-provide="datepicker" data-date-autoclose="true" ng-model="crewUser.Crew.ContractCreated" class="form-control">*@
+                                                                <input type="date" class="form-control icon-svg" value="" ng-model="externalUser.ContractCreated" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Contract sent</label>
+                                                            <div class="input-group">
+                                                                @*<div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="icon-calendar"></i></span>
+                                        </div>
+                                        <input data-provide="datepicker" data-date-autoclose="true" ng-model="crewUser.Crew.ContractSent" class="form-control">*@
+                                                                <input type="date" class="form-control icon-svg" value="" ng-model="externalUser.ContractSent" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Contract signed</label>
+                                                            <div class="input-group">
+                                                                @*<div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="icon-calendar"></i></span>
+                                        </div>
+                                        <input data-provide="datepicker" data-date-autoclose="true" ng-model="crewUser.Crew.ContractSigned" class="form-control">*@
+                                                                <input type="date" class="form-control icon-svg" value="" ng-model="externalUser.ContractSigned" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Note</label>
+                                                            <div class="input-group">
+
+                                                                <textarea name="txtProjectDetail" ng-model="externalUser.Message" class="form-control " rows="4"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-12">
+
+
+                                       
+                                        <h3 class="card-title"> <div class="card-status bg-blue"></div></h3>
+                                        <h3 class="card-title">Contractual documents</h3>
+
+
+                                        <div class="row clearfix">
+                                            <div class="col-sm-12">
+                                                <div class="progressFiles">
+
+                                                </div>
+                                                <div id="draggableContainerContract">
+                                                    <div id="uppy-uploader-contract" class="w-100 uppy-uploader" ng-show="hasFilesinContract">
+
+                                                    </div>
+                                                    <input type="file" multiple hidden id="contractFile" />
+                                                    <div class="row clearfix mb-3" ng-if="contractFiles.length>0">
+                                                        <div class="col-sm-12">
+                                                            <button type="button" class="btn btn-success" data-toggle="collapse" ng-click="openContractFileDialog()" data-target="#createFiles" aria-expanded="false" aria-controls="collapseExample">
+                                                                Add file <i class="fa fa-plus-circle"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix" ng-if="contractFiles.length==0">
+                                                        <div class="col-sm-12">
+                                                            <div class="list-empty text-center d-block p-3" style="border: 3px dashed #ccc;">
+                                                                <div class="row clearfix">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12">
+                                                                                <span class="material-icons font-20">
+                                                                                    insert_drive_file
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12">
+                                                                                <span class="col-form-label">
+                                                                                    There are no files yet. You can drop files here.
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row clearfix">
+                                                                    <div class="col-sm-12 mt-3">
+                                                                        <button type="button" class="btn btn-success" ng-click="openContractFileDialog()">
+                                                                            Add file <i class="fa fa-plus-circle"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-sm-6 col-md-4 col-lg-3 col-xxl-2 col-xxxl-2 mb-3" ng-repeat="file in contractFiles" style="height:160px !important">
+                                                            <div class="card">
+                                                                <div class="cursor-pointer" ng-click="openFileViewer(file, contractFiles)">
+                                                                    <div ng-if="file.Type=='image'" class="img-fluid pointer-event cat-image"
+                                                                         style="height: 130px;
+                                                                                        background-image: url('/api/UserProfiles/GetFileThumbnail/{{file.FileId}}/200/200');
+                                                                                        background-size: cover;
+                                                                                        background-repeat: no-repeat;
+                                                                                        transition: background-image 1s ease-in-out;
+                                                                                        border-top-left-radius: 5px;
+                                                                                        border-top-right-radius: 5px; ">
+                                                                    </div>
+                                                                    <div ng-if="file.Type!='image'" class="preview filetype filetype_json" style="pointer-events: all;">
+                                                                        <span class="extention" style="pointer-events: all;"> <i class="fa fa-file"></i> {{file.Extension}}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body p-1">
+                                                                    <div class="row clearfix">
+                                                                        <div class="col-10 text-nowrap overflow-ellipsis" title="{{file.Name}}" data-toggle="tooltip" data-placement="top" tooltip>
+                                                                            {{file.Name}}
+                                                                        </div>
+                                                                        <div class="col-2 text-right">
+                                                                            <div class="item-action dropdown">
+                                                                                <a href="javascript:void(0)" data-toggle="dropdown" class="icon" aria-expanded="false">
+                                                                                    <i class="fe fe-more-vertical"></i>
+                                                                                </a>
+                                                                                <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                                    <a href="javascript:void(0)" ng-click="deleteContractFile($event,file)" class="dropdown-item">
+                                                                                        <i class="fa fa-trash">
+                                                                                        </i> Delete
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane fade show" id="draft-contract">
+                                <div class="row clearfix">
+
+                                    <div class="col-12">
+
+                                                <div class="row clearfix">
+                                                    <div class="col-sm-12">
+                                                        <div class="progressFiles">
+
+                                                        </div>
+                                                        <div id="draggableContainer">
+                                                            <div id="uppy-uploader-draft" class="w-100 uppy-uploader" ng-show="hasFilesinDraft">
+
+                                                            </div>
+                                                            <input type="file" multiple hidden id="contractDraftFile" />
+                                                            <div class="row clearfix mb-3" ng-if="files.length>0">
+                                                                <div class="col-sm-12">
+                                                                    <button type="button" class="btn btn-success" data-toggle="collapse" ng-click="openProjectFileDialog()" data-target="#createFiles" aria-expanded="false" aria-controls="collapseExample">
+                                                                        Add file <i class="fa fa-plus-circle"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix" ng-if="files.length==0">
+                                                                <div class="col-sm-12">
+                                                                    <div class="list-empty text-center d-block p-3" style="border: 3px dashed #ccc;">
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12">
+                                                                                        <span class="material-icons font-20">
+                                                                                            insert_drive_file
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12">
+                                                                                        <span class="col-form-label">
+                                                                                            There are no files yet. You can drop files here.
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-12 mt-3">
+                                                                                <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#createLink" aria-expanded="false" ng-click="openProjectFileDialog()" aria-controls="collapseExample">
+                                                                                    Add file <i class="fa fa-plus-circle"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix">
+                                                                <div class="col-sm-6 col-md-4 col-lg-3 col-xxl-2 col-xxxl-2 mb-3" ng-repeat="file in files" style="height:160px !important">
+                                                                    <div class="card">
+                                                                        <div class="cursor-pointer" ng-click="openFileViewer(file, files)">
+                                                                            <div ng-if="file.Type=='image'" class="img-fluid pointer-event cat-image"
+                                                                                 style="height: 130px;
+                                                                                        background-image: url('/api/UserProfiles/GetFileThumbnail/{{file.FileId}}/200/200');
+                                                                                        background-size: cover;
+                                                                                        background-repeat: no-repeat;
+                                                                                        transition: background-image 1s ease-in-out;
+                                                                                        border-top-left-radius: 5px;
+                                                                                        border-top-right-radius: 5px; ">
+                                                                            </div>
+                                                                            <div ng-if="file.Type!='image'" class="preview filetype filetype_json" style="pointer-events: all;">
+                                                                                <span class="extention" style="pointer-events: all;"> <i class="fa fa-file"></i> {{file.Extension}}</span>
+                                                                            </div>
+                                                                            <div ng-if="file.LatestVersion" class="tags hide_in_colorlist" style=" position: absolute; right: 10px; top: 10px; color: #fff; font-size: 10px;">
+                                                                                <span class="bg-dark text-white" style="padding: 2px 4px; border-radius: 5px;">{{file.LatestVersion}}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="card-body p-1">
+                                                                            <div class="row clearfix">
+                                                                                <div class="col-10 text-nowrap overflow-ellipsis" title="{{file.Name}}" data-toggle="tooltip" data-placement="top" tooltip>
+                                                                                    {{file.Name}}
+                                                                                </div>
+                                                                                <div class="col-2 text-right">
+                                                                                    <div class="item-action dropdown">
+                                                                                        <a href="javascript:void(0)" data-toggle="dropdown" class="icon" aria-expanded="false">
+                                                                                            <i class="fe fe-more-vertical"></i>
+                                                                                        </a>
+                                                                                        <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                                            <a href="javascript:void(0)" ng-click="deleteDraftContractFile($event,file)" class="dropdown-item">
+                                                                                                <i class="fa fa-trash">
+                                                                                                </i> Delete
+                                                                                            </a>
+                                                                                            <a href="javascript:void(0)" ng-if="false" ng-click="makeDefault($event,file)" class="dropdown-item">
+                                                                                                <i class="fa fa-file-picture-o">
+                                                                                                </i> Select Thumbnail
+                                                                                            </a>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                         
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    @*<script src="~/js/ng-controllers/crew-ctrl.js"></script>*@
+
+    <script>
+        $(document).ready(function () {
+
+
+        });
+    </script>
+}
+
+
+

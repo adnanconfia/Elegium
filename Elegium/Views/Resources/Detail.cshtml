@@ -1,0 +1,231 @@
+﻿
+@{
+    ViewData["Title"] = "Resource Detail";
+    Layout = null;
+}
+
+<div class="section-body" ng-controller="ResourceDetailCtrl" style="max-width:1300px">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-sm-12">
+                <div class="card c_grid c_yellow">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <h3 class="text-info">
+                                    {{resource.Name}}
+                                </h3>
+                                <h6 class="text-secondary">
+                                    {{resource.EquipmentCategory.Name}}
+                                </h6>
+
+                            </div>
+                            <div class="col-md-6 col-sm-12 text-right">
+                                <h5 class="text-secondary">
+                                    <span ng-if="resource.ResourceOwner.CompanyCity">{{resource.ResourceOwner.CompanyCity.Name}}</span>
+                                    <span ng-if="resource.ResourceOwner.CompanyCity && resource.ResourceOwner.CompanyCountry">,</span>
+                                    <span ng-if="resource.ResourceOwner.CompanyCountry">{{resource.ResourceOwner.CompanyCountry.Name}}</span>
+                                    <span><i class="fa fa-map-marker ml-1"></i> </span>
+                                </h5>
+                                <h6 class="text-secondary">
+                                    {{resource.ModifiedDateTime | date:"MMM dd, yyyy"}} <i class="fa fa-calendar ml-1"></i>
+                                </h6>
+                                <div class="row text-right">
+                                    <div class="col-sm-12">
+                                        <i class="fa {{resource.IsSaved?'fa-heart':'fa-heart-o'}} text-red" ng-click="toggleSave(resource)" style="cursor:pointer"></i>
+                                        <i class="fa {{resource.IsFavorite?'fa-star':'fa-star-o'}} text-info" ng-click="toggleFavorite(resource)" style="cursor:pointer"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="card c_grid c_yellow">
+                    <div class="card-header p-2">
+                        <h3 class="card-title">Owner Information</h3>
+                        <div class="card-options">
+                            <a href="javascript:void(0)" ng-click="openChatBox(resource.ResourceOwner.UserId)" title="Start Chat" data-toggle="tooltip" data-placement="top" tooltip class="card-options-fullscreen">
+                                <span class="material-icons">message</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="circle">
+                                    <img class="rounded-circle" src="/api/UserProfiles/GetUserPhoto/{{resource.ResourceOwner.UserId}}/100/100" style="width:80%" />
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <h6 class="mt-3 mb-0">{{resource.ResourceOwner.FirstName}} {{resource.ResourceOwner.LastName}}</h6>
+                                <span>{{resource.ResourceOwner.CompanyPosition.Name}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card c_grid c_yellow">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span style="font-weight:500">Published:</span><span class="pull-right">{{resource.ModifiedDateTime | date:"MMM dd, yyyy"}}</span>
+                            </div>
+                            <div class="col-sm-12">
+                                <span style="font-weight:500">Country:</span><span class="pull-right">{{resource.ResourceOwner.CompanyCountry.Name}}</span>
+                            </div>
+                            <div class="col-sm-12">
+                                <span style="font-weight:500">City:</span><span class="pull-right">{{resource.ResourceOwner.CompanyCity.Name}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card c_grid c_yellow">
+                    <div class="card-header">
+                        <h3 class="card-title">Company Information</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="circle">
+                                    <img class="rounded-circle" ng-src="/api/UserProfiles/GetUserCompanyPhoto/{{resource.ResourceOwner.UserId}}/100/100" style="width:80%" />
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <h6 class="mt-3 mb-0">{{resource.ResourceOwner.CompanyName}}</h6>
+                                <span>{{resource.ResourceOwner.CompanyType.Name}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Resource Information</h3>
+
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            @*<li class="list-group-item">
+                                    <small class="text-muted">Title: </small>
+                                    <p class="mb-0">{{project.Project.Name}}</p>
+                                </li>
+                                <li class="list-group-item">
+                                    <small class="text-muted">Production type: </small>
+                                    <p class="mb-0">{{project.Project.ProductionType.Name}}</p>
+                                </li>*@
+                            <li class="list-group-item" ng-if="resource.HireOrSale == 'H'">
+                                <h6 class="mb-0">Resource is for hire</h6>
+                            </li>
+                            <li class="list-group-item" ng-if="resource.HireOrSale == 'H'">
+                                <small class="text-muted">Rent per day: </small>
+                                <p class="mb-0">{{resource.RentalPrice}}{{resource.Currency.Symbol}}</p>
+                            </li>
+                            <li class="list-group-item" ng-if="resource.HireOrSale == 'H'">
+                                <small class="text-muted">Min rent days: </small>
+                                <p class="mb-0">{{resource.MinRentalPeriod}}</p>
+                            </li>
+                            <li class="list-group-item" ng-if="resource.HireOrSale == 'H'">
+                                <small class="text-muted">Max rent days: </small>
+                                <p class="mb-0">{{resource.MaxRentalPeriod}}</p>
+                            </li>
+
+
+                            <li class="list-group-item" ng-if="resource.HireOrSale == 'S'">
+                                <h6 class="mb-0">Resource is for sale</h6>
+                            </li>
+                            <li class="list-group-item" ng-if="resource.HireOrSale == 'S'">
+                                <small class="text-muted">Selling price: </small>
+                                <p class="mb-0">{{resource.SalePrice}}{{resource.Currency.Symbol}}</p>
+                            </li>
+
+
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-8 col-md-12">
+                <div class="card">
+                    @*<div class="card-header">
+                            <h3 class="card-title">Project Detail</h3>
+                        </div>*@
+                    <div class="card-body">
+                        <div class="col-sm-12 text-center mb-3" ng-if="resource.YoutubeVideoLink">
+                            <object data="https://www.youtube.com/embed/{{resource.YoutubeVideoLink.split('?v=')[1]}}"
+                                    width="100%" height="300" frameborder="0" allowfullscreen></object>
+                        </div>
+                        <div class="col-sm-12 text-center mb-3" ng-if="resource.VimeoVideoLink">
+                            <object data="https://player.vimeo.com/video/{{resource.VimeoVideoLink.split('.com/')[1]}}"
+                                    width="100%" height="400" frameborder="0" allowfullscreen></object>
+                        </div>
+
+                        <div class="row m-2">
+                            <div class="col-sm-12 text-right">
+                                <button ng-if="!resource.ProjectResourceDto&&resource.Status!='ME'" type="button" class="btn btn-success" ng-click="hireorpurchaseresource(resource)">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                    <label ng-if="resource.HireOrSale == 'H'">Hire this resource</label>
+                                    <label ng-if="resource.HireOrSale == 'S'">Purchase this resource</label>
+                                </button>
+                                <label ng-if="resource.ProjectResourceDto&&resource.HireOrSale == 'S'&&resource.ProjectResourceDto.Status=='A'">
+                                    This resource is not available
+                                </label>
+
+                                <label ng-if="resource.ProjectResourceDto&&resource.HireOrSale == 'H'&&resource.ProjectResourceDto.Status=='A'">
+                                    This resource will be available on {{resource.ProjectResourceDto.FromTime}}
+                                </label>
+                                <label ng-if="resource.Status=='ME'">
+                                    You have already sent request for this resource.
+                                </label>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+                <div class="row row-cards">
+                    <div class="col-sm-6 col-lg-4" ng-repeat="image in resourceImages">
+                        <div class="card p-3" ng-click="openPhoto(image)">
+                            <a href="javascript:void(0)" class="mb-3">
+                                <img ng-src="/api/UserProfiles/GetFile/{{image.FileId}}/291/182" class="rounded">
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+
+                    <div class="card-body">
+                        <div class="row m-2">
+                            <div class="col-sm-12 mb-3 p-3 ">
+                                <h5><i><u>Resource detail:</u></i></h5>
+                                {{resource.Description}}
+                            </div>
+
+                            <div class="col-sm-12 mb-3 p-3" ng-if="resource.HireOrSale == 'H' && resource.RentalTerms">
+                                <h5><i><u>Rental terms & conditions:</u></i></h5>
+                                {{resource.RentalTerms}}
+                            </div>
+
+                            <div class="col-sm-12 mb-3 p-3" ng-if="resource.OtherTerms">
+                                <h5><i><u>Other terms & conditions:</u></i></h5>
+                                {{resource.OtherTerms}}
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/js/ng-controllers/resources/resource-detail-ctrl.js"></script>
+}

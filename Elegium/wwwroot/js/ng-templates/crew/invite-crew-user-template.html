@@ -1,0 +1,387 @@
+﻿<link href="../../../css/step-wizard.css" rel="stylesheet" />
+
+
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">
+        {{title}}
+    </h3>
+    <div class="pull-right">
+        <button class="btn btn-secondary " ng-disabled="projectForm.$invalid" ng-click="save()">
+            <i class="fa fa-save"></i> Invite
+        </button>
+        <button class="btn btn-danger" ng-click="cancel()">
+            <i class="fa fa-times"></i> Close
+        </button>
+    </div>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid">
+        <div class="container">
+            <div class="stepwizard">
+                <div class="stepwizard-row setup-panel">
+                    <div class="stepwizard-step col-xs-3">
+                        <a href="#step-1" type="button" class="btn btn-default btn-circle btn-success"><i class="fa fa-info-circle" ></i></a>
+                        <p><small>General Information</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3">
+                        <a href="#step-2" type="button" class="btn btn-default btn-circle"><i class="fa fa-comment"></i></a>
+                        <p><small>Personal Message</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3">
+                        <a href="#step-3" type="button" class="btn btn-default btn-circle"><i class="fa fa-cog"></i></a>
+                        <p>
+                            <small >Advance settings</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <form role="form" name="projectForm">
+                <div class="panel panel-primary setup-content" id="step-1">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                        </h4>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        View and manage the employees / staff members of your company. You can choose which global rights they receive and which sections in the company area they can access. Note that employees with global rights for company features such as actors can delete objects for all company projects.
+                                    </div>
+                                   
+                                </div>
+
+                                <br />
+
+                                <div class="card">
+                                    <div class="card-status bg-blue"></div>
+                                    <div class="card-header">
+                                        <h3 class="card-title">General Information</h3>
+                             
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Email</label>
+                                                    <input maxlength="200" ng-pattern-check="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" required="required" name="Email" class="form-control {{projectForm.Email.$valid?'is-valid':'is-invalid'}}"
+                                                           placeholder="Email" ng-model="user.Email" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">First Name</label>
+                                                    <input maxlength="200" ng-pattern-check="^[A-Za-z ]*$" type="text" name="FirstName" required="required" class="form-control  {{projectForm.FirstName.$valid?'is-valid':'is-invalid'}}"
+                                                           placeholder="Name" ng-model="user.FirstName" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">
+                                                        Last Name
+                                                    </label>
+                                                    <input maxlength="200" ng-pattern-check="^[A-Za-z ]*$" type="text" name="LastName" required="required" class="form-control  {{projectForm.LastName.$valid?'is-valid':'is-invalid'}}"
+                                                        placeholder="Name" ng-model="user.LastName" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Position </label>
+                                                    <!--<select name="PositionId" class="form-control custom-select {{projectForm.PositionId.$valid?'is-valid':'is-invalid'}}" required="required" ng-options="item.Id as item.Name for item in workingPositions"
+                                                            ng-model="crewPosition.PositionId">
+                                                    </select>-->
+                                                    <ui-select multiple class="form-control" ng-model="data.crewPositons" theme="selectize" sortable="true" close-on-select="false">
+                                                        <ui-select-match placeholder="Select Languages...">{{$item.Name}}</ui-select-match>
+                                                        <ui-select-choices repeat="lang.Id as lang in workingPositions">
+                                                            <div ng-bind-html="lang.Name | highlight: $select.search"></div>
+                                                           
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="card comments" style="height:90% !important">
+                                            <div class="card-body">
+                                                <i class="fa fa-info-circle"></i>
+                                                View and manage the employees / staff members of your company. You can choose which global rights they receive and which sections in the company area they can access
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                <div class="card">
+                                    <div class="card-status bg-blue"></div>
+                                    <div class="card-header">
+                                        <h3 class="card-title">Access Rights</h3>
+                                 
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            
+                                            <div class="col-md-12 col-sm-12">
+                                                <div class="flex">
+                                                    <span class="btn-rights  {{userRightsCls(projectCrew.CrewRights)}}" data-toggle="tooltip" data-placement="right" title="Crew">
+                                                        <div class="icon">
+                                                            <i class="fa fa-users"></i>
+                                                        </div>
+                                                        <div class="btn-icon" ng-click="changeRights('CrewRights',projectCrew)">
+                                                            
+                                                            <i ng-class="classRights(projectCrew.CrewRights)"></i>
+                                                        </div>
+                                                    </span>
+
+                                                    <span class="btn-rights  {{userRightsCls(projectCrew.AnnouncementRights)}}" data-toggle="tooltip" data-placement="right" title="Announcement">
+                                                        <div class="icon">
+                                                            <i class="fa fa-bullhorn"></i>
+                                                        </div>
+                                                        <div class="btn-icon" ng-click="changeRights('AnnouncementRights',projectCrew)">
+                                                            <i ng-class="classRights(projectCrew.AnnouncementRights)"></i>
+                                                        </div>
+                                                    </span>
+
+                                                    <span class="btn-rights  {{userRightsCls(projectCrew.AddressBookRights)}}" data-toggle="tooltip" data-placement="right" title="Address Book">
+                                                        <div class="icon">
+                                                            <i class="fa fa-address-book-o"></i>
+                                                        </div>
+                                                        <div class="btn-icon" ng-click="changeRights('AddressBookRights',projectCrew)">
+                                                            <i ng-class="classRights(projectCrew.AddressBookRights)"></i>
+                                                        </div>
+                                                    </span>
+
+                                                    <span class="btn-rights  {{userRightsCls(projectCrew.CompanyCalendarRights)}}" data-toggle="tooltip" data-placement="right" title="Company Calendar">
+                                                        <div class="icon">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </div>
+                                                        <div class="btn-icon" ng-click="changeRights('CompanyCalendarRights',projectCrew)">
+                                                            <i ng-class="classRights(projectCrew.CompanyCalendarRights)"></i>
+                                                        </div>
+                                                    </span>
+
+                                                    <span class="btn-rights  {{userRightsCls(projectCrew.ProductionCalendarRights)}}" data-toggle="tooltip" data-placement="right" title="Production Calendar">
+                                                        <div class="icon">
+                                                            <i class="fa fa-film"></i>
+                                                        </div>
+                                                        <div class="btn-icon" ng-click="changeRights('ProductionCalendarRights',projectCrew)">
+                                                            <i ng-class="classRights(projectCrew.ProductionCalendarRights)"></i>
+                                                        </div>
+                                                    </span>
+
+                                                    <span class="btn-rights  {{userRightsCls(projectCrew.ActorDatabaseRights)}}" data-toggle="tooltip" data-placement="right" title="Actor Database">
+                                                        <div class="icon">
+                                                            <i class="fa fa-street-view"></i>
+                                                        </div>
+                                                        <div class="btn-icon" ng-click="changeRights('ActorDatabaseRights',projectCrew)">
+                                                            <i ng-class="classRights(projectCrew.ActorDatabaseRights)"></i>
+                                                        </div>
+                                                    </span>
+
+                                                    <span class="btn-rights  {{userRightsCls(projectCrew.LocationDatabaseRights)}}" data-toggle="tooltip" data-placement="right" title="Location Database">
+                                                        <div class="icon">
+                                                            <i class="fa fa-map-marker"></i>
+                                                        </div>
+                                                        <div class="btn-icon" ng-click="changeRights('LocationDatabaseRights',projectCrew)">
+                                                            <i ng-class="classRights(projectCrew.LocationDatabaseRights)"></i>
+                                                        </div>
+                                                    </span>
+
+                                                    <span class="btn-rights  {{userRightsCls(projectCrew.CostumeDatabaseRights)}}" data-toggle="tooltip" data-placement="right" title="Costume Database Rights">
+                                                        <div class="icon">
+                                                            <i class="fa fa-user-secret"></i>
+                                                        </div>
+                                                        <div class="btn-icon" ng-click="changeRights('CostumeDatabaseRights',projectCrew)">
+                                                            <i ng-class="classRights(projectCrew.CostumeDatabaseRights)"></i>
+                                                        </div>
+                                                    </span>
+
+                                                    <span class="btn-rights  {{userRightsCls(projectCrew.ProbItemDatabaseRights)}}" data-toggle="tooltip" data-placement="right" title="Prob Item Database">
+                                                        <div class="icon">
+                                                            <i class="fa fa-ticket"></i>
+                                                        </div>
+                                                        <div class="btn-icon" ng-click="changeRights('ProbItemDatabaseRights',projectCrew)">
+                                                            <i ng-class="classRights(projectCrew.ProbItemDatabaseRights)"></i>
+                                                        </div>
+                                                    </span>
+
+                                                    <span class="btn-rights  {{userRightsCls(projectCrew.CreateDeleteProjectsRights)}}" data-toggle="tooltip" data-placement="right" title="Create Delete Projects">
+                                                        <div class="icon">
+                                                            <i class="fa fa-folder"></i>
+                                                        </div>
+                                                        <div class="btn-icon" ng-click="changeRights('CreateDeleteProjectsRights',projectCrew)">
+                                                            <i ng-class="classRights(projectCrew.CreateDeleteProjectsRights)"></i>
+                                                        </div>
+                                                    </span>
+
+                                                    <span class="btn-rights  {{userRightsCls(projectCrew.SubscriptionsRights)}}" data-toggle="tooltip" data-placement="right" title="Subscriptions">
+                                                        <div class="icon">
+                                                            <i class="fa fa-money"></i>
+                                                        </div>
+                                                        <div class="btn-icon" ng-click="changeRights('SubscriptionsRights',projectCrew)">
+                                                            <i ng-class="classRights(projectCrew.SubscriptionsRights)"></i>
+                                                        </div>
+                                                    </span>
+
+                                                    <span class="btn-rights  {{userRightsCls(projectCrew.SettingsRights)}}" data-toggle="tooltip" data-placement="right" title="Settings">
+                                                        <div class="icon">
+                                                            <i class="fa fa-cog"></i>
+                                                        </div>
+                                                        <div class="btn-icon" ng-click="changeRights('SettingsRights',projectCrew)">
+                                                            <i ng-class="classRights(projectCrew.SettingsRights)"></i>
+                                                        </div>
+                                                    </span>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-primary setup-content" id="step-2">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            Personal Message
+                        </h4>
+                        <p>Please tell us, what are your requirements for the person who should be your Project Partner.</p>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Message</label>
+                                            <textarea name="txtProjectDetail" ng-model="projectCrew.Message" class="form-control" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-primary setup-content" id="step-3">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            Advance Settings
+                        </h4>
+                        <p>Here you can select to hide the user in the crew list or that the user should be part of a special unit.</p>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Units</label>
+
+                                            <ui-select multiple class="form-control" ng-model="data.crewUnits" theme="selectize" sortable="true" close-on-select="false">
+                                                <ui-select-match placeholder="Select Languages...">{{$item.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="lang.Id as lang in units">
+                                                    <div ng-bind-html="lang.Name | highlight: $select.search"></div>
+
+                                                </ui-select-choices>
+                                            </ui-select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <div class="form-label">&nbsp;</div>
+                                            <label class="custom-switch">
+                                                <input type="checkbox" ng-model="projectCrew.HideMember" name="custom-switch-checkbox" class="custom-switch-input">
+                                                <span class="custom-switch-indicator"></span>
+                                                <span class="custom-switch-description">Hide member in the crew list</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-secondary pull-right" ng-disabled="projectForm.$invalid"  ng-click="save()">
+        <i class="fa fa-save"></i> Invite
+    </button>
+    <button class="btn btn-danger" ng-click="cancel()">
+        <i class="fa fa-times"></i> Close
+    </button>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        //$('.multiselect').multiselect({
+        //    enableFiltering: true,
+        //    enableCaseInsensitiveFiltering: true,
+        //    maxHeight: 200
+        //});
+
+        var navListItems = $('div.setup-panel div a'),
+            allWells = $('.setup-content'),
+            allNextBtn = $('.nextBtn');
+
+        allWells.hide();
+
+        navListItems.click(function (e) {
+            e.preventDefault();
+            var $target = $($(this).attr('href')),
+                $item = $(this);
+
+            if (!$item.hasClass('disabled')) {
+                navListItems.removeClass('btn-success').addClass('btn-default');
+                $item.addClass('btn-success');
+                allWells.hide();
+                $target.show();
+                $target.find('input:eq(0)').focus();
+            }
+        });
+
+        allNextBtn.click(function () {
+            var curStep = $(this).closest(".setup-content"),
+                curStepBtn = curStep.attr("id"),
+                nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+                curInputs = curStep.find("input[type='text'],input[type='url']"),
+                isValid = true;
+
+            $(".form-group").removeClass("has-error");
+            for (var i = 0; i < curInputs.length; i++) {
+                if (!curInputs[i].validity.valid) {
+                    isValid = false;
+                    $(curInputs[i]).closest(".form-group").addClass("has-error");
+                }
+            }
+
+            //if (isValid)
+                nextStepWizard.removeAttr('disabled').trigger('click');
+        });
+
+        $('div.setup-panel div a.btn-success').trigger('click');
+
+        var input = document.querySelector(".telephone");
+        window.intlTelInput(input, {
+            utilsScript: root + 'plugins/intl-tel-input/js/utils.js?20',
+        });
+
+    });
+</script>

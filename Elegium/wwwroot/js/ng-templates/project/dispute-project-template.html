@@ -1,0 +1,27 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">
+        {{title}}
+    </h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label class="form-label">Detail</label>
+                    <textarea class="form-control" rows="4" placeholder="Write the details here..." ng-model="description">
+                    </textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-secondary pull-right" ng-click="submit()">
+        <i class="fa fa-save"></i> Submit
+    </button>
+    <button class="btn btn-danger" ng-click="cancel()">
+        <i class="fa fa-times"></i> Close
+    </button>
+</div>

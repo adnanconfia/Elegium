@@ -1,0 +1,221 @@
+﻿
+@{
+    ViewData["Title"] = "Project Detail";
+    Layout = null;
+}
+
+
+<div class="section-body" ng-controller="PublicProjectDetailController" style="max-width:1300px">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-sm-12">
+                <div class="card c_grid c_yellow">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <h3 class="text-info">
+                                    {{project.Project.Name}}
+                                </h3>
+                                <h6 class="text-secondary">
+                                    {{project.Project.ProductionType.Name}}
+                                </h6>
+                            </div>
+                            <div class="col-md-6 col-sm-12 text-right">
+                                <h5 class="text-secondary">
+                                    <span ng-if="project.ProjectOwner.CompanyCity">{{project.ProjectOwner.CompanyCity.Name}}</span>
+                                    <span ng-if="project.ProjectOwner.CompanyCity && project.ProjectOwner.CompanyCountry">,</span>
+                                    <span ng-if="project.ProjectOwner.CompanyCountry">{{project.ProjectOwner.CompanyCountry.Name}}</span>
+                                    <span><i class="fa fa-map-marker ml-1"></i> </span>
+                                </h5>
+                                <h6 class="text-secondary">
+                                    {{project.Project.CreatedDateTime | date:"MMM dd, yyyy"}} <i class="fa fa-calendar ml-1"></i>
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="card c_grid c_yellow">
+                    <div class="card-header">
+                        <h3 class="card-title">Owner Information</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="circle">
+                                    <img class="rounded-circle" src="/api/UserProfiles/GetUserPhoto/{{project.ProjectOwner.UserId}}/100/100" style="width:80%" />
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <h6 class="mt-3 mb-0">{{project.ProjectOwner.FirstName}} {{project.ProjectOwner.LastName}}</h6>
+                                <span>{{project.ProjectOwner.CompanyPosition.Name}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card c_grid c_yellow">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span style="font-weight:500">Published:</span><span class="pull-right">{{project.Project.CreatedDateTime | date:"MMM dd, yyyy"}}</span>
+                            </div>
+                            <div class="col-sm-12">
+                                <span style="font-weight:500">Country:</span><span class="pull-right">{{project.ProjectOwner.CompanyCountry.Name}}</span>
+                            </div>
+                            <div class="col-sm-12">
+                                <span style="font-weight:500">City:</span><span class="pull-right">{{project.ProjectOwner.CompanyCity.Name}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card c_grid c_yellow">
+                    <div class="card-header">
+                        <h3 class="card-title">Company Information</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="circle">
+                                    <img class="rounded-circle" ng-src="/api/UserProfiles/GetUserCompanyPhoto/{{project.ProjectOwner.UserId}}/100/100" style="width:80%" />
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <h6 class="mt-3 mb-0">{{project.ProjectOwner.CompanyName}}</h6>
+                                <span>{{project.ProjectOwner.CompanyType.Name}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Project Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            @*<li class="list-group-item">
+                                    <small class="text-muted">Title: </small>
+                                    <p class="mb-0">{{project.Project.Name}}</p>
+                                </li>
+                                <li class="list-group-item">
+                                    <small class="text-muted">Production type: </small>
+                                    <p class="mb-0">{{project.Project.ProductionType.Name}}</p>
+                                </li>*@
+                            <li class="list-group-item">
+                                <small class="text-muted">Language: </small>
+                                <p class="mb-0">{{project.Project.ProductionLanguage.Name}}</p>
+                            </li>
+                            <li class="list-group-item">
+                                <small class="text-muted">Budget: </small>
+                                <p class="mb-0">{{project.ProjectPartnerRequirement.Budget}} {{project.Project.Currency.Symbol}}</p>
+                            </li>
+                            <li class="list-group-item">
+                                <small class="text-muted">Length: </small>
+                                <p class="mb-0">{{project.Project.ProductionLength}} minutes</p>
+                            </li>
+                            @*<li class="list-group-item">
+                                <small class="text-muted">Published date: </small>
+                                <p class="mb-0">{{project.Project.CreatedDateTime | date:"MMM dd, yyyy"}}</p>
+                            </li>*@
+                            <li class="list-group-item">
+                                <div class="clearfix">
+                                    <div class="float-right"><strong>{{project.ProjectPartnerRequirement.YourFinancialShare}}%</strong></div>
+                                    <div class="float-left"><small class="text-muted">Owner's Share</small></div>
+                                </div>
+                                <div class="progress progress-xs mb-0">
+                                    <div class="progress-bar bg-info" style="width: {{project.ProjectPartnerRequirement.YourFinancialShare}}%"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-lg-8 col-md-12">
+                <div class="card">
+                    @*<div class="card-header">
+                <h3 class="card-title">Project Detail</h3>
+            </div>*@
+                    <div class="card-body">
+                        <div class="col-sm-12 text-center">
+                            <img class="box-radius-5 mb-2" ng-src="/api/Projects/GetProjectCover/{{project.Project.Id}}/750/300" />
+                        </div>
+
+                        <div class="row m-2">
+                            <div class="col-sm-12 text-right">
+                                <button type="button" class="btn btn-success" ng-if="!project.Project.IsHired">
+                                    <i class="fa fa-pencil-square-o"></i> Apply for this Project
+                                </button>
+                                <button type="button" class="btn btn-danger" 
+                                        ng-if="project.Project.IsHired"
+                                        ng-click="leaveProject(project.Project)">
+                                    <i class="fa fa-times-rectangle"></i> Leave Project
+                                </button>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="row m-2">
+                            <div class="col-sm-12 mb-3 p-3 ">
+                                <h5><i><u>Project detail:</u></i></h5>
+                                {{project.Project.Detail}}
+                            </div>
+
+                            <div class="col-md-7 col-sm-12 mb-3 ">
+
+                            </div>
+
+                            <div class="col-sm-12 mb-3" ng-if="showProjectOwnerLooking(project)">
+                                <div class="col-sm-12"><b>Project owner is looking for:</b></div>
+                                <div class="col-sm-12" ng-if="project.ProjectPartners.length>0">
+                                    <i class="fa fa-check text-green"></i> {{project.ProjectPartners.length}} Project Partner
+                                </div>
+                                <div class="col-sm-12" ng-if="project.ProjectPartnerRequirement.NeedFinancialParticipation">
+                                    <i class="fa fa-check text-green"></i> {{project.ProjectFunding.Amount}} Financial Participator
+                                </div>
+                                <div class="col-sm-12" ng-if="!project.ProjectPartnerRequirement.NeedFinancialParticipation && project.ProjectFunding.Amount">
+                                    <i class="fa fa-check text-green"></i> {{project.ProjectFunding.Amount}} {{project.Project.Currency.Symbol}} Funding
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Contact Person Details</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <small class="text-muted">Name: </small>
+                                <p class="mb-0">{{project.Project.ContactName}}</p>
+                            </li>
+                            <li class="list-group-item">
+                                <small class="text-muted">Email: </small>
+                                <p class="mb-0">{{project.Project.ContactEmail}}</p>
+                            </li>
+                            <li class="list-group-item">
+                                <small class="text-muted">Phone: </small>
+                                <p class="mb-0">{{project.Project.ContactPhone}}</p>
+                            </li>
+                            <li class="list-group-item" ng-if="project.Project.ContactFax">
+                                <small class="text-muted">Fax: </small>
+                                <p class="mb-0">{{project.Project.ContactFax}}</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/js/ng-controllers/public-project-detail-ctrl.js"></script>
+}

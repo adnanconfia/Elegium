@@ -1,0 +1,256 @@
+﻿
+@{
+    ViewData["Title"] = "Offer Resources";
+    Layout = null;
+}
+   
+
+<div class="section-body" ng-controller="OfferResourcesCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h3>Offer Resources</h3>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <button type="button" class="btn btn-secondary" ng-click="addResource()">
+                                        <i class="fa fa-plus mr-2"></i> Add Resource
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row" ng-show="resourcesList.length>0">
+            <div class="col-md-4 col-sm-12 offset-md-8">
+                <input type="text" class="form-control" placeholder="Search resource..." ng-model="resourceQuery">
+            </div>
+
+        </div>
+
+        <br />
+
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 col-xxxl-2 mb-3" ng-repeat="resource in resourcesList | filter:resourceQuery">
+                <div class="card project-cover" style="background-image:url('/api/UserProfiles/GetFileThumbnail/{{resource.MediaFileIds[0]}}/300/300'); height:235px; cursor:pointer;">
+                    <div class="card-body p-0" ng-if="!resource.ShowDetail && !resource.ShowProfile" ng-click="$event.stopPropagation()">
+                        <div class="row h-100">
+                            <div class="col-6" style="margin-left: -1px; cursor:default">
+                                <div class="card m-0 h-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; height:200px;">
+                                    <div class="card-body p-0">
+                                        <div class="row pl-2 pt-1">
+                                            <div class="col-12">
+                                                <p class="font-18 m-0 no-overflow border-bottom" style="font-weight:500;margin-left: -8px !important;">
+                                                    <span class="text-info pl-2">Resource</span>
+                                                    <span class="pull-right mr-1"><small> {{resource.HireOrSale == 'H'?'For Hire':'For Sale'}}</small></span>
+                                                </p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="font-10 pt-3">
+                                                    <i class="fa fa-calendar"></i> {{resource.ModifiedDateTime | date:"MMM dd, yyyy"}}
+                                                </p>
+                                                <div class="font-11">
+                                                    <p class="font-11 m-0 mt-4">Resource Name:</p>
+                                                    <p class="font-18 m-0 no-overflow" style="font-weight:500;" title="{{resource.Name}}">
+                                                        <a ui-sref="resourcedetail({resourceId:'{{resource.Id}}'})" class="link-unstyled">
+                                                            {{resource.Name}}
+                                                        </a>
+                                                    </p>
+                                                    <a href="{{resource.Website.indexOf('https://')>=0?'':resource.Website.indexOf('https://')>=0?'':'https://'}}{{resource.Website}}"
+                                                       class="link-unstyled text-info"
+                                                       target="_blank">
+                                                        {{resource.Website}}
+                                                    </a>
+                                                </div>
+                                                <div class="font-11 mt-5" ng-if="resource.ResourceOwner.Country">
+                                                    <span>Country :</span>
+                                                    <span class="pull-right text-right text-info font-weight-bold mr-3">
+                                                        {{resource.ResourceOwner.Country.Name}}
+                                                    </span>
+                                                </div>
+                                                <div class="font-11" ng-if="resource.ResourceOwner.City">
+                                                    <span>City :</span>
+                                                    <span class="pull-right text-right text-info font-weight-bold mr-3">
+                                                        {{resource.ResourceOwner.City.Name}}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6 text-right" ng-click="openResourceDetail(resource.Id)">
+                                <div class="row pr-2 pt-2">
+                                    <div class="col-12">
+                                        <span class="material-icons text-white" style="cursor:pointer;"
+                                              title="Click to see more info"
+                                              ng-click="resource.ShowDetail = !resource.ShowDetail">
+                                            info
+                                        </span>
+                                    </div>
+                                    <div class="col-12">
+                                        <span class="material-icons text-white" style="cursor:pointer;"
+                                              title="See resource owner"
+                                              ng-click="resource.ShowProfile = !resource.ShowProfile">
+                                            person
+                                        </span>
+                                    </div>
+                                    <div class="col-12">
+                                        <a ui-sref="resourcedetail({resourceId:'{{resource.Id}}'})"
+                                           title="Goto resource page">
+                                            <span class="material-icons text-white">
+                                                pageview
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div class="col-12">
+                                        <span class="material-icons text-white" style="cursor:pointer;"
+                                              title="Edit this resource"
+                                              ng-click="editResource(resource)">
+                                            edit
+                                        </span>
+                                    </div>
+                                    <div class="col-12">
+                                        <span class="material-icons text-white" style="cursor:pointer;"
+                                              title="Delete this resource"
+                                              ng-click="deleteResource(resource.Id)">
+                                            delete_forever
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-0" ng-if="resource.ShowDetail && !resource.ShowProfile">
+                        <div class="card m-0 h-100">
+                            <div class="card-body p-0">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <p class="m-3">
+                                            {{resource.Description | limitTo:200 }}{{ resource.Description.length > 200 ? '...' : ''}}
+                                        </p>
+                                    </div>
+                                    <div class="col-2 text-right">
+                                        <div class="row pr-2 pt-2">
+                                            <div class="col-sm-12">
+                                                <span class="material-icons" style="cursor:pointer;"
+                                                      title="Close this"
+                                                      ng-click="resource.ShowDetail = !resource.ShowDetail">
+                                                    close
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0" ng-if="resource.ShowProfile">
+                        <div class="card m-0 h-100">
+                            <div class="card-body p-0">
+                                <div class="row">
+                                    <div class="col-5 text-center pt-3">
+                                        <div class="row">
+                                            <div class="col-12" ng-click="openUserDetail(resource.ResourceOwner.UserId)">
+                                                <ul class="list-unstyled team-info team-info-pin">
+                                                    <li style="transform: translateY(0px); z-index: 999;">
+                                                        <img ng-src="/api/UserProfiles/GetUserPhoto/{{resource.ResourceOwner.UserId}}/150/150" alt="Avatar">
+                                                    </li>
+                                                    <li>
+                                                        <img ng-src="/api/UserProfiles/GetUserCompanyPhoto/{{resource.ResourceOwner.UserId}}/150/150"
+                                                             style="border:none;" alt="Avatar">
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-12 text-left pl-3 pt-3">
+                                                <p class="m-0 font-12 no-overflow" style="font-weight:500">
+                                                    {{resource.ResourceOwner.CompanyName}}
+                                                </p>
+                                                <p class="m-0 font-10 text-info  no-overflow">
+                                                    {{resource.ResourceOwner.CompanyPosition.Name}}
+                                                </p>
+                                                <p class="m-0 font-10  no-overflow">
+                                                    <i class="fa fa-map-marker"></i>
+                                                    <span ng-if="resource.ResourceOwner.CompanyCountry">
+                                                        {{resource.ResourceOwner.CompanyCountry.Name}}
+                                                    </span>
+                                                    <span ng-if="resource.ResourceOwner.CompanyCity">
+                                                        {{resource.ResourceOwner.CompanyCity.Name}}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-5 pt-3">
+                                        <div class="row font-10">
+                                            <div class="col-sm-12 pt-1">
+                                                <span>Company:</span>
+                                                <span class="pull-right text-right text-info font-weight-bold">
+                                                    {{resource.ResourceOwner.CompanyName}}
+                                                </span>
+                                            </div>
+                                            <div class="col-sm-12 pt-1" ng-if="resource.HireOrSale == 'H'">
+                                                <span>Rent per day:</span>
+                                                <span class="pull-right text-right text-info font-weight-bold">
+                                                    {{resource.RentalPrice}}{{resource.Currency.Symbol}}
+                                                </span>
+                                            </div>
+                                            <div class="col-sm-12 pt-1" ng-if="resource.HireOrSale == 'H'">
+                                                <span>Minimum rent days:</span>
+                                                <span class="pull-right text-right text-info font-weight-bold">
+                                                    {{resource.MinRentalPeriod}}
+                                                </span>
+                                            </div>
+                                            <div class="col-sm-12 pt-1" ng-if="resource.HireOrSale == 'H'">
+                                                <span>Maximum rent days:</span>
+                                                <span class="pull-right text-right text-info font-weight-bold">
+                                                    {{resource.MaxRentalPeriod}}
+                                                </span>
+                                            </div>
+                                            <div class="col-sm-12 pt-1" ng-if="resource.HireOrSale == 'S'">
+                                                <span>Selling price :</span>
+                                                <span class="pull-right text-right text-info font-weight-bold">
+                                                    {{resource.SalePrice}}{{resource.Currency.Symbol}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2 text-right">
+                                        <div class="row pr-2 pt-2">
+                                            <div class="col-sm-12">
+                                                <span class="material-icons" style="cursor:pointer;"
+                                                      title="Close this"
+                                                      ng-click="resource.ShowProfile = !resource.ShowProfile">
+                                                    close
+                                                </span>
+                                            </div>
+
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/ng-controllers/resources/offer-resources-ctrl.js"></script>
+}
+

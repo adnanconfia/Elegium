@@ -1,0 +1,126 @@
+﻿<div class=" modal-header">
+    <h3 class="modal-title" id="modal-title">
+        {{title}}
+    </h3>
+</div>
+<div class="modal-body">
+    <div class="container-fluid">
+        <form role="form" name="userForm">
+            <div class="row clearfix">
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input maxlength="200" ng-pattern-check="^[A-Za-z0-9 ]*$" type="text" required="required" name="firstName"
+                               class="form-control {{userForm.firstName.$valid?'is-valid':'is-invalid'}}" placeholder="First name" ng-model="userObj.FirstName" />
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input maxlength="200" ng-pattern-check="^[A-Za-z0-9 ]*$" type="text" required="required" name="lastName"
+                               class="form-control {{userForm.lastName.$valid?'is-valid':'is-invalid'}}" placeholder="Last name" ng-model="userObj.LastName" />
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">Company Name</label>
+                        <input maxlength="200" ng-pattern-check="^[A-Za-z0-9 ]*$" type="text"
+                               required="required" name="companyName"
+                               class="form-control {{userForm.companyName.$valid?'is-valid':'is-invalid'}}"
+                               placeholder="Company Name" ng-model="userObj.Company" />
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">Choose Industry</label>
+                        <select name="industry"
+                                class="form-control custom-select {{userForm.industry.$valid?'is-valid':'is-invalid'}}"
+                                required="required" ng-options="item.Id as item.Name for item in companyTypes"
+                                ng-model="userObj.IndustryId">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">Select Role</label>
+                        <select name="role"
+                                class="form-control custom-select {{userForm.role.$valid?'is-valid':'is-invalid'}}"
+                                required="required" ng-options="item.Id as item.Name for item in roles"
+                                ng-model="userObj.RoleId">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input autocomplete="off" maxlength="200" type="email" required="required" name="email"
+                               class="form-control {{userForm.email.$valid?'is-valid':'is-invalid'}}" placeholder="Email" ng-model="userObj.Email" />
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <div class="form-label">{{userObj.Banned?'Unban!':'Ban!'}}</div>
+                        <label class="custom-switch">
+                            <input type="checkbox" name="custom-switch-checkbox" ng-model="userObj.Banned" class="custom-switch-input">
+                            <span class="custom-switch-indicator"></span>
+                            <span class="custom-switch-description">{{userObj.Banned?'Unban this user!':'Ban this user!'}}</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <div class="form-label">{{userObj.Active?'Deactivate!':'Activate!'}}</div>
+                        <label class="custom-switch">
+                            <input type="checkbox" name="custom-switch-checkbox" ng-model="userObj.Active" class="custom-switch-input">
+                            <span class="custom-switch-indicator"></span>
+                            <span class="custom-switch-description">{{userObj.Active?'Deactivate this user!':'Activate this user!'}}</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="card">
+                            <div class="card-header p-2">
+                                <h3 class="card-title">
+                                    <div class="form-label">Change Password</div>
+                                </h3>
+                                <div class="card-options">
+                                    <label class="custom-switch m-0">
+                                        <input type="checkbox" ng-model="userObj.ChangePassword" ng-change="ChangePasswordCheck(userObj)" class="custom-switch-input" checked="">
+                                        <span class="custom-switch-indicator"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="card-body p-2">
+                                <div class="row clearfix">
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Password</label>
+                                            <input autocomplete="off" ng-required="userObj.ChangePassword"
+                                                   ng-disabled="userObj.ChangePassword?false:true" maxlength="200" type="password" name="Password"
+                                                   class="form-control {{userForm.Password.$valid?'is-valid':'is-invalid'}}" placeholder="Password" ng-model="userObj.Password" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Confirm Password</label>
+                                            <input autocomplete="off" ng-required="userObj.ChangePassword"
+                                                   ng-disabled="userObj.ChangePassword?false:true" compare-to="Password" maxlength="200" type="password" name="ConfirmPassword"
+                                                   class="form-control {{userForm.ConfirmPassword.$valid?'is-valid':'is-invalid'}}" placeholder="Confirm Password" equal="{{userObj.Password}}" ng-model="userObj.ConfirmPassword" />
+                                            <div class="invalid-feedback" ng-show="{{userForm.ConfirmPassword.$error.equal}}">Passwords do not match</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()" ng-disabled="userForm.$invalid">Save</button>
+    <br />
+    <button class="btn btn-danger" ng-click="Cancel()">Cancel</button>
+</div>

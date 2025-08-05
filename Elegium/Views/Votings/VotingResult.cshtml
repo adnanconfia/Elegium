@@ -1,0 +1,238 @@
+﻿
+<style>
+    /*********************** Demo - 16 *******************/
+    .box16 {
+        text-align: center;
+        color: #fff;
+        position: relative
+    }
+
+        .box16 .box-content, .box16:after {
+            width: 100%;
+            position: absolute;
+            left: 0
+        }
+
+        .box16:after {
+            content: "";
+            height: 100%;
+            background: linear-gradient(to top,rgba(0,0,0,0) 0,rgba(0,0,0,.08) 69%,rgba(0,0,0,.76) 100%);
+            top: 0;
+            transition: all .5s ease 0s
+        }
+
+        .box16 .post, .box16 .title {
+            transform: translateY(145px);
+            transition: all .4s cubic-bezier(.13,.62,.81,.91) 0s
+        }
+
+        .box16:after {
+            background: linear-gradient(to top,rgba(0,0,0,.01) 0,rgba(0,0,0,.09) 11%,rgba(0,0,0,.12) 13%,rgba(0,0,0,.19) 20%,rgba(0,0,0,.29) 28%,rgba(0,0,0,.29) 29%,rgba(0,0,0,.42) 38%,rgba(0,0,0,.46) 43%,rgba(0,0,0,.53) 47%,rgba(0,0,0,.75) 69%,rgba(0,0,0,.87) 84%,rgba(0,0,0,.98) 99%,rgba(0,0,0,.94) 100%)
+        }
+
+        .box16 img {
+            width: 100%;
+            height: auto
+        }
+
+        .box16 .box-content {
+            padding: 20px;
+            margin-bottom: 20px;
+            bottom: 0;
+            z-index: 1
+        }
+
+        .box16 .title {
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin: 0 0 10px
+        }
+
+        .box16 .post {
+            display: block;
+            padding: 8px 0;
+            font-size: 15px
+        }
+
+        .box16 .social li a, .box17 .icon li a {
+            border-radius: 100px;
+            font-size: 15px;
+            color: #fff
+        }
+
+        .box16 .post, .box16 .title {
+            transform: translateY(50px)
+        }
+
+        .box16 .social {
+            list-style: none;
+            padding: 0 0 5px;
+            margin: 40px 0 25px;
+            opacity: 0;
+            position: relative;
+            transform: perspective(500px) rotateX(-90deg) rotateY(0) rotateZ(0);
+            transition: all .6s cubic-bezier(0,0,.58,1) 0s
+        }
+
+        .box16 .social {
+            opacity: 1;
+            transform: perspective(500px) rotateX(0) rotateY(0) rotateZ(0)
+        }
+
+            /* .box16 .social:before {
+                content: "";
+                width: 50px;
+                height: 2px;
+                background: #fff;
+                margin: 0 auto;
+                position: absolute;
+                top: -23px;
+                left: 0;
+                right: 0
+            }*/
+
+            .box16 .social li {
+                display: inline-block
+            }
+
+                .box16 .social li a {
+                    display: block;
+                    /*width: 40px;*/
+                    padding: 10px;
+                    /*height: 40px;*/
+                    /*line-height: 40px;*/
+                    background: #6d3795;
+                    margin-right: 10px;
+                    transition: all .3s ease 0s
+                }
+
+    .box17 .icon li, .box17 .icon li a {
+        display: inline-block
+    }
+
+    .box16 .social li a:hover {
+        background: #bea041
+    }
+
+    .box16 .social li:last-child a {
+        margin-right: 0;
+        margin-top: 10px;
+    }
+
+    @@media only screen and (max-width:990px) {
+        .box16 {
+            margin-bottom: 30px
+        }
+    }
+</style>
+
+<link href="~/assets/css/firework-animation.css" rel="stylesheet" />
+
+
+<div class="section-body" style="max-width:1300px" ui-view=""
+     ng-controller="VotingResultCtrl">
+    <div class="container-fluid">
+        <div class="row"
+             ng-repeat="(nomination, applications) in finalVotingProjects | groupBy: 'NominationName'">
+
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-status bg-primary"></div>
+                    <div class="card-body">
+                        <h4>{{nomination}} (final results)</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 pyro"
+                 ng-repeat="application in applications">
+                <div class="before" ng-if="application.IsWinner"
+                     style="z-index:9999"></div>
+                <div class="after" ng-if="application.IsWinner"
+                     style="z-index:9999"></div>
+                <div class="box16 cursor-pointer" ui-sref="votingresults.votingresultdetail({votingResultId:'{{application.Id}}'})">
+                    <img src="/api/Projects/GetProjectCover/{{application.ProjectId}}/500/300">
+                    <div class="box-content">
+                        <p class="m-0"
+                           ng-if="application.IsWinner">
+                            <i class="fa fa-trophy"></i>
+                            This project is winner
+                        </p>
+                        <ul class="social my-0">
+                            <li>
+                                <div class="progress-wrapper">
+                                    <div class="progress"
+                                         style="top: 50px; color:{{progressColors[application.AverageScore>8?0:application.AverageScore>7?1:application.AverageScore>5?2:3]}}; left: 22px; font-size: 20px; height:unset; background:none">
+                                        {{application.AverageScore.toFixed(1)}}
+                                    </div>
+
+                                    <div class="round-progress-wrapper"
+                                         round-progress
+                                         max="10"
+                                         current="application.AverageScore.toFixed(1)"
+                                         color="{{progressColors[application.AverageScore>8?0:application.AverageScore>7?1:application.AverageScore>5?2:3]}}"
+                                         bgcolor="{{progressBG}}"
+                                         radius="35"
+                                         stroke="2"
+                                         semi="false"
+                                         rounded="true"
+                                         clockwise="true"
+                                         responsive="false"
+                                         duration="1000"
+                                         animation="easeInOutQuart"
+                                         animation-delay="200"></div>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+                <div class="card" style="border-top-left-radius:0; border-top-right-radius:0">
+                    <div class="card-body cursor-pointer" ui-sref="publicprojectdetail({projectId:'{{application.ProjectId}}'})">
+                        <h6>
+                            {{application.ProjectName}}
+                        </h6>
+                        <div class="row">
+                            <div class="col-6 font-12">
+                                From {{application.Location}}
+                            </div>
+                            <div class="col-6 font-12 text-right">
+                                {{application.AppliedDateTime | date:'dd-MMM-yyyy'}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <img class="rounded-circle" src="/api/UserProfiles/GetUserPhoto/{{application.UserId}}/100/100" style="width:10%" />
+                        By
+                        <b>
+                            {{application.UserName}}
+                        </b>
+                        <i class="fa fa-trophy fa-2x pull-right" style="font-size: 20px;"
+                           ng-if="application.IsWinner"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-if="projectsNotFound">
+            <div class="col-12 text-center">
+                <img class="icon-svg mb-3" style="width:50px;" src="/menu-icons/VOTEFUNDING.svg">
+                <h4>There are no results right now</h4>
+            </div>
+        </div>
+
+        <div class="row mt-5" ng-if="isLoading">
+            <div class="col-12 text-center">
+                <i class="fa fa-circle-o-notch fa-2x fa-spin"></i>
+                <p>Loading...Please wait</p>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,919 @@
+﻿
+@{
+    ViewData["Title"] = "Public Projects";
+    Layout = null;
+}
+
+<style type="text/css">
+    /*.card {
+            height: 100% !important;
+        }*/
+    .head-section {
+        height: 65px;
+    }
+
+    .middle-section {
+        height: 65px;
+    }
+</style>
+
+<div class="section-body" ng-controller="PublicProjectController">
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <ul class="nav nav-tabs page-header-tab">
+                <li class="nav-item">
+                    <a class="nav-link active" id="public-tab" data-toggle="tab" data-target="#public">Public</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="favorite-tab" data-toggle="tab" data-target="#favorite">Favorite</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="saved-tab" data-toggle="tab" data-target="#saved">Saved</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="tab-content">
+            <div class="tab-pane fade active show" id="public" role="tabpanel">
+                <div class="row mt-1 mb-1">
+                    <div class="col-sm-12">
+                        <button type="button" class="btn btn-primary pull-right mb-1" ng-click="showHideFilters()"><i class="fe fe-filter mr-2"></i>Show/Hide Filters</button>
+                    </div>
+                </div>
+                <div class="row" ng-if="hideFilters">
+                    <div class="col-sm-12">
+                        <div class="card card-small">
+                            <div class="card-body">
+                                <div class="selectgroup selectgroup-pills">
+                                    <label class="selectgroup-item" ng-repeat="item in productionTypes">
+                                        <input type="radio" name="icon-input" value="item.Id"
+                                               class="selectgroup-input" ng-click="searchCat(item.Id)"
+                                               ng-checked="productionId == item.Id">
+                                        <span class="selectgroup-button selectgroup-button-icon">{{item.Name}}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-if="!hideFilters">
+                    <div class="col-sm-12">
+                        <div class="card card-small">
+                            <div class="card-header">
+                                <h3>Search Public Projects </h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Use the search engine to quickly browse through the Elegium network</p>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Production type</label>
+                                            <ui-select class="form-control" ng-model="searchQuery.ProductionTypeId" theme="selectize" sortable="true" close-on-select="true">
+                                                <ui-select-match placeholder="Select Production type...">{{$select.selected.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in productionTypes | filter: $select.search">
+                                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+                                            </ui-select>
+                                            @*<select class="form-control custom-select" ng-options="x.Id as x.Name for x in productionTypes"
+                                                    ng-model="searchQuery.ProductionTypeId">
+                                            </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Minimum budget</label>
+                                            <input type="text" class="form-control" placeholder="Minimum budget"
+                                                   ng-pattern-restrict="^[0-9]*$" ng-model="searchQuery.BudgetMin">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Maximum budget</label>
+                                            <input type="text" class="form-control" placeholder="Maximum budget"
+                                                   ng-pattern-restrict="^[0-9]*$" ng-model="searchQuery.BudgetMax">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Language</label>
+                                            <ui-select class="form-control" ng-model="searchQuery.LanguageId" theme="selectize" sortable="true" close-on-select="true">
+                                                <ui-select-match placeholder="Select Language...">{{$select.selected.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in languages | filter: $select.search">
+                                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+                                            </ui-select>
+                                            @*<select class="form-control custom-select" ng-options="x.Id as x.Name for x in languages"
+                                                    ng-model="searchQuery.LanguageId">
+                                                <option value="" disabled selected>Search by language</option>
+                                            </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Country</label>
+                                            <ui-select class="form-control" ng-model="searchQuery.CountryId" theme="selectize" sortable="true" close-on-select="true">
+                                                <ui-select-match placeholder="Select Country...">{{$select.selected.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in countries | filter: $select.search">
+                                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+                                            </ui-select>
+                                            @*<select class="form-control custom-select" ng-options="x.Id as x.Name for x in countries"
+                                                    ng-model="searchQuery.CountryId" ng-change="getCitiesOfCountry(countryId)">
+                                                <option value="" disabled selected>Search by country</option>
+                                            </select>*@
+                                        </div>
+                                    </div>
+                                    @*<div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">City</label>
+                                            <select class="form-control custom-select" ng-options="x.Id as x.Name for x in cities"
+                                                    ng-model="searchQuery.CityId">
+                                                <option value="" disabled selected>Search by city</option>
+                                            </select>
+                                        </div>
+                                    </div>*@
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 text-right">
+                                        <button type="button" class="btn btn-primary" ng-click="search()"><i class="fe fe-search mr-2"></i>Search</button>
+                                        <button type="button" class="btn btn-warning" ng-click="clearFilters()"><i class="fe fe-filter mr-2"></i>Clear Filters</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2" ng-show="projectsList.length>0">
+                    <div class="col-md-12 col-sm-12">
+                        <input type="text" class="form-control" placeholder="Search public projects..." ng-model="projectQuery">
+                    </div>
+                    <div class="col-md-2 col-sm-12 text-right">
+
+                    </div>
+
+                </div>
+                <div class="col-sm-12 text-center p-5" ng-if="projectsList.length==0">
+                    <h5 class="text-secondary">
+                        <i class="fa fa-times-circle"></i> There is no public project published yet.
+                    </h5>
+                </div>
+
+                <br />
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 col-xxxl-2 mb-3" ng-repeat="project in projectsList | filter:projectQuery">
+
+                        <div class="card project-cover" style="background-image:url('/api/Projects/GetProjectCover/{{project.Project.Id}}/500/200'); height:235px; cursor:pointer;" ng-style="{'border-left':'5px solid '+project.Project.Color}">
+                            <div class="card-body p-0" ng-if="!project.ShowDetail && !project.ShowProfile" ng-click="$event.stopPropagation()">
+                                <div class="row h-100">
+                                    <div class="col-6" style="margin-left: -1px; cursor:default">
+                                        <div class="card m-0 h-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; height:200px;">
+                                            <div class="card-body p-0">
+                                                <div class="row pl-2 pt-1">
+                                                    <div class="col-12">
+                                                        <p class="font-18 m-0 text-info no-overflow" style="font-weight:500;" title="{{project.Project.Name}}" data-toggle="tooltip" data-placement="right" tooltip>
+                                                            <a ui-sref="publicprojectdetail({projectId:'{{project.Project.Id}}'})" class="link-unstyled">
+                                                                {{project.Project.Name}}
+                                                            </a>
+                                                        </p>
+                                                        <p class="font-13 m-0 no-overflow" title="{{project.Project.ProductionType.Name}}" data-toggle="tooltip" data-placement="right" tooltip>
+                                                            {{project.Project.ProductionType.Name}}
+                                                        </p>
+                                                        <p class="font-10 pt-3">
+                                                            <i class="fa fa-calendar"></i> {{project.Project.CreatedDateTime | date:"MMM dd, yyyy"}}
+                                                        </p>
+                                                        <div class="font-11">
+                                                            <p class="pt-3">
+                                                                Project Budget is
+                                                                <span class="text-info">{{project.ProjectPartnerRequirement.Budget}} {{project.Project.Currency.Symbol}}</span>
+                                                            </p>
+                                                        </div>
+                                                        <div class="font-11" ng-if="showProjectOwnerLooking(project)">
+                                                            <p class="">Project owner is looking for:</p>
+                                                            <p class="m-0" ng-if="project.ProjectPartners.length>0">
+                                                                <i class="fa fa-check-circle text-info"></i> Project Partner
+                                                            </p>
+                                                            <p class="m-0" ng-if="project.ProjectPartnerRequirement.NeedFinancialParticipation">
+                                                                <i class="fa fa-check-circle text-info"></i> Financial Participator
+                                                            </p>
+                                                            <p class="m-0" ng-if="!project.ProjectPartnerRequirement.NeedFinancialParticipation && project.ProjectFunding.Amount">
+                                                                <i class="fa fa-check-circle text-info"></i> Funding
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 text-right" ng-click="openProjectDetail(project.Project.Id)">
+                                        <div class="row pr-2 pt-2">
+                                            <div class="col-12">
+                                                <span class="material-icons text-white" style="cursor:pointer;"
+                                                      title="Click to see more info" data-toggle="tooltip" data-placement="left" tooltip
+                                                      ng-click="project.ShowDetail = !project.ShowDetail">
+                                                    info
+                                                </span>
+                                            </div>
+                                            <div class="col-12">
+                                                <span class="material-icons text-white" style="cursor:pointer;"
+                                                      title="See project owner" data-toggle="tooltip" data-placement="left" tooltip
+                                                      ng-click="project.ShowProfile = !project.ShowProfile">
+                                                    person
+                                                </span>
+                                            </div>
+                                            <div class="col-12">
+                                                <a ui-sref="publicprojectdetail({projectId:'{{project.Project.Id}}'})"
+                                                   title="Goto project page" data-toggle="tooltip" data-placement="left" tooltip>
+                                                    <span class="material-icons text-white">
+                                                        pageview
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0" ng-if="project.ShowDetail && !project.ShowProfile">
+                                <div class="card m-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <p class="m-3">
+                                                    {{project.Project.Detail | limitTo:200 }}{{ project.Project.Detail.length > 200 ? '...' : ''}}
+                                                </p>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <div class="row pr-2 pt-2">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Close this" data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="project.ShowDetail = !project.ShowDetail">
+                                                            close
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0" ng-if="project.ShowProfile">
+                                <div class="card m-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="row">
+                                            <div class="col-5 text-center pt-3">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <ul class="list-unstyled team-info team-info-pin">
+                                                            <li style="transform: translateY(0px); z-index: 999;">
+                                                                <img ng-src="/api/UserProfiles/GetUserPhoto/{{project.ProjectOwner.UserId}}/150/150" alt="Avatar">
+                                                            </li>
+                                                            <li>
+                                                                <img ng-src="/api/UserProfiles/GetUserCompanyPhoto/{{project.ProjectOwner.UserId}}/150/150"
+                                                                     style="border:none;" alt="Avatar">
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-12 text-left pl-3 pt-3">
+                                                        <p class="m-0 font-12 no-overflow" style="font-weight:500">
+                                                            {{project.ProjectOwner.CompanyName}}
+                                                        </p>
+                                                        <p class="m-0 font-10 text-info  no-overflow">
+                                                            {{project.ProjectOwner.CompanyPosition.Name}}
+                                                        </p>
+                                                        <p class="m-0 font-10  no-overflow">
+                                                            <i class="fa fa-map-marker"></i>
+                                                            <span ng-if="project.ProjectOwner.CompanyCountry">
+                                                                {{project.ProjectOwner.CompanyCountry.Name}}
+                                                            </span>
+                                                            <span ng-if="project.ProjectOwner.CompanyCity">
+                                                                {{project.ProjectOwner.CompanyCity.Name}}
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5 pt-3">
+                                                <div class="row font-10">
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Production:</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.Project.ProductionType.Name}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>People interested:</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            0
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Assigned to this project:</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            0
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Published :</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.Project.CreatedDateTime | date:"MMM dd, yyyy"}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="project.ProjectOwner.CompanyCountry">
+                                                        <span>Country :</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.ProjectOwner.CompanyCountry.Name}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="project.ProjectOwner.CompanyCity">
+                                                        <span>City :</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.ProjectOwner.CompanyCity.Name}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="project.ProjectPartnerRequirement.YourFinancialShare">
+                                                        <span>Owner's Share :</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.ProjectPartnerRequirement.YourFinancialShare}}%
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <div class="row pr-2 pt-2">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Close this" data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="project.ShowProfile = !project.ShowProfile">
+                                                            close
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="col-sm-12" ng-if="project.ProjectOwner.UserId != $parent.currUser">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Send email to project owner" data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="sendEmailToProjectOwner(project.ProjectOwner)">
+                                                            mail
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12" ng-if="project.ProjectOwner.UserId != $parent.currUser">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Start Chat with project owner" data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="openChatBox(project.ProjectOwner.UserId)">
+                                                            message
+                                                        </span>
+                                                    </div>
+                                                    @*<span class="material-icons {{project.Project.IsSaved?'text-info':'text-gray'}}" ng-click="toggleSave(project.Project)" style="cursor:pointer" title="{{project.Project.IsSaved?'Remove from saved':'Save'}}">
+                                                            assignment_turned_in
+                                                        </span>
+                                                        <span class="material-icons {{project.Project.IsFavorite?'text-info':'text-gray'}}" ng-click="toggleFavorite(project.Project)" style="cursor:pointer" title="{{project.Project.IsFavorite?'Remove from favorites':'Favorite'}}">
+                                                            stars
+                                                        </span>*@
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons {{project.Project.IsFavorite?'text-info':''}}" style="cursor:pointer;"
+                                                              title="{{project.Project.IsFavorite?'Remove from favorite':'Add to favorite list'}}"
+                                                              data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="toggleFavorite(project.Project)">
+                                                            stars
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons {{project.Project.IsSaved?'text-info':''}}" style="cursor:pointer;"
+                                                              title="{{project.Project.IsFavorite?'Remove from saved list':'Add to saved list'}}"
+                                                              data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="toggleSave(project.Project)">
+                                                            save_alt
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr style="margin:5px;" />
+                                        <div class="row font-13" style="padding: 0px 20px;">
+                                            <div class="col-6">
+                                                <a href="#" role="button" class="text-secondary">
+                                                    <i class="fa fa-pencil"></i> Apply for Project
+                                                </a>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <a href="#" role="button" class="text-secondary pull-right">
+                                                    <i class="fa fa-dollar"></i> Offer Participation
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="favorite" role="tabpanel">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 col-xxxl-2 mb-3" ng-repeat="project in favoriteProjectsList">
+                        <div class="card project-cover" style="background-image:url('/api/Projects/GetProjectCover/{{project.Project.Id}}/500/200'); height:235px; cursor:pointer;" ng-style="{'border-left':'5px solid '+project.Project.Color}">
+                            <div class="card-body p-0" ng-if="!project.ShowDetail && !project.ShowProfile" ng-click="$event.stopPropagation()">
+                                <div class="row h-100">
+                                    <div class="col-6" style="margin-left: -1px; cursor:default">
+                                        <div class="card m-0 h-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; height:200px;">
+                                            <div class="card-body p-0">
+                                                <div class="row pl-2 pt-1">
+                                                    <div class="col-12">
+                                                        <p class="font-18 m-0 text-info no-overflow" style="font-weight:500;" title="{{project.Project.Name}}" data-toggle="tooltip" data-placement="right" tooltip>
+                                                            <a ui-sref="publicprojectdetail({projectId:'{{project.Project.Id}}'})" class="link-unstyled">
+                                                                {{project.Project.Name}}
+                                                            </a>
+                                                        </p>
+                                                        <p class="font-13 m-0 no-overflow" title="{{project.Project.ProductionType.Name}}" data-toggle="tooltip" data-placement="right" tooltip>
+                                                            {{project.Project.ProductionType.Name}}
+                                                        </p>
+                                                        <p class="font-10 pt-3">
+                                                            <i class="fa fa-calendar"></i> {{project.Project.CreatedDateTime | date:"MMM dd, yyyy"}}
+                                                        </p>
+                                                        <div class="font-11">
+                                                            <p class="pt-3">
+                                                                Project Budget is
+                                                                <span class="text-info">{{project.ProjectPartnerRequirement.Budget}} {{project.Project.Currency.Symbol}}</span>
+                                                            </p>
+                                                        </div>
+                                                        <div class="font-11" ng-if="showProjectOwnerLooking(project)">
+                                                            <p class="">Project owner is looking for:</p>
+                                                            <p class="m-0" ng-if="project.ProjectPartners.length>0">
+                                                                <i class="fa fa-check-circle text-info"></i> Project Partner
+                                                            </p>
+                                                            <p class="m-0" ng-if="project.ProjectPartnerRequirement.NeedFinancialParticipation">
+                                                                <i class="fa fa-check-circle text-info"></i> Financial Participator
+                                                            </p>
+                                                            <p class="m-0" ng-if="!project.ProjectPartnerRequirement.NeedFinancialParticipation && project.ProjectFunding.Amount">
+                                                                <i class="fa fa-check-circle text-info"></i> Funding
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 text-right" ng-click="openProjectDetail(project.Project.Id)">
+                                        <div class="row pr-2 pt-2">
+                                            <div class="col-12">
+                                                <span class="material-icons text-white" style="cursor:pointer;"
+                                                      title="Click to see more info" data-toggle="tooltip" data-placement="left" tooltip
+                                                      ng-click="project.ShowDetail = !project.ShowDetail">
+                                                    info
+                                                </span>
+                                            </div>
+                                            <div class="col-12">
+                                                <span class="material-icons text-white" style="cursor:pointer;"
+                                                      title="See project owner" data-toggle="tooltip" data-placement="left" tooltip
+                                                      ng-click="project.ShowProfile = !project.ShowProfile">
+                                                    person
+                                                </span>
+                                            </div>
+                                            <div class="col-12">
+                                                <a ui-sref="publicprojectdetail({projectId:'{{project.Project.Id}}'})"
+                                                   title="Goto project page" data-toggle="tooltip" data-placement="left" tooltip>
+                                                    <span class="material-icons text-white">
+                                                        pageview
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0" ng-if="project.ShowDetail && !project.ShowProfile">
+                                <div class="card m-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <p class="m-3">
+                                                    {{project.Project.Detail | limitTo:200 }}{{ project.Project.Detail.length > 200 ? '...' : ''}}
+                                                </p>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <div class="row pr-2 pt-2">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Close this" data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="project.ShowDetail = !project.ShowDetail">
+                                                            close
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0" ng-if="project.ShowProfile">
+                                <div class="card m-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="row">
+                                            <div class="col-5 text-center pt-3">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <ul class="list-unstyled team-info team-info-pin">
+                                                            <li style="transform: translateY(0px); z-index: 999;">
+                                                                <img ng-src="/api/UserProfiles/GetUserPhoto/{{project.ProjectOwner.UserId}}/150/150" alt="Avatar">
+                                                            </li>
+                                                            <li>
+                                                                <img ng-src="/api/UserProfiles/GetUserCompanyPhoto/{{project.ProjectOwner.UserId}}/150/150"
+                                                                     style="border:none;" alt="Avatar">
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-12 text-left pl-3 pt-3">
+                                                        <p class="m-0 font-12 no-overflow" style="font-weight:500">
+                                                            {{project.ProjectOwner.CompanyName}}
+                                                        </p>
+                                                        <p class="m-0 font-10 text-info  no-overflow">
+                                                            {{project.ProjectOwner.CompanyPosition.Name}}
+                                                        </p>
+                                                        <p class="m-0 font-10  no-overflow">
+                                                            <i class="fa fa-map-marker"></i>
+                                                            <span ng-if="project.ProjectOwner.CompanyCountry">
+                                                                {{project.ProjectOwner.CompanyCountry.Name}}
+                                                            </span>
+                                                            <span ng-if="project.ProjectOwner.CompanyCity">
+                                                                {{project.ProjectOwner.CompanyCity.Name}}
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5 pt-3">
+                                                <div class="row font-10">
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Production:</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.Project.ProductionType.Name}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>People interested:</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            0
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Assigned to this project:</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            0
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Published :</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.Project.CreatedDateTime | date:"MMM dd, yyyy"}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="project.ProjectOwner.CompanyCountry">
+                                                        <span>Country :</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.ProjectOwner.CompanyCountry.Name}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="project.ProjectOwner.CompanyCity">
+                                                        <span>City :</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.ProjectOwner.CompanyCity.Name}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="project.ProjectPartnerRequirement.YourFinancialShare">
+                                                        <span>Owner's Share :</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.ProjectPartnerRequirement.YourFinancialShare}}%
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <div class="row pr-2 pt-2">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Close this" data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="project.ShowProfile = !project.ShowProfile">
+                                                            close
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="col-sm-12" ng-if="project.ProjectOwner.UserId != $parent.currUser">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Send email to project owner" data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="sendEmailToProjectOwner(project.ProjectOwner)">
+                                                            mail
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12" ng-if="project.ProjectOwner.UserId != $parent.currUser">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Start Chat with project owner" data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="openChatBox(project.ProjectOwner.UserId)">
+                                                            message
+                                                        </span>
+                                                    </div>
+                                                    @*<span class="material-icons {{project.Project.IsSaved?'text-info':'text-gray'}}" ng-click="toggleSave(project.Project)" style="cursor:pointer" title="{{project.Project.IsSaved?'Remove from saved':'Save'}}">
+                                                            assignment_turned_in
+                                                        </span>
+                                                        <span class="material-icons {{project.Project.IsFavorite?'text-info':'text-gray'}}" ng-click="toggleFavorite(project.Project)" style="cursor:pointer" title="{{project.Project.IsFavorite?'Remove from favorites':'Favorite'}}">
+                                                            stars
+                                                        </span>*@
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons {{project.Project.IsFavorite?'text-info':''}}" style="cursor:pointer;"
+                                                              title="{{project.Project.IsFavorite?'Remove from favorite':'Add to favorite list'}}"
+                                                              data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="toggleFavorite(project.Project)">
+                                                            stars
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons {{project.Project.IsSaved?'text-info':''}}" style="cursor:pointer;"
+                                                              title="{{project.Project.IsFavorite?'Remove from saved list':'Add to saved list'}}"
+                                                              data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="toggleSave(project.Project)">
+                                                            save_alt
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr style="margin:5px;" />
+                                        <div class="row font-13" style="padding: 0px 20px;">
+                                            <div class="col-6">
+                                                <a href="#" role="button" class="text-secondary">
+                                                    <i class="fa fa-pencil"></i> Apply for Project
+                                                </a>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <a href="#" role="button" class="text-secondary pull-right">
+                                                    <i class="fa fa-dollar"></i> Offer Participation
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="saved" role="tabpanel">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 col-xxxl-2 mb-3" ng-repeat="project in savedProjectsList">
+                        <div class="card project-cover" style="background-image:url('/api/Projects/GetProjectCover/{{project.Project.Id}}/500/200'); height:235px; cursor:pointer;" ng-style="{'border-left':'5px solid '+project.Project.Color}">
+                            <div class="card-body p-0" ng-if="!project.ShowDetail && !project.ShowProfile" ng-click="$event.stopPropagation()">
+                                <div class="row h-100">
+                                    <div class="col-6" style="margin-left: -1px; cursor:default">
+                                        <div class="card m-0 h-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; height:200px;">
+                                            <div class="card-body p-0">
+                                                <div class="row pl-2 pt-1">
+                                                    <div class="col-12">
+                                                        <p class="font-18 m-0 text-info no-overflow" style="font-weight:500;" title="{{project.Project.Name}}" data-toggle="tooltip" data-placement="right" tooltip>
+                                                            <a ui-sref="publicprojectdetail({projectId:'{{project.Project.Id}}'})" class="link-unstyled">
+                                                                {{project.Project.Name}}
+                                                            </a>
+                                                        </p>
+                                                        <p class="font-13 m-0 no-overflow" title="{{project.Project.ProductionType.Name}}" data-toggle="tooltip" data-placement="right" tooltip>
+                                                            {{project.Project.ProductionType.Name}}
+                                                        </p>
+                                                        <p class="font-10 pt-3">
+                                                            <i class="fa fa-calendar"></i> {{project.Project.CreatedDateTime | date:"MMM dd, yyyy"}}
+                                                        </p>
+                                                        <div class="font-11">
+                                                            <p class="pt-3">
+                                                                Project Budget is
+                                                                <span class="text-info">{{project.ProjectPartnerRequirement.Budget}} {{project.Project.Currency.Symbol}}</span>
+                                                            </p>
+                                                        </div>
+                                                        <div class="font-11" ng-if="showProjectOwnerLooking(project)">
+                                                            <p class="">Project owner is looking for:</p>
+                                                            <p class="m-0" ng-if="project.ProjectPartners.length>0">
+                                                                <i class="fa fa-check-circle text-info"></i> Project Partner
+                                                            </p>
+                                                            <p class="m-0" ng-if="project.ProjectPartnerRequirement.NeedFinancialParticipation">
+                                                                <i class="fa fa-check-circle text-info"></i> Financial Participator
+                                                            </p>
+                                                            <p class="m-0" ng-if="!project.ProjectPartnerRequirement.NeedFinancialParticipation && project.ProjectFunding.Amount">
+                                                                <i class="fa fa-check-circle text-info"></i> Funding
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 text-right" ng-click="openProjectDetail(project.Project.Id)">
+                                        <div class="row pr-2 pt-2">
+                                            <div class="col-12">
+                                                <span class="material-icons text-white" style="cursor:pointer;"
+                                                      title="Click to see more info" data-toggle="tooltip" data-placement="left" tooltip
+                                                      ng-click="project.ShowDetail = !project.ShowDetail">
+                                                    info
+                                                </span>
+                                            </div>
+                                            <div class="col-12">
+                                                <span class="material-icons text-white" style="cursor:pointer;"
+                                                      title="See project owner" data-toggle="tooltip" data-placement="left" tooltip
+                                                      ng-click="project.ShowProfile = !project.ShowProfile">
+                                                    person
+                                                </span>
+                                            </div>
+                                            <div class="col-12">
+                                                <a ui-sref="publicprojectdetail({projectId:'{{project.Project.Id}}'})"
+                                                   title="Goto project page" data-toggle="tooltip" data-placement="left" tooltip>
+                                                    <span class="material-icons text-white">
+                                                        pageview
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0" ng-if="project.ShowDetail && !project.ShowProfile">
+                                <div class="card m-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <p class="m-3">
+                                                    {{project.Project.Detail | limitTo:200 }}{{ project.Project.Detail.length > 200 ? '...' : ''}}
+                                                </p>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <div class="row pr-2 pt-2">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Close this" data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="project.ShowDetail = !project.ShowDetail">
+                                                            close
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0" ng-if="project.ShowProfile">
+                                <div class="card m-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="row">
+                                            <div class="col-5 text-center pt-3">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <ul class="list-unstyled team-info team-info-pin">
+                                                            <li style="transform: translateY(0px); z-index: 999;">
+                                                                <img ng-src="/api/UserProfiles/GetUserPhoto/{{project.ProjectOwner.UserId}}/150/150" alt="Avatar">
+                                                            </li>
+                                                            <li>
+                                                                <img ng-src="/api/UserProfiles/GetUserCompanyPhoto/{{project.ProjectOwner.UserId}}/150/150"
+                                                                     style="border:none;" alt="Avatar">
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-12 text-left pl-3 pt-3">
+                                                        <p class="m-0 font-12 no-overflow" style="font-weight:500">
+                                                            {{project.ProjectOwner.CompanyName}}
+                                                        </p>
+                                                        <p class="m-0 font-10 text-info  no-overflow">
+                                                            {{project.ProjectOwner.CompanyPosition.Name}}
+                                                        </p>
+                                                        <p class="m-0 font-10  no-overflow">
+                                                            <i class="fa fa-map-marker"></i>
+                                                            <span ng-if="project.ProjectOwner.CompanyCountry">
+                                                                {{project.ProjectOwner.CompanyCountry.Name}}
+                                                            </span>
+                                                            <span ng-if="project.ProjectOwner.CompanyCity">
+                                                                {{project.ProjectOwner.CompanyCity.Name}}
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5 pt-3">
+                                                <div class="row font-10">
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Production:</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.Project.ProductionType.Name}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>People interested:</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            0
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Assigned to this project:</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            0
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Published :</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.Project.CreatedDateTime | date:"MMM dd, yyyy"}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="project.ProjectOwner.CompanyCountry">
+                                                        <span>Country :</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.ProjectOwner.CompanyCountry.Name}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="project.ProjectOwner.CompanyCity">
+                                                        <span>City :</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.ProjectOwner.CompanyCity.Name}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="project.ProjectPartnerRequirement.YourFinancialShare">
+                                                        <span>Owner's Share :</span>
+                                                        <span class="pull-right text-right text-info font-weight-bold">
+                                                            {{project.ProjectPartnerRequirement.YourFinancialShare}}%
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <div class="row pr-2 pt-2">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Close this" data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="project.ShowProfile = !project.ShowProfile">
+                                                            close
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="col-sm-12" ng-if="project.ProjectOwner.UserId != $parent.currUser">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Send email to project owner" data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="sendEmailToProjectOwner(project.ProjectOwner)">
+                                                            mail
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12" ng-if="project.ProjectOwner.UserId != $parent.currUser">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Start Chat with project owner" data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="openChatBox(project.ProjectOwner.UserId)">
+                                                            message
+                                                        </span>
+                                                    </div>
+                                                    @*<span class="material-icons {{project.Project.IsSaved?'text-info':'text-gray'}}" ng-click="toggleSave(project.Project)" style="cursor:pointer" title="{{project.Project.IsSaved?'Remove from saved':'Save'}}">
+                                                            assignment_turned_in
+                                                        </span>
+                                                        <span class="material-icons {{project.Project.IsFavorite?'text-info':'text-gray'}}" ng-click="toggleFavorite(project.Project)" style="cursor:pointer" title="{{project.Project.IsFavorite?'Remove from favorites':'Favorite'}}">
+                                                            stars
+                                                        </span>*@
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons {{project.Project.IsFavorite?'text-info':''}}" style="cursor:pointer;"
+                                                              title="{{project.Project.IsFavorite?'Remove from favorite':'Add to favorite list'}}"
+                                                              data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="toggleFavorite(project.Project)">
+                                                            stars
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons {{project.Project.IsSaved?'text-info':''}}" style="cursor:pointer;"
+                                                              title="{{project.Project.IsFavorite?'Remove from saved list':'Add to saved list'}}"
+                                                              data-toggle="tooltip" data-placement="left" tooltip
+                                                              ng-click="toggleSave(project.Project)">
+                                                            save_alt
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr style="margin:5px;" />
+                                        <div class="row font-13" style="padding: 0px 20px;">
+                                            <div class="col-6">
+                                                <a href="#" role="button" class="text-secondary">
+                                                    <i class="fa fa-pencil"></i> Apply for Project
+                                                </a>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <a href="#" role="button" class="text-secondary pull-right">
+                                                    <i class="fa fa-dollar"></i> Offer Participation
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+@section Scripts{
+    <script src="~/js/ng-controllers/public-project-ctrl.js"></script>
+
+}

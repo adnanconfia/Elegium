@@ -1,0 +1,711 @@
+﻿
+@{
+    ViewData["Title"] = "Search Funder & FP";
+    Layout = null;
+}
+
+
+<style>
+</style>
+
+<div class="section-body" ng-controller="LookFundingCtrl">
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <ul class="nav nav-tabs page-header-tab">
+                <li class="nav-item">
+                    <a class="nav-link active" id="public-tab" data-toggle="tab" data-target="#public">Public</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="favorite-tab" data-toggle="tab" data-target="#favorite">Favorite</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="saved-tab" data-toggle="tab" data-target="#saved">Saved</a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade active show" id="public" role="tabpanel">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card card-small">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="selectgroup selectgroup-pills">
+                                            <label class="selectgroup-item">
+                                                <input type="radio" name="icon-input" value="item.Id"
+                                                       class="selectgroup-input" ng-click="searchFund('')" checked>
+                                                <span class="selectgroup-button selectgroup-button-icon">All</span>
+                                            </label>
+                                            <label class="selectgroup-item">
+                                                <input type="radio" name="icon-input" value="item.Id"
+                                                       class="selectgroup-input" ng-click="searchFund('F')">
+                                                <span class="selectgroup-button selectgroup-button-icon">Funding</span>
+                                            </label>
+                                            <label class="selectgroup-item">
+                                                <input type="radio" name="icon-input" value="item.Id"
+                                                       class="selectgroup-input" ng-click="searchFund('FP')">
+                                                <span class="selectgroup-button selectgroup-button-icon">Financial Participation</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12 m-2" style="height:1px; width: 90%; background-color:#e8ebee;"></div>
+
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Production type</label>
+                                            <ui-select class="form-control" ng-model="searchQuery.ProductionTypeId" theme="selectize" sortable="true" close-on-select="true">
+                                                <ui-select-match placeholder="Select Production type...">{{$select.selected.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in productionTypes | filter: $select.search">
+                                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                </ui-select-choices>
+                                            </ui-select>
+                                            @*<select name="currencyId" ng-options="item.Id as item.Name for item in productionTypes"
+                                                    class="form-control custom-select"
+                                                    ng-model="searchQuery.ProductionTypeId">
+                                                <option value="">Select Production type</option>
+                                            </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Location</label>
+                                            <ui-select class="form-control" ng-model="searchQuery.CountryId" theme="selectize" sortable="true" close-on-select="true">
+                                                <ui-select-match placeholder="Select Location...">{{$select.selected.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in countries | filter: $select.search">
+                                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                </ui-select-choices>
+                                            </ui-select>
+                                            @*<select name="countryId" ng-options="item.Id as item.Name group by item.Country.Name for item in cities"
+                                                    class="form-control custom-select"
+                                                    ng-model="searchQuery.CityId">
+                                                <option value="">Select Location</option>
+                                            </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Project phase</label>
+                                            <ui-select class="form-control" ng-model="searchQuery.ProjectPhaseId" theme="selectize" sortable="true" close-on-select="true">
+                                                <ui-select-match placeholder="Select Phase...">{{$select.selected.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in ProjectManagementPhaseList | filter: $select.search">
+                                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                </ui-select-choices>
+                                            </ui-select>
+                                            @*<select name="projectPhaseId" ng-options="item.Id as item.Name for item in ProjectManagementPhaseList"
+                                                    class="form-control custom-select"
+                                                    ng-model="searchQuery.ProjectPhaseId">
+                                                <option value="">Select project phase</option>
+                                            </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Max budget</label>
+                                            <input maxlength="200" type="number" name="budgetUpto" ng-pattern-restrict="^[0-9]*$"
+                                                   class="form-control"
+                                                   placeholder="Max budget..." ng-model="searchQuery.BudgetUpto" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Currency</label>
+                                            <ui-select class="form-control" ng-model="searchQuery.CurrencyId" theme="selectize" sortable="true" close-on-select="true">
+                                                <ui-select-match placeholder="Select Currency...">{{$select.selected.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in currencies | filter: $select.search">
+                                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                </ui-select-choices>
+                                            </ui-select>
+                                            @*<select name="currencyId" ng-options="item.Id as item.Name for item in currencies"
+                                                    class="form-control custom-select"
+                                                    ng-model="searchQuery.CurrencyId">
+                                                <option value="">Select Currency</option>
+                                            </select>*@
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 text-right">
+                                        <button type="button" class="btn btn-primary" ng-click="search()"><i class="fe fe-search mr-2"></i>Search</button>
+                                        <button type="button" class="btn btn-warning" ng-click="clearFilters()"><i class="fe fe-filter mr-2"></i>Clear Filters</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mt-2" ng-show="fundingAndFPList.length>0">
+                    <div class="col-md-12 col-sm-12">
+                        <input type="text" class="form-control" placeholder="Search funder or financial participator..." ng-model="fundingQuery">
+                    </div>
+                </div>
+
+                <div class="col-sm-12 text-center p-5" ng-if="fundingAndFPList.length==0">
+                    <h5 class="text-secondary">
+                        <i class="fa fa-times-circle"></i> There is no funder or financial participator in the system yet.
+                    </h5>
+                </div>
+
+                <br />
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 col-xxxl-2 mb-3" ng-repeat="funding in fundingAndFPList | filter:fundingQuery">
+                        <div class="card project-cover" style="height:235px; cursor:pointer;">
+                            <div class="card-body p-0" ng-if="!funding.ShowDetail">
+                                <div class="card m-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="row">
+                                            <div class="col-5 text-center pt-3">
+                                                <div class="row">
+                                                    <div class="col-12" ng-click="openUserDetail(funding.User.UserId)">
+                                                        <ul class="list-unstyled team-info team-info-pin">
+                                                            <li style="transform: translateY(0px); z-index: 999;">
+                                                                <img ng-src="/api/UserProfiles/GetUserPhoto/{{funding.User.UserId}}/150/150" alt="Avatar">
+                                                            </li>
+                                                            <li>
+                                                                <img ng-src="/api/UserProfiles/GetUserCompanyPhoto/{{funding.User.UserId}}/150/150"
+                                                                     style="border:none;" alt="Avatar">
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-12 text-left pl-3 pt-3">
+                                                        <p class="m-0 font-12 no-overflow">
+                                                            {{funding.User.FirstName}} {{funding.User.LastName}}
+                                                        </p>
+                                                        <p class="m-0 font-12 no-overflow" style="font-weight:500">
+                                                            {{funding.User.CompanyName}}
+                                                        </p>
+                                                        <p class="m-0 font-10 text-info  no-overflow">
+                                                            {{funding.User.CompanyPosition.Name}}
+                                                        </p>
+                                                        <p class="m-0 font-10  no-overflow">
+                                                            <i class="fa fa-map-marker"></i>
+                                                            <span ng-if="funding.User.CompanyCountry">
+                                                                {{funding.User.CompanyCountry.Name}}
+                                                            </span>
+                                                            <span ng-if="funding.User.CompanyCity">
+                                                                {{funding.User.CompanyCity.Name}}
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5 pt-3">
+                                                <div class="row font-10">
+                                                    <div class="col-sm-12">
+                                                        <span class="font-13 text-yellow font-weight-bold">{{funding.Type == 'F'?'Funding':'Financial Participation'}}</span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Production:</span>
+                                                        <span class="pull-right text-right font-weight-bold">
+                                                            {{funding.ProductionType?funding.ProductionType.Name:'All Productions'}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Project Phase:</span>
+                                                        <span class="pull-right text-right font-weight-bold">
+                                                            {{funding.ProjectPhase?funding.ProjectPhase.Name:'All Phases'}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>For Projects Based:</span>
+                                                        <span class="pull-right font-weight-bold">
+                                                            {{funding.City?funding.City.Name:'All'}}
+                                                            <span ng-if="funding.City">, {{funding.City.Country.Name}}</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="funding.Type == 'F'">
+                                                        <span>Financial Offer:</span>
+                                                        <span class="pull-right font-weight-bold">
+                                                            {{funding.Offer}} {{funding.Currency?funding.Currency.Symbol:''}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="funding.Type == 'FP'">
+                                                        <span>Share Offer:</span>
+                                                        <span class="pull-right font-weight-bold">
+                                                            {{funding.OfferShare}} %
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3" ng-if="funding.User.UserId != $parent.currUser">
+                                                    <div class="col-12 text-right">
+                                                        <a href="javascript:void(0)" ng-click="sendRequest(funding, $event)" class="btn btn-secondary" style="font-size:13px !important; padding: 2px 10px !important;">
+                                                            <i class="fa fa-list-alt mr-1"></i> Offer Project
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <div class="row pr-2 pt-2">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Click to see more info"
+                                                              ng-click="funding.ShowDetail = !funding.ShowDetail">
+                                                            info
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="col-sm-12" ng-if="funding.User.UserId != $parent.currUser">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Send email to project owner"
+                                                              ng-click="sendEmailToProjectOwner(funding.User)">
+                                                            mail
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12" ng-if="funding.User.UserId != $parent.currUser">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Start Chat with project owner"
+                                                              ng-click="openChatBox(funding.User.UserId)">
+                                                            message
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons {{funding.IsFavorite?'text-info':''}}" style="cursor:pointer;"
+                                                              title="{{funding.IsFavorite?'Remove from favorite':'Add to favorite list'}}"
+                                                              ng-click="toggleFavorite(funding)">
+                                                            stars
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons {{funding.IsSaved?'text-info':''}}" style="cursor:pointer;"
+                                                              title="{{funding.IsFavorite?'Remove from saved list':'Add to saved list'}}"
+                                                              ng-click="toggleSave(funding)">
+                                                            save_alt
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <hr style="margin:5px;" />
+                                        <div class="row font-13 font-weight-bold" style="padding: 0px 20px;">
+                                            <div class="col-4">
+                                                {{funding.User.FollowersCount}} <span>Followers</span>
+                                            </div>
+                                            <div class="col-4">
+                                                {{funding.User.FollowingCount}} <span>Following</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body p-0" ng-if="funding.ShowDetail">
+                                <div class="card m-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <div class="row pt-3 pl-3">
+                                                    <div class="col-sm-12">
+                                                        <p class="font-11 font-weight-bold m-0">I would like to support only:</p>
+                                                        <p class="font-11">
+                                                            {{funding.SupportDetail | limitTo:200}}{{ funding.SupportDetail.length > 200 ? '...' : ''}}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row pt-1 pl-3">
+                                                    <div class="col-sm-12">
+                                                        <p class="font-11 font-weight-bold m-0">Other Requirements:</p>
+                                                        <p class="font-11">
+                                                            {{funding.OtherRequirements | limitTo:200}}{{ funding.OtherRequirements.length > 200 ? '...' : ''}}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <div class="row pr-2 pt-2">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Close this"
+                                                              ng-click="funding.ShowDetail = !funding.ShowDetail">
+                                                            close
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="favorite" role="tabpanel">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 col-xxxl-2 mb-3" ng-repeat="funding in favoriteFundingAndFPList">
+                        <div class="card project-cover" style="height:235px; cursor:pointer;">
+                            <div class="card-body p-0" ng-if="!funding.ShowDetail">
+                                <div class="card m-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="row">
+                                            <div class="col-5 text-center pt-3">
+                                                <div class="row">
+                                                    <div class="col-12" ng-click="openUserDetail(funding.User.UserId)">
+                                                        <ul class="list-unstyled team-info team-info-pin">
+                                                            <li style="transform: translateY(0px); z-index: 999;">
+                                                                <img ng-src="/api/UserProfiles/GetUserPhoto/{{funding.User.UserId}}/150/150" alt="Avatar">
+                                                            </li>
+                                                            <li>
+                                                                <img ng-src="/api/UserProfiles/GetUserCompanyPhoto/{{funding.User.UserId}}/150/150"
+                                                                     style="border:none;" alt="Avatar">
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-12 text-left pl-3 pt-3">
+                                                        <p class="m-0 font-12 no-overflow" style="font-weight:500">
+                                                            {{funding.User.CompanyName}}
+                                                        </p>
+                                                        <p class="m-0 font-10 text-info  no-overflow">
+                                                            {{funding.User.CompanyPosition.Name}}
+                                                        </p>
+                                                        <p class="m-0 font-10  no-overflow">
+                                                            <i class="fa fa-map-marker"></i>
+                                                            <span ng-if="funding.User.CompanyCountry">
+                                                                {{funding.User.CompanyCountry.Name}}
+                                                            </span>
+                                                            <span ng-if="funding.User.CompanyCity">
+                                                                {{funding.User.CompanyCity.Name}}
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5 pt-3">
+                                                <div class="row font-10">
+                                                    <div class="col-sm-12">
+                                                        <span class="font-13 text-yellow font-weight-bold">{{funding.Type == 'F'?'Funding':'Financial Participation'}}</span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Production:</span>
+                                                        <span class="pull-right text-right font-weight-bold">
+                                                            {{funding.ProductionType?funding.ProductionType.Name:'All Productions'}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Project Phase:</span>
+                                                        <span class="pull-right text-right font-weight-bold">
+                                                            {{funding.ProjectPhase?funding.ProjectPhase.Name:'All Phases'}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>For Projects Based:</span>
+                                                        <span class="pull-right font-weight-bold">
+                                                            {{funding.City?funding.City.Name:'All'}}
+                                                            <span ng-if="funding.City">, {{funding.City.Country.Name}}</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="funding.Type == 'F'">
+                                                        <span>Financial Offer:</span>
+                                                        <span class="pull-right font-weight-bold">
+                                                            {{funding.Offer}} {{funding.Currency?funding.Currency.Symbol:''}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="funding.Type == 'FP'">
+                                                        <span>Share Offer:</span>
+                                                        <span class="pull-right font-weight-bold">
+                                                            {{funding.OfferShare}} %
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3" ng-if="funding.User.UserId != $parent.currUser">
+                                                    <div class="col-12 text-right">
+                                                        <a href="javascript:void(0)"  ng-click="sendRequest(funding, $event)" class="text-secondary" style="font-size:13px !important; padding: 2px 10px !important;">
+                                                            <i class="fa fa-list-alt mr-1"></i> Offer Project
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <div class="row pr-2 pt-2">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Click to see more info"
+                                                              ng-click="funding.ShowDetail = !funding.ShowDetail">
+                                                            info
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="col-sm-12" ng-if="funding.User.UserId != $parent.currUser">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Send email to project owner"
+                                                              ng-click="sendEmailToProjectOwner(funding.User)">
+                                                            mail
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12" ng-if="funding.User.UserId != $parent.currUser">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Start Chat with project owner"
+                                                              ng-click="openChatBox(funding.User.UserId)">
+                                                            message
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons {{funding.IsFavorite?'text-info':''}}" style="cursor:pointer;"
+                                                              title="{{funding.IsFavorite?'Remove from favorite':'Add to favorite list'}}"
+                                                              ng-click="toggleFavorite(funding)">
+                                                            stars
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons {{funding.IsSaved?'text-info':''}}" style="cursor:pointer;"
+                                                              title="{{funding.IsFavorite?'Remove from saved list':'Add to saved list'}}"
+                                                              ng-click="toggleSave(funding)">
+                                                            save_alt
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <hr style="margin:5px;" />
+                                        <div class="row font-13 font-weight-bold" style="padding: 0px 20px;">
+                                            <div class="col-4">
+                                                {{funding.User.FollowersCount}} <span>Followers</span>
+                                            </div>
+                                            <div class="col-4">
+                                                {{funding.User.FollowingCount}} <span>Following</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body p-0" ng-if="funding.ShowDetail">
+                                <div class="card m-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <div class="row pt-3 pl-3">
+                                                    <div class="col-sm-12">
+                                                        <p class="font-11 font-weight-bold m-0">I would like to support only:</p>
+                                                        <p class="font-11">
+                                                            {{funding.SupportDetail | limitTo:200}}{{ funding.SupportDetail.length > 200 ? '...' : ''}}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row pt-1 pl-3">
+                                                    <div class="col-sm-12">
+                                                        <p class="font-11 font-weight-bold m-0">Other Requirements:</p>
+                                                        <p class="font-11">
+                                                            {{funding.OtherRequirements | limitTo:200}}{{ funding.OtherRequirements.length > 200 ? '...' : ''}}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <div class="row pr-2 pt-2">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Close this"
+                                                              ng-click="funding.ShowDetail = !funding.ShowDetail">
+                                                            close
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="saved" role="tabpanel">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 col-xxxl-2 mb-3" ng-repeat="funding in savedFundingAndFPList">
+                        <div class="card project-cover" style="height:235px; cursor:pointer;">
+                            <div class="card-body p-0" ng-if="!funding.ShowDetail">
+                                <div class="card m-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="row">
+                                            <div class="col-5 text-center pt-3">
+                                                <div class="row">
+                                                    <div class="col-12" ng-click="openUserDetail(funding.User.UserId)">
+                                                        <ul class="list-unstyled team-info team-info-pin">
+                                                            <li style="transform: translateY(0px); z-index: 999;">
+                                                                <img ng-src="/api/UserProfiles/GetUserPhoto/{{funding.User.UserId}}/150/150" alt="Avatar">
+                                                            </li>
+                                                            <li>
+                                                                <img ng-src="/api/UserProfiles/GetUserCompanyPhoto/{{funding.User.UserId}}/150/150"
+                                                                     style="border:none;" alt="Avatar">
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-12 text-left pl-3 pt-3">
+                                                        <p class="m-0 font-12 no-overflow" style="font-weight:500">
+                                                            {{funding.User.CompanyName}}
+                                                        </p>
+                                                        <p class="m-0 font-10 text-info  no-overflow">
+                                                            {{funding.User.CompanyPosition.Name}}
+                                                        </p>
+                                                        <p class="m-0 font-10  no-overflow">
+                                                            <i class="fa fa-map-marker"></i>
+                                                            <span ng-if="funding.User.CompanyCountry">
+                                                                {{funding.User.CompanyCountry.Name}}
+                                                            </span>
+                                                            <span ng-if="funding.User.CompanyCity">
+                                                                {{funding.User.CompanyCity.Name}}
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5 pt-3">
+                                                <div class="row font-10">
+                                                    <div class="col-sm-12">
+                                                        <span class="font-13 text-yellow font-weight-bold">{{funding.Type == 'F'?'Funding':'Financial Participation'}}</span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Production:</span>
+                                                        <span class="pull-right text-right font-weight-bold">
+                                                            {{funding.ProductionType?funding.ProductionType.Name:'All Productions'}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>Project Phase:</span>
+                                                        <span class="pull-right text-right font-weight-bold">
+                                                            {{funding.ProjectPhase?funding.ProjectPhase.Name:'All Phases'}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1">
+                                                        <span>For Projects Based:</span>
+                                                        <span class="pull-right font-weight-bold">
+                                                            {{funding.City?funding.City.Name:'All'}}
+                                                            <span ng-if="funding.City">, {{funding.City.Country.Name}}</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="funding.Type == 'F'">
+                                                        <span>Financial Offer:</span>
+                                                        <span class="pull-right font-weight-bold">
+                                                            {{funding.Offer}} {{funding.Currency?funding.Currency.Symbol:''}}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12 pt-1" ng-if="funding.Type == 'FP'">
+                                                        <span>Share Offer:</span>
+                                                        <span class="pull-right font-weight-bold">
+                                                            {{funding.OfferShare}} %
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3" ng-if="funding.User.UserId != $parent.currUser">
+                                                    <div class="col-12 text-right">
+                                                        <a href="javascript:void(0)" ng-click="sendRequest(funding, $event)" class="text-secondary" style="font-size:13px !important; padding: 2px 10px !important;">
+                                                            <i class="fa fa-list-alt mr-1"></i> Offer Project
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <div class="row pr-2 pt-2">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Click to see more info"
+                                                              ng-click="funding.ShowDetail = !funding.ShowDetail">
+                                                            info
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="col-sm-12" ng-if="funding.User.UserId != $parent.currUser">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Send email to project owner"
+                                                              ng-click="sendEmailToProjectOwner(funding.User)">
+                                                            mail
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12" ng-if="funding.User.UserId != $parent.currUser">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Start Chat with project owner"
+                                                              ng-click="openChatBox(funding.User.UserId)">
+                                                            message
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons {{funding.IsFavorite?'text-info':''}}" style="cursor:pointer;"
+                                                              title="{{funding.IsFavorite?'Remove from favorite':'Add to favorite list'}}"
+                                                              ng-click="toggleFavorite(funding)">
+                                                            stars
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons {{funding.IsSaved?'text-info':''}}" style="cursor:pointer;"
+                                                              title="{{funding.IsFavorite?'Remove from saved list':'Add to saved list'}}"
+                                                              ng-click="toggleSave(funding)">
+                                                            save_alt
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <hr style="margin:5px;" />
+                                        <div class="row font-13 font-weight-bold" style="padding: 0px 20px;">
+                                            <div class="col-4">
+                                                {{funding.User.FollowersCount}} <span>Followers</span>
+                                            </div>
+                                            <div class="col-4">
+                                                {{funding.User.FollowingCount}} <span>Following</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body p-0" ng-if="funding.ShowDetail">
+                                <div class="card m-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <div class="row pt-3 pl-3">
+                                                    <div class="col-sm-12">
+                                                        <p class="font-11 font-weight-bold m-0">I would like to support only:</p>
+                                                        <p class="font-11">
+                                                            {{funding.SupportDetail | limitTo:200}}{{ funding.SupportDetail.length > 200 ? '...' : ''}}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row pt-1 pl-3">
+                                                    <div class="col-sm-12">
+                                                        <p class="font-11 font-weight-bold m-0">Other Requirements:</p>
+                                                        <p class="font-11">
+                                                            {{funding.OtherRequirements | limitTo:200}}{{ funding.OtherRequirements.length > 200 ? '...' : ''}}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <div class="row pr-2 pt-2">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons" style="cursor:pointer;"
+                                                              title="Close this"
+                                                              ng-click="funding.ShowDetail = !funding.ShowDetail">
+                                                            close
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/ng-controllers/fundingAndFP/look-funding-ctrl.js"></script>
+}

@@ -1,0 +1,190 @@
+﻿<style>
+    .dark-mode #calendar.fc .fc-view-container .fc-view.fc-basic-view > table > thead tr th.fc-widget-header,
+    .dark-mode #calendar.fc .fc-view-container .fc-view.fc-basic-view > table > thead tr td.fc-widget-header,
+    .dark-mode #calendar.fc .fc-view-container .fc-view.fc-agenda > table > thead tr th.fc-widget-header,
+    .dark-mode #calendar.fc .fc-view-container .fc-view.fc-agenda > table > thead tr td.fc-widget-header,
+    .dark-mode .fc-agendaWeek-view .fc-head .fc-widget-header {
+        color: #E8E9E9;
+        background: #333537;
+    }
+</style>
+
+<div class="section-body" ui-view="">
+    <div class="container-fluid">
+        <div class="row" ng-if="false">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h3>My Calendar</h3>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <button type="button" class="btn btn-secondary" ng-click="createEventByButton()">
+                                        <i class="fe fe-plus mr-2"></i> Create Event
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-right mb-2">
+                                <button type="button" class="btn btn-secondary" ng-click="createEventByButton()">
+                                    <i class="fa fa-plus mr-2"></i> Create Event
+                                </button>
+                            </div>
+                            <div class="col-sm-12 col-md-7">
+                                <div class="btn-group">
+                                    <button class="btn btn-secondary" ng-click="changeView('month', 'Calendar')">Month</button>
+                                    <button class="btn btn-secondary ml-1" ng-click="changeView('agendaWeek', 'Calendar')">Week</button>
+                                    <button class="btn btn-secondary ml-1" ng-click="changeView('agendaDay', 'Calendar')">Day</button>
+                                    <button class="btn btn-secondary ml-1" ng-click="changeView('listMonth', 'Calendar')">List</button>
+                                    @*<button class="btn btn-secondary ml-1" ng-click="openCalenderCategories()">Calendar Categories</button>*@
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-5 text-right">
+                                <div class="btn-group">
+                                    <button class="btn btn-secondary btn-circle mr-1" title="Search by text"
+                                            ng-click="showSearch = !showSearch">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                    <button class="btn btn-secondary btn-circle mr-1" ng-if="!showSearch" title="Filters"
+                                            ng-click="showFilters()">
+                                        <i class="fa fa-filter"></i>
+                                        <i class="fa fa-check-circle text-success" ng-if="filters.categories.length>0"></i>
+                                    </button>
+                                    <button class="btn btn-secondary btn-circle mr-1" ng-if="!showSearch" title="Download ICS"
+                                            ng-click="exportICS()">
+                                        <i class="fa fa-download"></i>
+                                    </button>
+                                    <button id="btnExportPdf" class="btn btn-secondary btn-circle" ng-if="false" title="Export PDF">
+                                        <i class="fa fa-file-pdf-o"></i>
+                                    </button>
+                                    <input type="text" placeholder="Search..." class="form-control" ng-if="showSearch"
+                                           ng-model="filters.search" ng-change="searchTyped()" />
+                                </div>
+                                <br />
+                                <div class="mt-2 pull-right" style="width:200px">
+
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="collapse" id="collapseExample">
+                                    <div class="card border">
+                                        <div class="card-body">
+                                            <h6>
+                                                Filter calendar
+                                            </h6>
+                                            <p>
+                                                You can filter the events in your calendar. Click on a category to hide or show the events of the category
+                                            </p>
+                                            <div class="selectgroup selectgroup-pills">
+                                                <label class="selectgroup-item">
+                                                    <input type="checkbox" name="icon-input" value="item.Id"
+                                                           class="selectgroup-input" ng-click="selectCategory(0)"
+                                                           ng-checked="filters.categories.indexOf(0) >= 0">
+                                                    <span class="selectgroup-button selectgroup-button-icon">Without category</span>
+                                                </label>
+                                                <label class="selectgroup-item">
+                                                    <input type="checkbox" name="icon-input" value="item.Id"
+                                                           class="selectgroup-input" ng-click="selectCategory(-1)"
+                                                           ng-checked="filters.categories.indexOf(-1) >= 0">
+                                                    <span class="selectgroup-button selectgroup-button-icon"
+                                                          style="border:1px solid #ffcd01">Tasks</span>
+                                                </label>
+                                                <label class="selectgroup-item" ng-repeat="item in categories">
+                                                    <input type="checkbox" name="icon-input" value="item.Id"
+                                                           class="selectgroup-input" ng-click="selectCategory(item.Id)"
+                                                           ng-checked="filters.categories.indexOf(item.Id) >= 0">
+                                                    <span class="selectgroup-button selectgroup-button-icon"
+                                                          style="border: 1px solid {{item.Color}}">{{item.Name}}</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="calendar" ui-calendar="uiConfig.calendar" class="calendar" ng-model="events" calendar="Calendar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(document).on('show.bs.popover', function () {
+            $('.popover').not(this).popover('hide');
+        });
+
+
+        $("#btnExportPdf").click(function () {
+            //#AEFC is my div for FullCalendar
+            html2canvas($('#calendar'), {
+                logging: true,
+                useCORS: true,
+                onrendered: function (canvas) {
+                    var imgData = canvas.toDataURL("image/jpeg");
+                    var doc = new jsPDF();
+                    doc.addImage(imgData, 'JPEG', 15, 40);
+                    download(doc.output(), "calender.pdf", "text/pdf");
+
+                }
+            });
+        }); // $("#AE_btn_pdf").click(function ()
+
+        function download(strData, strFileName, strMimeType) {
+            var D = document,
+                A = arguments,
+                a = D.createElement("a"),
+                d = A[0],
+                n = A[1],
+                t = A[2] || "text/plain";
+
+            //build download link:
+            a.href = "data:" + strMimeType + "," + escape(strData);
+
+            if (window.MSBlobBuilder) {
+                var bb = new MSBlobBuilder();
+                bb.append(strData);
+                return navigator.msSaveBlob(bb, strFileName);
+            } /* end if(window.MSBlobBuilder) */
+
+            if ('download' in a) {
+                a.setAttribute("download", n);
+                a.innerHTML = "downloading...";
+                D.body.appendChild(a);
+                setTimeout(function () {
+                    var e = D.createEvent("MouseEvents");
+                    e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false,
+                        false, false, 0, null);
+                    a.dispatchEvent(e);
+                    D.body.removeChild(a);
+                }, 66);
+                return true;
+            } /* end if('download' in a) */
+
+            //do iframe dataURL download:
+            var f = D.createElement("iframe");
+            D.body.appendChild(f);
+            f.src = "data:" + (A[2] ? A[2] : "application/octet-stream") + (window.btoa ? ";base64"
+                : "") + "," + (window.btoa ? window.btoa : escape)(strData);
+            setTimeout(function () {
+                D.body.removeChild(f);
+            }, 333);
+            return true;
+        } /* end download() */
+
+
+    });
+</script>

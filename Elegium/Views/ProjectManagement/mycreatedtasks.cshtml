@@ -1,0 +1,238 @@
+﻿<div class="section-body" style="max-width:1300px" ui-view="">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <ul class="nav nav-tabs page-header-tab">
+                <li class="nav-item"><a class="nav-link" id="general-tab" ui-sref="tasks.mytasks">My tasks</a></li>
+                <li class="nav-item"><a class="nav-link active" id="company-tab" ui-sref="tasks.mycreatedtasks">My created tasks</a></li>
+                <li class="nav-item"><a class="nav-link" id="portfolio-tab" ui-sref="tasks.completedtasks">Completed tasks</a></li>
+                <li class="nav-item"><a class="nav-link" id="selfPromotion-tab" ui-sref="tasks.alltasks">All tasks</a></li>
+            </ul>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-12">
+                <div class="card bg-none">
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="row clearfix mb-3" ng-if="mytasks.length>0">
+                                            <div class="col-sm-12">
+                                                <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">
+                                                    Create task <i class="fa fa-plus-circle"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix collapse mb-3" id="newTask">
+                                            <div class="col-sm-12">
+                                                <div class="card card-body p-3">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <h5>
+                                                                <span class="col-form-label">Create task</span>
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <div class="col-sm-12">
+                                                            <h6>
+                                                                <small>To create a new task, enter a title. Then, choose specific crew members to assign the task to. Optionally, you can add a deadline to the task.</small>
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-sm-12">
+                                                            <div class="row clearfix">
+                                                                <div class="col-sm-12">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label">Title</label>
+                                                                        <input maxlength="200" type="text" class="form-control"
+                                                                               placeholder="Title" ng-model="taskObj.Title" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix">
+                                                                <div class="col-sm-12">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label">Description</label>
+                                                                        <textarea class="form-control" rows="5" ng-model="taskObj.Description"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix">
+                                                                <div class="col-sm-12">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label">
+                                                                            Assigned crew members
+                                                                        </label>
+                                                                        <ui-select multiple class="form-control" ng-model="taskObj.AssignedTo" theme="selectize" sortable="true" close-on-select="false">
+                                                                            <ui-select-match>{{$item.name}}</ui-select-match>
+                                                                            <ui-select-choices group-by="groupUsers" repeat="visible as visible in projectUsersAndGroups">
+                                                                                <div class="row p-10 clearfix">
+                                                                                    <div class="col-sm-1">
+                                                                                        <img class="rounded img-fluid" src="{{visible.avatar}}" alt="" />
+                                                                                    </div>
+                                                                                    <div class="col-sm-11">
+                                                                                        <div ng-bind-html="visible.name | highlight: $select.search">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </ui-select-choices>
+                                                                        </ui-select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-12">
+                                                            <div class="row clearfix mt-4">
+                                                                <div class="col-sm-12">
+                                                                    <div class="form-group">
+                                                                        <label class="custom-switch">
+                                                                            <input type="checkbox" ng-model="taskObj.HasDeadline" id="toggleCalendarDeadline"
+                                                                                   data-toggle="collapse" data-target="#deadline-calendar" aria-expanded="false" aria-controls="collapseExample"
+                                                                                   name="custom-switch-checkbox" class="custom-switch-input">
+                                                                            <span class="custom-switch-indicator"></span>
+                                                                            <span class="custom-switch-description">Task has a deadline</span>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix mt-2">
+                                                                <div class="col-sm-12 collapse" id="deadline-calendar" data-parent="#newTask">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label">Deadline</label>
+                                                                        <div class="input-group">
+                                                                            <input type="date" ng-model="taskObj.Deadline" class="form-control">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row clearfix mt-4">
+                                                                <div class="col-sm-12">
+                                                                    <div class="form-group">
+                                                                        <label class="custom-switch">
+                                                                            <input type="checkbox" ng-model="taskObj.HasSection" id="toggleSectionSelector"
+                                                                                   data-toggle="collapse" data-target="#section-selector" aria-expanded="false" aria-controls="collapseExample"
+                                                                                   name="custom-switch-checkbox" class="custom-switch-input">
+                                                                            <span class="custom-switch-indicator"></span>
+                                                                            <span class="custom-switch-description">Task is linked to a section</span>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix mt-2">
+                                                                <div class="col-sm-12 collapse" id="section-selector">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label">Section</label>
+                                                                        <div class="input-group">
+                                                                            <select chosen
+                                                                                    class="form-control"
+                                                                                    option="sections"
+                                                                                    ng-model="taskObj.Section"
+                                                                                    ng-options="section.Url as section.Name for section in sections">
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix mt-2" ng-if="taskObj.Section=='documents'">
+                                                                <div class="col-sm-12" id="object-selector">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label">Object</label>
+                                                                        <div class="input-group">
+                                                                            <select chosen
+                                                                                    class="form-control"
+                                                                                    option="objects"
+                                                                                    ng-model="taskObj.DocumentCategoryId"
+                                                                                    ng-options="object.Id as object.Name for object in objects">
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-12 text-right ">
+                                                            <div class="d-inline-block">
+                                                                <button type="button" class="btn btn-primary d-flex float-right" ng-click="createTask()" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">Create</button>
+                                                                <button type="button" class="btn btn-default d-flex" ng-click="cancelTaskCreation()" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">Cancel</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-title text-center" ng-if="mytasks.length==0">
+                                            <label class="h4 text-muted">
+                                                Quickly create tasks, assign users and set deadlines. Users can collaborate and share information directly within the task.
+                                            </label>
+                                            <button type="button" class="btn btn-success mt-3" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="newTask">
+                                                Create Task <i class="fa fa-plus-circle"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row clearfix" ng-if="mytasks.length>0">
+                                            <div class="col-sm-12">
+                                                <div style="height:71px !important" class="card task box-shadow mb-2 {{task.ClassName}}" ng-repeat="task in mytasks" ng-click="$event.originalEvent.dropdown || goToTaskProfile(task.Id)">
+                                                    <div class="row clearfix p-0 ml-3">
+                                                        <div class="col-1 mt-3 p-0 tasks_status_symbol">
+                                                            <a class="symbol" href="javascript:void(0)" ng-click="changeTaskStatus($event,task)" data-toggle="tooltip" data-placement="top" tooltip title="{{task.ClassName=='completed' ? 'Mark task as in progress again' : task.ClassName == 'overdue' || task.ClassName == 'pending' ? 'Mark task as completed' : ''}}">
+                                                                <i class="{{task.Completed?'fa fa-check-circle':'fa fa-circle-thin'}}"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-4 mt-3 text-left">
+                                                            {{task.Title}}
+                                                            <p ng-if="task.SubTasks.length>0">
+                                                                <small>{{(task.SubTasks | filter:{Completed:true}).length}} of {{task.SubTasks.length}} subtasks have been completed</small>
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <div ng-if="task.HasDeadline">
+                                                                <small class="mb-1">Deadline</small>
+                                                                <br />
+                                                                {{task.Deadline}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <small class="mb-1">Assigned to</small>
+                                                            <br />
+                                                            <ul class="list-unstyled team-info sm margin-0   overflow-hidden text-nowrap">
+                                                                <li ng-repeat="assignedTo in task.AssignedTo" data-toggle="tooltip" data-placement="top" tooltip title="{{assignedTo.name}}">
+                                                                    <img ng-if="assignedTo.Type=='user'" src="/api/UserProfiles/GetUserPhoto/{{assignedTo.id}}/30/30" alt="Avatar">
+                                                                    <img ng-if="assignedTo.Type!='user'" height="32" src="{{assignedTo.icon}}" alt="Avatar">
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-1 p-0">
+                                                            <small class="mb-1">Status</small>
+                                                            <br />
+                                                            <div class="p-0 font-weight-bold">{{task.ClassName}}</div>
+                                                        </div>
+                                                        <div class="col-1 text-right">
+                                                            <div class="item-action dropdown mt-3">
+                                                                <a href="javascript:void(0)" data-toggle="dropdown" ng-click="$event.originalEvent.dropdown = true" class="icon font-20" aria-expanded="false">
+                                                                    <i class="fe fe-more-vertical"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                    <a href="javascript:void(0)" confirmed-click="deleteTask($event, task)" ng-confirm-title="Delete Task?" ng-confirm-click="Would you like to delete this task? This cannot be undone!" class="dropdown-item">
+                                                                        <i class="dropdown-icon fa fa-trash"></i> Delete
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

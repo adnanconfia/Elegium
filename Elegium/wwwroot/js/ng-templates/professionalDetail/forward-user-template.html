@@ -1,0 +1,52 @@
+﻿<div class="modal-header">
+    <div class="row clearfix">
+        <div class="col-sm-12">
+            <h4 class="modal-title" id="modal-title">Forward {{userProfile.FirstName}} {{userProfile.LastName}} Profile</h4>
+            <label class="col-form-label">
+                <small class="text-muted">Complete the form below to forward a copy of this profile to a colleague.</small>
+            </label>
+        </div>
+    </div>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <form class="form-row" name="form">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">From Name</label>
+                        <input type="text" name="fromName" required ng-model="data.FromName" class="form-control" placeholder="First Name" value="Chet">
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">From Email</label>
+                        <input type="text" required ng-model="data.FromEmail" class="form-control" placeholder="Last Name" value="Faker">
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">To Email</label>
+                        <input type="text" required ng-model="data.ToEmail" class="form-control" placeholder="Company" value="Creative Code Inc.">
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">Subject</label>
+                        <label class="col-form-label">{{userProfile.FirstName}} {{userProfile.LastName}} Profile | Elegium Network</label>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea rows="4" required ng-model="data.Message" class="form-control" placeholder="Additional notes"></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-outline-danger btn-sm" type="button" ng-click="cancel()"><span class="fa fa-close"></span> Close</button>
+    <button class="btn btn-outline-primary btn-sm" ng-disabled="form.$invalid" type="button" ng-click="Forward()"><span class="fa fa-forward"></span> Forward</button>
+</div>

@@ -1,0 +1,219 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
+    <UserSecretsId>aspnet-Elegium-4197ECD2-5F80-415A-96DE-6F01DD1F93E4</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20200724175910_AddedMoreModels.cs" />
+    <Compile Remove="Data\Migrations\20200724175910_AddedMoreModels.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200724180006_AddedMoreModels.cs" />
+    <Compile Remove="Data\Migrations\20200724180006_AddedMoreModels.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200724180455_UserProfileAdded.cs" />
+    <Compile Remove="Data\Migrations\20200724180455_UserProfileAdded.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200817163142_EquipmentCategoryTypeAndEquipmentCategoryAdded.cs" />
+    <Compile Remove="Data\Migrations\20200817163142_EquipmentCategoryTypeAndEquipmentCategoryAdded.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200817163836_UserEquipmentAdded.cs" />
+    <Compile Remove="Data\Migrations\20200817163836_UserEquipmentAdded.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200824175013_changedpostalcodetype.cs" />
+    <Compile Remove="Data\Migrations\20200824175013_changedpostalcodetype.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200828173930_somemodelchanges.cs" />
+    <Compile Remove="Data\Migrations\20200828173930_somemodelchanges.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200828174549_usermessages.cs" />
+    <Compile Remove="Data\Migrations\20200828174549_usermessages.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200828174703_usermessages.cs" />
+    <Compile Remove="Data\Migrations\20200828174703_usermessages.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200904150419_ProjectPartnerRequirementAdded.cs" />
+    <Compile Remove="Data\Migrations\20200904150419_ProjectPartnerRequirementAdded.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200905070609_ProjectManagementPhase.cs" />
+    <Compile Remove="Data\Migrations\20200905070609_ProjectManagementPhase.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200905071643_VisibilityAreasDataSeed.cs" />
+    <Compile Remove="Data\Migrations\20200905071643_VisibilityAreasDataSeed.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200905085204_FundersRequired.cs" />
+    <Compile Remove="Data\Migrations\20200905085204_FundersRequired.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200905085219_FundersRequiredDataSeed.cs" />
+    <Compile Remove="Data\Migrations\20200905085219_FundersRequiredDataSeed.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200912104354_VisibilityAreaIdChangedToInt.cs" />
+    <Compile Remove="Data\Migrations\20200912104354_VisibilityAreaIdChangedToInt.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200912172802_somechangesinuserroles.cs" />
+    <Compile Remove="Data\Migrations\20200912172802_somechangesinuserroles.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200914064629_deletedcolapplicationuser.cs" />
+    <Compile Remove="Data\Migrations\20200914064629_deletedcolapplicationuser.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200914130642_ChangedBudgetFromStringToFloatPPR.cs" />
+    <Compile Remove="Data\Migrations\20200914130642_ChangedBudgetFromStringToFloatPPR.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200915171921_messagemodel.cs" />
+    <Compile Remove="Data\Migrations\20200915171921_messagemodel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200916124808_addedsomecolsinmessagemodel.cs" />
+    <Compile Remove="Data\Migrations\20200916124808_addedsomecolsinmessagemodel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200916193926_addeduserConnectionModel.cs" />
+    <Compile Remove="Data\Migrations\20200916193926_addeduserConnectionModel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200916195545_changedconnectionmodelpk.cs" />
+    <Compile Remove="Data\Migrations\20200916195545_changedconnectionmodelpk.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200916200113_addeduserConnectionModel.cs" />
+    <Compile Remove="Data\Migrations\20200916200113_addeduserConnectionModel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200916202537_removedacolumnfrommessagemodel.cs" />
+    <Compile Remove="Data\Migrations\20200916202537_removedacolumnfrommessagemodel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200916211515_somemodelssignalr.cs" />
+    <Compile Remove="Data\Migrations\20200916211515_somemodelssignalr.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200916211637_somemodelssignalr.cs" />
+    <Compile Remove="Data\Migrations\20200916211637_somemodelssignalr.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200916213853_somemodelssignalr.cs" />
+    <Compile Remove="Data\Migrations\20200916213853_somemodelssignalr.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200916215811_somemodelssignalr.cs" />
+    <Compile Remove="Data\Migrations\20200916215811_somemodelssignalr.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200916220250_somemodelssignalr.cs" />
+    <Compile Remove="Data\Migrations\20200916220250_somemodelssignalr.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200916175926_AddedUserFundingAndFP.cs" />
+    <Compile Remove="Data\Migrations\20200916175926_AddedUserFundingAndFP.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200918163514_AddedProductionTypeInUserFundingAndFP.cs" />
+    <Compile Remove="Data\Migrations\20200918163514_AddedProductionTypeInUserFundingAndFP.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200918182224_messagemodelsthreadwise.cs" />
+    <Compile Remove="Data\Migrations\20200918182224_messagemodelsthreadwise.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200918183903_messagemodelsthreadwise.cs" />
+    <Compile Remove="Data\Migrations\20200918183903_messagemodelsthreadwise.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200918205230_chatrelatedmodelschange.cs" />
+    <Compile Remove="Data\Migrations\20200918205230_chatrelatedmodelschange.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200918205638_removedmesagemodelwilladdlater.cs" />
+    <Compile Remove="Data\Migrations\20200918205638_removedmesagemodelwilladdlater.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200918205827_chatrelatedmodelschange.cs" />
+    <Compile Remove="Data\Migrations\20200918205827_chatrelatedmodelschange.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200919114030_lastmessageidinthread.cs" />
+    <Compile Remove="Data\Migrations\20200919114030_lastmessageidinthread.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200921044423_addeddeletedcolinThreadMessagesmodel.cs" />
+    <Compile Remove="Data\Migrations\20200921044423_addeddeletedcolinThreadMessagesmodel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200921044725_addeddeltedcolinthreadreadstate.cs" />
+    <Compile Remove="Data\Migrations\20200921044725_addeddeltedcolinthreadreadstate.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200925123311_messagefileId.cs" />
+    <Compile Remove="Data\Migrations\20200925123311_messagefileId.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200928070604_ChatBoxesVirtualUser.cs" />
+    <Compile Remove="Data\Migrations\20200928070604_ChatBoxesVirtualUser.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200930090927_UserFollowingAdded.cs" />
+    <Compile Remove="Data\Migrations\20200930090927_UserFollowingAdded.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200930091632_UserFollowingAdded.cs" />
+    <Compile Remove="Data\Migrations\20200930091632_UserFollowingAdded.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201007192009_notificationmodel.cs" />
+    <Compile Remove="Data\Migrations\20201007192009_notificationmodel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201007192707_notificationmodel.cs" />
+    <Compile Remove="Data\Migrations\20201007192707_notificationmodel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201017112003_abc.cs" />
+    <Compile Remove="Data\Migrations\20201017112003_abc.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201023074226_linkmodel.cs" />
+    <Compile Remove="Data\Migrations\20201023074226_linkmodel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201023074425_documentcatmodel.cs" />
+    <Compile Remove="Data\Migrations\20201023074425_documentcatmodel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201025140119_addedprojecttaskmodels.cs" />
+    <Compile Remove="Data\Migrations\20201025140119_addedprojecttaskmodels.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201028195757_SavedAndFavoriteProjectPartnerAdded.cs" />
+    <Compile Remove="Data\Migrations\20201028195757_SavedAndFavoriteProjectPartnerAdded.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201103190224_test.cs" />
+    <Compile Remove="Data\Migrations\20201103190224_test.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201110175208_11102020.cs" />
+    <Compile Remove="Data\Migrations\20201110175208_11102020.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201121083743_ByDefaultIsActiveTrueInProjectCrew.cs" />
+    <Compile Remove="Data\Migrations\20201121083743_ByDefaultIsActiveTrueInProjectCrew.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201124072056_create-scene.cs" />
+    <Compile Remove="Data\Migrations\20201124072056_create-scene.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201124113145_create-scene-with-shooting-info.cs" />
+    <Compile Remove="Data\Migrations\20201124113145_create-scene-with-shooting-info.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201125075934_scene-table-update.cs" />
+    <Compile Remove="Data\Migrations\20201125075934_scene-table-update.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201125165354_extra-table-update.cs" />
+    <Compile Remove="Data\Migrations\20201125165354_extra-table-update.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201125165859_extra-table-update.cs" />
+    <Compile Remove="Data\Migrations\20201125165859_extra-table-update.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201127110433_announcementsmodel.cs" />
+    <Compile Remove="Data\Migrations\20201127110433_announcementsmodel.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201203191639_calendarmodelschanges.cs" />
+    <Compile Remove="Data\Migrations\20201203191639_calendarmodelschanges.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201215045222_SceneCostumes-table.cs" />
+    <Compile Remove="Data\Migrations\20201215045222_SceneCostumes-table.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201215073911_costume_table_update.cs" />
+    <Compile Remove="Data\Migrations\20201215073911_costume_table_update.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201215123535_construction-table.cs" />
+    <Compile Remove="Data\Migrations\20201215123535_construction-table.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201215134014_construction-table-update.cs" />
+    <Compile Remove="Data\Migrations\20201215134014_construction-table-update.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201215143546_Scene_construction-table-update.cs" />
+    <Compile Remove="Data\Migrations\20201215143546_Scene_construction-table-update.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201218063639_DocumentFiles-table-update.cs" />
+    <Compile Remove="Data\Migrations\20201218063639_DocumentFiles-table-update.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201218064202_DocumentFiles-table-add-SceneForeign-key.cs" />
+    <Compile Remove="Data\Migrations\20201218064202_DocumentFiles-table-add-SceneForeign-key.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201221194504_renamedacolumninresourcerequest1.cs" />
+    <Compile Remove="Data\Migrations\20201221194504_renamedacolumninresourcerequest1.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201221194622_testprojecrrresourcce.cs" />
+    <Compile Remove="Data\Migrations\20201221194622_testprojecrrresourcce.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201221194726_testprojecrrresourcce1.cs" />
+    <Compile Remove="Data\Migrations\20201221194726_testprojecrrresourcce1.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201229082458_VotingSettingsDataSeed.cs" />
+    <Compile Remove="Data\Migrations\20201229082458_VotingSettingsDataSeed.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210115165826_mubi123.cs" />
+    <Compile Remove="Data\Migrations\20210115165826_mubi123.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210116092402_set-table-update.cs" />
+    <Compile Remove="Data\Migrations\20210116092402_set-table-update.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210304061431_ProductionLengthMMAndSSChangedToInt.cs" />
+    <Compile Remove="Data\Migrations\20210304061431_ProductionLengthMMAndSSChangedToInt.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210304061906_ProductionLengthMMAndSSChangedToInt1.cs" />
+    <Compile Remove="Data\Migrations\20210304061906_ProductionLengthMMAndSSChangedToInt1.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
+    <PackageReference Include="LazZiya.ImageResize" Version="3.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="MimeMapping" Version="1.0.1.30" />
+    <PackageReference Include="MimeTypeMapOfficial" Version="1.0.14" />
+    <PackageReference Include="NReco.VideoConverter.LT" Version="1.1.4" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="tusdotnet" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Menus\" />
+    <Folder Include="uploads\tusio\" />
+    <Folder Include="wwwroot\assets\external-js\" />
+    <Folder Include="wwwroot\lib\toaster\" />
+    <Folder Include="wwwroot\plugins\colorpicker\" />
+    <Folder Include="wwwroot\plugins\angular-ui-scroll\" />
+    <Folder Include="wwwroot\plugins\jquery-mentions\" />
+    <Folder Include="wwwroot\plugins\ui-router-breadcrumbs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\plugins\gritter\js\jquery.gritter.js" />
+    <None Include="wwwroot\plugins\gritter\js\jquery.gritter.min.js" />
+  </ItemGroup>
+
+  <!--<ItemGroup>
+    <Reference Include="GleamTech.Common">
+      <HintPath>bin\debug\netcoreapp3.1\GleamTech.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="GleamTech.VideoUltimate">
+      <HintPath>bin\debug\netcoreapp3.1\GleamTech.VideoUltimate.dll</HintPath>
+    </Reference>
+  </ItemGroup>-->
+
+</Project>

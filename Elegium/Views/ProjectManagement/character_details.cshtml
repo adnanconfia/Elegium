@@ -1,0 +1,1748 @@
+﻿@{
+    ViewData["Title"] = "Characters";
+}
+<style>
+    .thumbnail_overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        text-align: center;
+        background-color: rgba(0,0,0,.6);
+        color: #fff;
+        transition: opacity linear .5s;
+        opacity: 0;
+        font-size: 15px;
+        font-family: 'Work Sans',sans-serif;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        line-height: 220px;
+        display: block;
+    }
+
+    .cat-image:hover .thumbnail_overlay {
+        opacity: 1;
+    }
+
+    .select2-container-multi .select2-choices {
+        height: auto !important;
+        height: 1%;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        /* border: 1px solid #aaa; */
+        cursor: text;
+        overflow: hidden;
+        /* background-color: #fff; */
+        /* background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(1%, #eee), color-stop(15%, #fff)); */
+        /* background-image: -webkit-linear-gradient(top, #eee 1%, #fff 15%); */
+        background: none !important;
+        border: none !important;
+    }
+
+
+    textarea:focus .comment_info {
+        display: block !important;
+    }
+
+    textarea:focus {
+        border: 1px #0d96ce solid !important;
+    }
+
+    .fc-highlight {
+        background: rgba(0,0,0,.4) !important;
+    }
+    .fc-day.fc-today {
+        background: rgba(0,0,0,.4) !important;
+    }
+
+    textarea {
+        height: 160px !important;
+        background: none;
+        border: 0;
+        border: 1px #888 solid;
+        color: #363636;
+        padding: 5px 10px;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -moz-transition: border .3s linear;
+        -o-transition: border .3s linear;
+        -webkit-transition: border .3s linear;
+        transition: border .3s linear;
+        font-size: 12px;
+        font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+        border-radius: 5px;
+    }
+
+    .project-hover-files {
+        visibility: hidden;
+        display: flex;
+    }
+
+        .project-hover-files::before {
+            visibility: visible;
+            font-size: 20px;
+            position: absolute !important;
+            opacity: 1 !important;
+            border: 3px dashed #0c0;
+            height: 100%;
+            width: 100%;
+            display: inline-block;
+            content: "";
+        }
+
+        .project-hover-files::after {
+            content: "Drop your files here!";
+            position: absolute !important;
+            height: 20px;
+            visibility: visible;
+            top: 70%;
+            margin-left: 42%;
+        }
+
+    .filetype {
+        pointer-events: none;
+        width: 100% !important;
+        height: 130px;
+        display: block;
+        /* position: absolute; */
+        top: 0;
+        left: 0;
+        background: #272727;
+        color: #fff;
+        text-align: center;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+        .filetype.preview .extention {
+            font-size: 35px;
+            line-height: 130px;
+        }
+
+        .filetype .extention {
+            pointer-events: all;
+            font-family: 'Work Sans',sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 90%;
+            display: inline-block;
+            line-height: 55px;
+            font-size: 15px;
+        }
+
+    #uppy-uploader {
+        font-size: 12px;
+        display: none;
+        width: 300px !important;
+        right: 60px;
+        bottom: 20px;
+        border-radius: 10px;
+        padding: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,.5);
+        background: #272727 !important;
+        z-index: 1;
+        display: block;
+        position: fixed;
+    }
+
+    .select2-dropdown-open .select2-choice {
+        box-shadow: none !important;
+    }
+
+    .select2-container .select2-choice {
+        display: block;
+        height: 26px;
+        padding: 0 0 0 8px;
+        overflow: hidden;
+        position: relative;
+        border: none !important;
+        white-space: nowrap;
+        line-height: 26px;
+        color: #444;
+        text-decoration: none;
+        border-radius: 4px;
+        background-clip: padding-box;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-color: transparent !important;
+        background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eee), color-stop(0.5, #fff));
+        background-image: -webkit-linear-gradient(center bottom, #eee 0%, #fff 50%);
+        background-image: -moz-linear-gradient(center bottom, #eee 0%, #fff 50%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffffff', endColorstr = '#eeeeee', GradientType = 0);
+        background-image: none !important;
+    }
+
+    .icon_svg {
+        width: 60px !important;
+    }
+
+    .thumbnail {
+        background: rgba(0,0,0,0.5);
+        color: white;
+        position: absolute;
+        top: 0;
+        visibility: hidden;
+    }
+
+    .thumbnail_content:hover .thumbnail {
+        visibility: visible;
+    }
+    .imgLiquidFill {
+        background-size: cover !important;
+        background-position: center !important
+    }
+</style>
+<div class="tab-pane show fade" ui-view="">
+
+    <div class="row mx-1 mb-5">
+        <div class="col-md-3 col-sm-12">
+            <div class=" bg-white my-3 col-md-10 col-sm-6 col-12 rounded h-200px thumbnail_content">
+                <div class="row">
+                    <div class="col-12 rounded text-center h-200px " ng-hide="char.Default">
+                        <span class="fa fa-image fa-5x mt-5"></span>
+
+                    </div>
+                    <div class="cursor-pointer w-100 rounded h-200px" ng-show="char.Default">
+                        <div ng-if="char.Default.Type=='image'" id="img{{char.Default.Id}}" class="img-fluid pointer-event cat-image imgLiquidFill"
+                             style=" height: 100% !important; background: url('/api/DocumentCategories/GetFileThumbnail/{{char.Default.FileId}}') no-repeat; background-size: 100% 100%; -webkit-transition: background-image 1s ease-in-out; transition: background-image 1s ease-in-out; border-top-left-radius: 5px; border-top-right-radius: 5px; ">
+                        </div>
+                        <div ng-if="char.Default.Type!='image'" class="preview filetype filetype_json" style="pointer-events: all;">
+                            <span class="extention" style="pointer-events: all;"> <i class="fa fa-file"></i> {{char.Default.Extension}}</span>
+                        </div>
+                        <div ng-if="char.Default.LatestVersion" class="tags hide_in_colorlist" style=" position: absolute; right: 10px; top: 10px; color: #fff; font-size: 10px;">
+                            <span class="bg-dark text-white" style="padding: 2px 4px; border-radius: 5px;">{{char.Default.LatestVersion}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 rounded text-center h-200px cursor-pointer thumbnail" ng-click="openProjectFileDialog1()">
+                        <span class="fa fa-edit fa-4x mt-5"></span>
+                        <h6>Select thumbnail</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-6 mt-3 col-12">
+                <div class="col-12">
+
+                    <span>{{char.Name}}</span>
+                </div>
+                <hr />
+                <div class="col-12 mt-4">
+
+                    <span class="cursor-pointer avatar bg-light-gray fa fa-star-o mt-1 " tooltip data-toggle="tooltip" data-placement="top" ng-show="char.marked" ng-click="marked(false)" title="unmark"></span>
+                    <span class="cursor-pointer avatar bg-light-gray fa fa-star mt-1 " tooltip data-toggle="tooltip" data-placement="top" ng-hide="char.marked" ng-click="marked(true)" title="mark"></span>
+                    <span class="cursor-pointer avatar fa fa-crop bg-light-gray mt-1" tooltip data-toggle="tooltip" data-placement="top" ng-click="crop(char.Default)" title="Crop thumbnail"></span>
+                    <span class="cursor-pointer avatar bg-light-gray  fa fa-eye mt-1" data-toggle="tooltip" data-placement="top" title="Item seen by" tooltip></span>
+
+                    <span class="cursor-pointer avatar  fa fa-file-pdf-o bg-light-gray mt-1" data-toggle="tooltip" data-placement="top" title="PDF export" tooltip ng-click="downloadPdf()"></span>
+                    <span class="cursor-pointer avatar  fa fa-file-pdf-o bg-light-gray mt-1" data-toggle="tooltip" data-placement="top" title="Download DOODs"></span>
+                    <span class="cursor-pointer avatar  fa fa-file-zip-o bg-light-gray mt-1" data-toggle="tooltip" data-placement="top" title="Download zip file" tooltip ng-click="dowloadZip()"></span>
+                    <span class="cursor-pointer avatar fa fa-code-fork bg-light-gray mt-1"  data-toggle="tooltip" data-placement="top" title="Merge Character" tooltip ng-click="Merge()"></span>
+                    <span class="cursor-pointer avatar fa fa-trash bg-light-gray mt-1" data-toggle="tooltip" data-placement="top" ng-click="showDel(char.Id,'del')" title="Delete" tooltip></span>
+                </div>
+                <div class="col-12 bg-black rounded p-2 mt-3" ng-show="char.Id+'del'==charIndex">
+                    <p class="text-white"> Do you really want to delete the character '{{char.Name}}'</p>
+                    <div class="flex-row d-flex">
+                        <button class="btn btn-sm btn-primary m-1" ng-click="DeleteChar(char.Id)">Yes</button>
+                        <button class="btn btn-sm btn-primary m-1" ng-click="hideDel()">No</button>
+                    </div>
+
+                </div>
+                <div class="col-12 mt-3">
+                    <span>Access rights </span>
+                    <button class="btn btn-light btn-sm "><i class="fa fa-edit"></i>Edit</button>
+                </div>
+                @*</div>*@
+
+                <div class="col-12 mt-3">
+                    <a href="#">
+                        <img src="/api/UserProfiles/GetLoggedInUserThumbnail/140/140" tooltip data-toggle="tooltip" data-placement="top" title="{{userProfile.FirstName}}{{userProfile.LastName}}" class="avatar" />
+                    </a>
+
+                </div>
+                <div class="col-12 mt-3">
+                    <span>Readable by </span>
+                </div>
+                <div class="col-12 mt-3">
+                    <span>No one can exclusively read. </span>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-sm-12">
+            <div class="row">
+                <div class="col-md-12 general-info col-sm-12 py-2  cursor-pointer rounded bg-light-gray">
+
+                    <span class="h5">General Information</span>
+                    <i class="fa fa-chevron-up pull-right cursor-pointer "></i>
+                </div>
+                <div class="col-12 general-info-div my-2">
+                    <div class="row" ng-hide="Editinfo">
+
+                        <div class="col-md-12 col-sm-12 col-12 mt-3">
+                            <button class="btn btn-light bg-light-gray" ng-click="show_Edit_info();">Edit general information <i class="fa fa-edit"></i></button>
+                        </div>
+                        <div class="col-md-6  col-sm-12 col-12 mt-3">
+                            <label>Id</label>
+                            <h6 class="text-break">
+                                {{char.Index}}
+                            </h6>
+                        </div>
+                        <div class="col-md-6  col-sm-12 col-12 mt-3">
+                            <label>Extra</label>
+                            <h6 class="text-break" ng-show="!char._ext">No</h6>
+                            <h6 class="text-break" ng-show="char._ext">Yes</h6>
+                        </div>
+                        <div class="col-md-6  col-sm-12 col-12 mt-3">
+                            <label>Name</label>
+                            <h6 class="text-break">{{char.Name}}</h6>
+                        </div>
+
+                        <div class="col-md-6  col-sm-12 col-12 mt-3">
+                            <label>Group of characters</label>
+                            <h6 class="text-break" ng-show="char.GroupOfCharacters">Yes</h6>
+                            <h6 class="text-break" ng-show="!char.GroupOfCharacters">No</h6>
+                        </div>
+                        <div class="col-md-6  col-sm-12 col-12 mt-3">
+                            <label ng-show="char.Description">Description</label>
+                            <h6 class="text-break" ng-show="char.Description">{{char.Description}}</h6>
+                        </div>
+
+                        <div class="col-md-6  col-sm-12 col-12 mt-3">
+                            <input type="checkbox" name="sugestion" ng-model="char.Sugggestion" ng-change="UpdateChar(char)" />
+                            <label for="sugestion">Collect no suggestions for this object</label>
+
+                        </div>
+                    </div>
+                    <div class="row" ng-show="Editinfo">
+                        <div class="col-md-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label lass="form-label">Id</label>
+                                <input type="number" min="0" class="form-control" ng-model="char.Index" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-12">
+                            <div class="form-group">
+
+                                <input type="checkbox" name="Extra" ng-model="char._ext" />
+                                <label for="Extra">Extra</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <input type="text" min="0" class="form-control" ng-model="char.Name" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-sm-12 col-12">
+                            <div class="form-group">
+
+                                <input type="checkbox" name="group" ng-model="char.GroupOfCharacters" />
+                                <label for="group">Group of characters</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" rows="5" ng-model="char.Description"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-12 text-right">
+                            <button class="btn btn-primary btn-sm" ng-click="UpdateChar(char)"> Done</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-1" ng-hide="Is_Cast.length<=0 || char.Sugggestion">
+                <div class="col-md-12 actors col-sm-12 py-2  cursor-pointer rounded bg-light-gray">
+
+                    <span class="h5">Actors</span>
+                    <i class="fa fa-chevron-up pull-right cursor-pointer "></i>
+                </div>
+                <div class="col-12 actors-div my-3">
+                    <div class="row">
+
+
+                        <div class="col-12">
+                            <div class="row">
+
+
+                                <div class="col-12 mt-2">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6 col-lg-3 col-xxl-3 col-xxxl-3 bg-white mb-3 m-2 " ng-repeat="a in Is_Cast" ng-init="$last && callback('callback')">
+                                            <div class=" col-12 h-160px rounded  bg-black" ng-show="a.Id+'a'==charIndex">
+                                                <p class="text-white">
+
+                                                    Do you really want to cancel the actor  '{{a.Name}}' as cast ?
+                                                </p>
+                                                <div class="flex-row d-flex">
+                                                    <button class="btn btn-sm btn-primary m-1" ng-click="Unfix(a)">Yes</button>
+                                                    <button class="btn btn-sm btn-primary m-1" ng-click="hideDel()">No</button>
+                                                </div>
+
+                                            </div>
+                                            <div class="row {{a.HasFile?'opacity-100':'opacity-60'}}" ng-show="a.Id+'a'!=charIndex && a.Is_CastFixed" ng-click="viewActor(a)">
+                                                <div class="col-4 col-md-4 col-sm-4 d-none d-md-block d-sm-block bg-light p-0 border-right">
+                                                    <div ng-if="a.HasFile" class="imgLiquidFill" style="height: 200px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.file.FileId}}') no-repeat;
+        background-size: cover;
+">
+                                                        <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 100px !important;">
+                                                            <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                                        </div>
+                                                        <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid imgLiquidFill pointer-event cat-image"
+                                                             style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="!a.HasFile" style="        height: 100px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                                        <span class="fa fa-image fa-3x my-auto mt-5 text-center"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-5 col-md-5 col-sm-5 cursor-pointer m-0 p-0" ui-sref="cast.actor_details({charId: '{{a.Id}}'})">
+                                                    <div class="row m-0 p-0 ">
+                                                        <div class="col-md-12 col-sm-12 m-0 p-0 ">
+                                                            <div class="col-12 text-wrap d-lg-inline-flex text-truncate">
+                                                                <span><a class="  btn-sm btn-transparent font-weight-bold" ng-click="$event.stopPropagation()">{{a.Name}}</a></span>
+
+
+                                                                @*<span><a class="text-white  btn-sm btn-transparent font-weight-bold">Day</a></span>*@
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-3 col-md-3 pull-right text-right  dropleft">
+                                                    <div class="d-inline">
+                                                        <a href="javascript:void(0)" ng-click="showDel(a.Id,'a');$event.stopPropagation()" class="ignore-click">
+                                                            <i class="fa fa-times ignore-click"></i>
+                                                        </a>
+                                                    </div>
+                                                
+
+                                                </div>
+
+
+                                                @*<div class="card mb-2" style=" cursor: pointer !important;transition: background .2s linear,box-shadow .2s linear,opacity .8s linear .3s;">
+                                                    <div class="card-header p-1" ng-show="a.Id!=-1">
+                                                        <h3 style="text-transform: capitalize;" class="card-title  ml-1 mt-1 overflow-ellipsis">
+                                                            <div class="font-15  overflow-ellipsis d-block" ng-model="a.Name" title="{{a.Name}}" data-toggle="tooltip" data-placement="top" tooltip>{{a.Name}}</div>
+
+
+                                                        </h3>
+                                                        <div class="card-options">
+                                                            <div class="item-action dropdown ml-2">
+                                                                <a href="javascript:void(0)" ng-click="showDel(a.Id,'a');$event.stopPropagation()" class="ignore-click">
+                                                                    <i class="fa fa-times ignore-click"></i>
+                                                                </a>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="card-body card-body bg-light p-0">
+                                                        <div ng-if="a.HasFile" class="imgLiquidFill" style="        height: 200px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.Default.FileId}}/100/100') no-repeat;
+        background-size: cover;
+">
+                                                            <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 200px !important;">
+                                                                <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                                            </div>
+                                                            <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid pointer-event cat-image"
+                                                                 style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                                            </div>
+                                                        </div>
+                                                        <div ng-if="!a.HasFile" style="        height: 200px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                                            <span class="fa fa-image fa-3x my-auto mt-5 text-center"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-1" ng-hide="char.Sugggestion">
+                <div class="col-md-12 actor-suggest col-sm-12 py-2  cursor-pointer rounded bg-light-gray">
+
+                    <span class="h5">Actor suggestions</span>
+                    <i class="fa fa-chevron-up pull-right cursor-pointer "></i>
+                </div>
+                <div class="col-12 actor-suggest-div my-3">
+                    <div class="row">
+                        <div class="col-12 p-0 m-0 mb-3" ng-show="newCharacterTalent1.length>0 &&  !a.Is_CastFixed">
+                            <button class="btn btn-primary btn-sm " data-toggle="collapse" data-target="#Actors" aria-expanded="true" aria-controls="collapseExample">Suggest actor or talent  <i class="fa fa-plus-circle"></i></button>
+                        </div>
+                        <div class="col-12 ">
+                            <div class="row clearfix mb-3 collapse " id="Actors" style="">
+                                <div class="col-sm-12 m-0 p-0">
+                                    <div class="card card-body ">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h5>
+                                                    <span class="col-form-label">Suggest actor or talent</span>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12">
+                                                <h6>
+                                                    <small>To suggest an actor or talent for this character, select an actor or talent from the list below. You can use the text field to search for a specific actor or talent or create a new one by entering a new name.</small>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label>Search or create</label>
+
+                                                    <input type="text" ng-model="Suggestion" required ng-keyup="complete_Actor($event,Suggestion)" class="form-control bg-transparent border-top-0 border-right-0 border-left-0" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12 "></div>
+                                            <div class="col-12 border border-dark rounded mx-1 overflow-auto h-200px">
+                                                <div class="col-12 text-center my-5 " ng-show="Suggested.length==0 && suggestbtn">
+                                                    <p class="fa fa-folder-o fa-3x mb-0"></p>
+                                                    <p>There are not items to select.Enter a name to create a new item</p>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-md-6 text-center my-1 col-sm-12 col-12" ng-repeat=" c in Suggested | orderBy:'Id' ">
+
+
+                                                        <div class="align-middle text-truncate p-2 text-left bg-light-gray cursor-pointer rounded d-flex flex-row" ng-click="add_suggested(c)">
+                                                            <div> <i class="fa fa-image bg-white p-3 text-dark"></i></div>
+                                                            <div class=" pl-1 text-truncate">
+
+                                                                <span class=" text-wrap ">
+                                                                    {{c.Name}}
+                                                                </span>
+                                                            </div>
+                                                            <!--<span class="text-white pl-1 ">
+
+                                                    </span>-->
+                                                        </div>
+                                                    </div>
+                                                    <div class="mx-auto text-center my-1 " ng-hide="suggestbtn">
+
+                                                        <button class="cursor-pointer align-middle  text-left btn btn-dark btn-block" href="#" ng-click="createchar(char_srch)">
+
+                                                            <span class="text-white pl-1 " ng-click="create_Talent(Suggestion)">
+                                                                <i class="fa fa-plus-circle rounded"></i>  Add  "{{Suggestion}}"
+                                                            </span>
+
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-12 text-right ">
+                                                <div class="d-inline-block">
+                                                    <button type="button" class="btn btn-danger d-flex" data-toggle="collapse" data-target="#Actors" aria-expanded="true" aria-controls="collapseExample">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+
+
+                                <div class="col-12 mt-2">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6 col-lg-3 col-xxl-3 bg-white rounded col-xxxl-3 mb-3 m-2 " ng-repeat="a in newCharacterTalent1" ng-init="$last && callback('callback')">
+                                            <div class=" col-12 h-160px rounded  bg-black" ng-show="a.Id+'a'==charIndex">
+                                                <p class="text-white">      Do you really want to delete this suggestion?</p>
+                                                <div class="flex-row d-flex">
+                                                    <button class="btn btn-sm btn-primary m-1" ng-click="DeleteChTalent(a)">Yes</button>
+                                                    <button class="btn btn-sm btn-primary m-1" ng-click="hideDel()">No</button>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row " ng-show="a.Id+'a'!=charIndex && !a.Is_CastFixed && !a.Is_Rejected" ng-click="viewActor(a)">
+
+                                                <div class="col-4 col-md-4 col-sm-4 d-none d-md-block d-sm-block bg-light p-0 border-right">
+                                                    <div ng-if="a.HasFile" class="imgLiquidFill" style="height: 200px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.file.FileId}}') no-repeat;
+        background-size: cover;
+">
+                                                        <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 100px !important;">
+                                                            <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                                        </div>
+                                                        <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid imgLiquidFill pointer-event cat-image"
+                                                             style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="!a.HasFile" style="        height: 100px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                                        <span class="fa fa-image fa-3x my-auto mt-5 text-center"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-5 col-md-5 col-sm-5 cursor-pointer m-0 p-0" ui-sref="cast.actor_details({charId: '{{a.Id}}'})">
+                                                    <div class="row m-0 p-0 ">
+                                                        <div class="col-md-12 col-sm-12 m-0 p-0 ">
+                                                            <div class="col-12 text-wrap d-lg-inline-flex text-truncate">
+                                                                <span><a class="  btn-sm btn-transparent font-weight-bold" ng-click="$event.stopPropagation()">{{a.Name}}</a></span>
+
+
+                                                                @*<span><a class="text-white  btn-sm btn-transparent font-weight-bold">Day</a></span>*@
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-3 col-md-3 pull-right text-right  dropleft">
+                                                    <div class="d-inline">
+                                                        <span class="fa fa-star-o" ng-show="Is_Cast.length<=0 || char.GroupOfCharacters" ng-click="UpdateChTalentCast(a);$event.stopPropagation()" title="Fix as Cast" data-toggle="tooltip" data-placement="top" tooltip></span>
+
+                                                        <span class=" cursor-pointer btn-transparent btn-sm ignore-click" data-toggle="dropdown" ng-click="ShowDropDown(a.Id,'s');$event.stopPropagation()"><i class="fa fa-ellipsis-v"></i></span>
+                                                    </div>
+                                                    <div class="dropdown-menu dropdown-menu-right show" ng-show="dropdown==a.Id+'s'">
+                                                        <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="UpdateChTalentCast(a);$event.stopPropagation()" ng-show="Is_Cast.length<=0 || char.GroupOfCharacters"><i class="dropdown-icon fa fa-star-o"></i> Fix as Cast</a>
+                                                        <a href="javascript:void(0)" class="dropdown-item ignore-click" confirmed-click="RejectSuggestion(a)" ng-confirm-title="Reject Suggestion?" ng-confirm-click="Would you like to reject this suggestion?"><i class="dropdown-icon fa fa-thumbs-o-down"></i>Reject suggestion</a>
+                                                        <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="showDel(a.Id,'a');$event.stopPropagation()"><i class="dropdown-icon fa fa-trash"></i> Delete</a>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-10 bg-black rounded  d-none d-md-block d-sm-block" style="background: rgba(45,45,45,0.7); position: absolute; right: 0; bottom: 0;">
+                                                    <span class="text-white small"><i class="fa fa-globe" ng-show="a.Rating<=0"></i> <i class="fa fa-lock" ng-hide="a.Rating<=0"></i>  Your rating is visible for all. Click here to change this.</span>
+                                                    <div star-rating rating-value="a.Rating" max="5" _enabled="1" ng-click="UpdateChTalentRating(a);;$event.stopPropagation()"></div>
+                                                </div>
+                                                @*<div class="card mb-2" style=" cursor: pointer !important;transition: background .2s linear,box-shadow .2s linear,opacity .8s linear .3s;">
+                                                                                                <div class="card-header p-1" ng-show="a.Id!=-1">
+                                                                                                    <h3 style="text-transform: capitalize;" class="card-title  ml-1 mt-1 overflow-ellipsis">
+                                                                                                        <div class="font-15  overflow-ellipsis d-block" ng-model="a.Name" title="{{a.Name}}" data-toggle="tooltip" data-placement="top" tooltip>{{a.Name}}</div>
+
+
+                                                                                                    </h3>
+                                                                                                    <div class="card-options">
+                                                                                                        <div class="item-action dropdown ml-2">
+                                                                                                            <span class="fa fa-star-o" ng-show="Is_Cast.length<=0 || char.GroupOfCharacters" ng-click="UpdateChTalentCast(a);$event.stopPropagation()" title="Fix as Cast" data-toggle="tooltip" data-placement="top" tooltip></span>
+                                                                                                            <a href="javascript:void(0)" data-toggle="dropdown" ng-click="ShowDropDown(a.Id,'s');$event.stopPropagation()" class="ignore-click">
+                                                                                                                <i class="fe fe-more-vertical ignore-click"></i>
+                                                                                                            </a>
+                                                                                                            <div class="dropdown-menu dropdown-menu-right show" ng-show="dropdown==a.Id+'s'">
+                                                                                                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="UpdateChTalentCast(a);$event.stopPropagation()" ng-show="Is_Cast.length<=0 || char.GroupOfCharacters"><i class="dropdown-icon fa fa-star-o"></i> Fix as Cast</a>
+                                                                                                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="RejectSuggestion(a);$event.stopPropagation()"><i class="dropdown-icon fa fa-thumbs-o-down"></i>Reject suggestion</a>
+                                                                                                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="showDel(a.Id,'a');$event.stopPropagation()"><i class="dropdown-icon fa fa-trash"></i> Delete</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div star-rating rating-value="a.Rating" max="5" ng-click="UpdateChTalentRating(a);;$event.stopPropagation()"></div>
+                                                                                                <div class="card-body bg-light card-body p-0">
+                                                                                                    <div ng-if="a.HasFile" class="imgLiquidFill" style="        height: 200px !important;
+                                                    background: url('/api/UserProfiles/GetFileThumbnail/{{a.Default.FileId}}/100/100') no-repeat;
+                                                    background-size: cover;
+                                            ">
+                                                                                                        <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 200px !important;">
+                                                                                                            <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                                                                                        </div>
+                                                                                                        <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid pointer-event cat-image"
+                                                                                                             style="        height: 200px;
+                                                    background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+                                                    -webkit-transition: background-image 1s ease-in-out;
+                                                    transition: background-image 1s ease-in-out;
+                                                    border-bottom-left-radius: 0px;
+                                                    border-bottom-right-radius: 0px;">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div ng-if="!a.HasFile" style="        height: 200px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                                                                                        <span class="fa fa-image fa-3x my-auto mt-5 text-center"></span>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 border-dashed add" ng-show="newCharacterTalent1.length<=0 ">
+                            <div class="row metismenu">
+
+                                <div class="col-12  text-center py-5 justify-content-center rounded">
+
+
+
+                                    <span><img class="icon-svg icon_svg ml-2 ng-scope" src="/icons/CAST.svg"></span>
+                                    <p>There are no actors.</p>
+                                    <button class="btn btn-primary btn-sm add-char-btn" data-toggle="collapse" data-target="#Actors" aria-expanded="true" aria-controls="collapseExample">Suggest actor or talent  <i class="fa fa-plus-circle"></i></button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-1" ng-hide="Is_Rejected.length<=0 || char.Sugggestion">
+                <div class="col-md-12 reject col-sm-12 py-2  cursor-pointer rounded bg-light-gray">
+
+                    <span class="h5">Rejected suggestions</span>
+                    <i class="fa fa-chevron-up pull-right cursor-pointer "></i>
+                </div>
+                <div class="col-12 reject-div my-3">
+                    <div class="row">
+
+
+                        <div class="col-12">
+                            <div class="row">
+
+
+                                <div class="col-12 mt-2">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6 col-lg-3 bg-white col-xxl-3 col-xxxl-3 mb-3 m-2 " ng-repeat="a in Is_Rejected" ng-init="$last && callback('callback')">
+                                            <div class=" col-12 h-160px rounded  bg-black" ng-show="a.Id+'a'==charIndex">
+                                                <p class="text-white">      Do you really want to delete this suggestion?</p>
+                                                <div class="flex-row d-flex">
+                                                    <button class="btn btn-sm btn-primary m-1" ng-click="DeleteChTalent(a)">Yes</button>
+                                                    <button class="btn btn-sm btn-primary m-1" ng-click="hideDel()">No</button>
+                                                </div>
+
+                                            </div>
+                                            <div class="row " ng-show="a.Id+'a'!=charIndex && !a.Is_CastFixed && a.Is_Rejected" ng-click="viewActor(a)">
+
+                                                <div class="col-4 col-md-4 col-sm-4 d-none d-md-block d-sm-block bg-light p-0 border-right">
+                                                    <div ng-if="a.HasFile" class="imgLiquidFill" style="height: 200px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.file.FileId}}') no-repeat;
+        background-size: cover;
+">
+                                                        <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 100px !important;">
+                                                            <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                                        </div>
+                                                        <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid imgLiquidFill pointer-event cat-image"
+                                                             style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="!a.HasFile" style="        height: 100px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                                        <span class="fa fa-image fa-3x my-auto mt-5 text-center"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-5 col-md-5 col-sm-5 cursor-pointer m-0 p-0" ui-sref="cast.actor_details({charId: '{{a.Id}}'})">
+                                                    <div class="row m-0 p-0 ">
+                                                        <div class="col-md-12 col-sm-12 m-0 p-0 ">
+                                                            <div class="col-12 text-wrap d-lg-inline-flex text-truncate">
+                                                                <span><a class="  btn-sm btn-transparent font-weight-bold" ng-click="$event.stopPropagation()">{{a.Name}}</a></span>
+
+
+                                                                @*<span><a class="text-white  btn-sm btn-transparent font-weight-bold">Day</a></span>*@
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-3 col-md-3 pull-right text-right  dropleft">
+                                                    <div class="d-inline">
+                                                        <span class="fa fa-star-o" ng-show="Is_Cast.length<=0 || char.GroupOfCharacters" ng-click="UpdateChTalentCast(a);$event.stopPropagation()" title="Fix as Cast" data-toggle="tooltip" data-placement="top" tooltip></span>
+
+                                                        <span class=" cursor-pointer btn-transparent btn-sm ignore-click" data-toggle="dropdown" ng-click="ShowDropDown(a.Id,'s');$event.stopPropagation()"><i class="fa fa-ellipsis-v"></i></span>
+                                                    </div>
+                                                    <div class="dropdown-menu dropdown-menu-right show" ng-show="dropdown==a.Id+'s'">
+                                                        <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="AgainSuggestion(a);$event.stopPropagation()"><i class="dropdown-icon fa fa-thumbs-o-up"></i> Suggest Again</a>
+                                                        <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="showDel(a.Id,'a');$event.stopPropagation()"><i class="dropdown-icon fa fa-trash"></i> Delete</a>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-10 bg-black rounded  d-none d-md-block d-sm-block" style="background: rgba(45,45,45,0.7); position: absolute; right: 0; bottom: 0;">
+                                                    <span class="text-white small"><i class="fa fa-globe" ng-show="a.Rating<=0"></i> <i class="fa fa-lock" ng-hide="a.Rating<=0"></i>  Your rating is visible for all. Click here to change this.</span>
+                                                    <div star-rating rating-value="a.Rating" max="5" _enabled="1" ng-click="UpdateChTalentRating(a);;$event.stopPropagation()"></div>
+                                                </div>
+                                                @*<div class="card mb-2" style=" cursor: pointer !important;transition: background .2s linear,box-shadow .2s linear,opacity .8s linear .3s;">
+                                                    <div class="card-header p-1" ng-show="a.Id!=-1">
+                                                        <h3 style="text-transform: capitalize;" class="card-title  ml-1 mt-1 overflow-ellipsis">
+                                                            <div class="font-15  overflow-ellipsis d-block" ng-model="a.Name" title="{{a.Name}}" data-toggle="tooltip" data-placement="top" tooltip>{{a.Name}}</div>
+
+
+                                                        </h3>
+                                                        <div class="card-options">
+                                                            <div class="item-action dropdown ml-2">
+                                                                <a href="javascript:void(0)" data-toggle="dropdown" class="ignore-click" ng-click="ShowDropDown(a.Id,'r');$event.stopPropagation()">
+                                                                    <i class="fe fe-more-vertical ignore-click"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right show" ng-show="dropdown==a.Id+'r'">
+                                                                    <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="AgainSuggestion(a);$event.stopPropagation()"><i class="dropdown-icon fa fa-thumbs-o-up"></i> Suggest Again</a>
+                                                                    <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="showDel(a.Id,'a');$event.stopPropagation()"><i class="dropdown-icon fa fa-trash"></i> Delete</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div star-rating rating-value="a.Rating" max="5" ng-click="UpdateChTalent(a);$event.stopPropagation()"></div>
+                                                    <div class="card-body bg-light card-body p-0">
+                                                        <div ng-if="a.HasFile" class="imgLiquidFill" style="        height: 200px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.Default.FileId}}/100/100') no-repeat;
+        background-size: cover;
+">
+                                                            <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 200px !important;">
+                                                                <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                                            </div>
+                                                            <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid pointer-event cat-image"
+                                                                 style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                                            </div>
+                                                        </div>
+                                                        <div ng-if="!a.HasFile" style="        height: 200px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                                            <span class="fa fa-image fa-3x my-auto mt-5 text-center"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+         
+            <div class="row mt-1" ng-hide="Rating.length<=0 || char.Sugggestion">
+                <div class="col-md-12 actors col-sm-12 py-2  cursor-pointer rounded bg-light-gray">
+
+                    <span class="h5">Ratings({{Rating.length}})</span>
+                    <i class="fa fa-chevron-up pull-right cursor-pointer "></i>
+                </div>
+                <div class="col-12 actors-div my-3">
+                    <div class="row">
+
+
+                        <div class="col-12">
+                            <div class="row">
+
+
+                                <div class="col-12 mt-2">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6 col-lg-3 bg-white col-xxl-3 col-xxxl-3 mb-3 m-2 " ng-repeat="a in Rating" ng-init="$last && callback('callback')">
+
+                                            <div class="row " ng-show="a.Id+'a'!=charIndex " ng-click="viewActor(a)">
+                                                <div class="col-5 col-md-5 col-sm-5 cursor-pointer m-0 p-0" ui-sref="cast.actor_details({charId: '{{a.Id}}'})">
+                                                    <div class="row m-0 p-0 ">
+                                                        <div class="col-md-12 col-sm-12 m-0 p-0 ">
+                                                            <div class="col-12 text-wrap d-lg-inline-flex text-truncate">
+                                                                <span><a class="  btn-sm btn-transparent font-weight-bold" ng-click="$event.stopPropagation()">{{a.Name}}</a></span>
+
+
+                                                                @*<span><a class="text-white  btn-sm btn-transparent font-weight-bold">Day</a></span>*@
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-7 col-md-7 col-sm-7 d-none d-md-block d-sm-block bg-light p-0 border-right">
+                                                    <div ng-if="a.HasFile" class="imgLiquidFill" style="height: 200px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.file.FileId}}') no-repeat;
+        background-size: cover;
+">
+                                                        <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 100px !important;">
+                                                            <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                                        </div>
+                                                        <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid pointer-event cat-image imgLiquidFill"
+                                                             style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="!a.HasFile" style="        height: 100px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                                        <span class="fa fa-image fa-3x my-auto mt-5 text-center"></span>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="col-12 bg-black rounded  d-none d-md-block d-sm-block" style="background: rgba(45,45,45,0.7); position: absolute; right: 0; bottom: 0;">
+
+                                                    <div class="d-flex flex-row">
+                                                        <span>
+                                                            <img src="/api/UserProfiles/GetLoggedInUserThumbnail/32/32" tooltip data-toggle="tooltip" data-placement="top" title="{{userProfile.FirstName}}{{userProfile.LastName}}" class="avatar" />
+                                                        </span>
+                                                        <span class="ml-1 text-white" >  {{userProfile.FirstName}}{{userProfile.LastName}}</span>
+                                                        <div star-rating rating-value="a.Rating" max="5" _enabled="0" ng-click="$event.stopPropagation()"></div>
+
+                                                    </div>    </div>
+
+                                                @*<div class="card mb-2" style=" cursor: pointer !important;transition: background .2s linear,box-shadow .2s linear,opacity .8s linear .3s;">
+                                                    <div class="card-header p-1" ng-show="a.Id!=-1">
+                                                        <h3 style="text-transform: capitalize;" class="card-title  ml-1 mt-1 overflow-ellipsis">
+                                                            <div class="font-15  overflow-ellipsis d-block" ng-model="a.Name" title="{{a.Name}}" data-toggle="tooltip" data-placement="top" tooltip>{{a.Name}}</div>
+
+                                                        </h3>
+
+                                                    </div>
+
+                                                    <div star-rating rating-value="a.Rating" max="5" ng-click="UpdateChTalent(a)"></div>
+                                                    <div class="d-flex flex-row">
+                                                        <span>
+                                                            <img src="/api/UserProfiles/GetLoggedInUserThumbnail/50/50" tooltip data-toggle="tooltip" data-placement="top" title="{{userProfile.FirstName}}{{userProfile.LastName}}" class="avatar" />
+                                                        </span>
+                                                        <span class="ml-1">  {{userProfile.FirstName}}{{userProfile.LastName}}</span>
+                                                    </div>
+                                                    <div class="card-body card-body p-0">
+                                                        <div ng-if="a.HasFile" class="imgLiquidFill" style="        height: 200px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.file.FileId}}/100/100') no-repeat;
+        background-size: cover;
+">
+                                                            <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 200px !important;">
+                                                                <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                                            </div>
+                                                            <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid pointer-event cat-image"
+                                                                 style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                                            </div>
+                                                        </div>
+                                                        <div ng-if="!a.HasFile" style="        height: 200px !important">
+
+                                                        </div>
+                                                    </div>
+                                                </div>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-1">
+                <div class="col-md-12 images col-sm-12 py-2 cursor-pointer rounded bg-light-gray">
+
+                    <span class="h5"> Moods and Images({{files.length}})  </span>
+                    <i class="fa fa-chevron-up pull-right cursor-pointer "></i>
+                </div>
+                <div class="col-md-12 col-sm-12 col-12 my-1">
+
+                    <div class="col-12 images-div my-3">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="progressFiles">
+
+                                </div>
+                                <div id="draggableContainer">
+                                    <div id="uppy-uploader" class="w-100" ng-show="hasFilesinUppy">
+
+                                    </div>
+                                    <input type="file" multiple hidden id="projectFile" />
+                                    <div class="row clearfix mb-3" ng-if="files.length>0">
+                                        <div class="col-sm-12 col-md-6">
+                                            <button type="button" class="btn btn-success" data-toggle="collapse" ng-hide="DelAll" ng-click="openProjectFileDialog()" data-target="#createFiles" aria-expanded="false" aria-controls="collapseExample">
+                                                Add file <i class="fa fa-plus-circle"></i>
+                                            </button>
+                                            <div class="d-inline-flex" ng-show="DelAll" >
+                                                <a class="btn btn-sm bg-light-gray  m-3 ml-0" href="javascript:void(0)" ng-click="dowloadZipSelected()"><i class="fa fa-download"></i>Download files </a>
+                                                <a class="btn btn-sm bg-light-gray  m-3"  href="javascript:void(0)" data-toggle="modal" confirmed-click="deleteFileSelected()" ng-confirm-title="Delete selected items?" ng-confirm-click="Would you like to delete all the selected items? This cannot be undone!" data-dismiss="modal" data-target="#charDelAll"> <i class="fa fa-trash"></i> Delete selected</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12 col-12 text-md-right text-sm-left text-left mt-3  " ng-hide="chars1.length==0">
+
+                                                <div class="d-inline-flex">
+                                                    <span class="avatar cursor-pointer fa  fa-check-square-o fa-2x bg-light-gray  {{(srchbtn||charCheck==true?'d-none':'')}}" mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Select multiple" ng-click="toggleMulti()"></span>
+
+                                                    <span class="avatar cursor-pointer  fa fa-check-circle-o fa-2x bg-light-gray mr-1 {{(srchbtn||charCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Select all" ng-click="selectAll()"></span>
+                                                    <span class="avatar cursor-pointer  fa fa-circle-o fa-2x bg-light-gray mr-1 {{(srchbtn||charCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Deselect all" ng-click="deselectAll()"></span>
+                                                    <span class="avatar cursor-pointer  fa fa-times fa-2x bg-red mr-1 {{(srchbtn||charCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Close" ng-click="toggleMulti()"></span>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <div class="row clearfix" ng-if="files.length==0">
+                                        <div class="col-sm-12">
+                                            <div class="list-empty text-center d-block p-3 border-dashed">
+                                                <div class="row clearfix">
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <span class="material-icons font-20">
+                                                                    insert_drive_file
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <span class="col-form-label">
+                                                                    There are no files yet. You can drop files here.
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix">
+                                                    <div class="col-sm-12 mt-3">
+                                                        <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#createLink" aria-expanded="false" ng-click="openProjectFileDialog()" aria-controls="collapseExample">Add file</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="col-sm-6 col-md-4 col-lg-3 col-xxl-2 col-xxxl-2 mb-3" ng-repeat="file in files" style="height:160px !important">
+                                            <div class="row py-1 p-2 rounded bg-dark" style="height: 130px;" ng-show="file.Id+'file'==charIndex">
+                                                <div class="row">
+                                                    <div class="col-12 pl-4">
+                                                        <p class="text-white font-12">
+                                                            Do you really want to delete this file?
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-12 pl-4">
+                                                        <button class="btn btn-sm btn-primary" ng-click="deleteFile($event,file)">Yes</button>
+                                                        <button class="btn btn-sm btn-primary" ng-click="hideSplit();$event.stopPropagation();">No</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card box-shadow" ng-show="file.Id+'file'!=charIndex">
+
+                                                <div class="cursor-pointer" ng-click="openFileViewer(file, files)">
+                                                    <div ng-if="file.Type=='image'" class="img-fluid imgLiquidFill pointer-event cat-image"
+                                                         style="height: 130px;
+                                                                                background-image: url('/api/UserProfiles/GetFileThumbnail/{{file.FileId}}');
+                                                                                background-size: 100% 100%;
+                                                                                background-repeat: no-repeat;
+                                                                                -webkit-transition: background-image 1s ease-in-out;
+                                                                                transition: background-image 1s ease-in-out;
+                                                                                border-top-left-radius: 5px;
+                                                                                border-top-right-radius: 5px; ">
+                                                    </div>
+                                                    <div ng-if="file.Type!='image'" class="preview filetype filetype_json" style="pointer-events: all;">
+                                                        <span class="extention" style="pointer-events: all;"> <i class="fa fa-file"></i> {{file.Extension}}</span>
+                                                    </div>
+                                                    <div ng-if="file.LatestVersion" class="tags hide_in_colorlist" style=" position: absolute; right: 10px; top: 10px; color: #fff; font-size: 10px;">
+                                                        <span class="bg-dark text-white" style="padding: 2px 4px; border-radius: 5px;">{{file.LatestVersion}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body p-1">
+
+                                                    <div class="row clearfix">
+                                                        <div class="col-10 text-nowrap overflow-ellipsis" title="{{file.Name}}">
+                                                            {{file.Name}}
+                                                        </div>
+                                                        <div class="col-2 text-right">
+                                                            <div class="item-action dropdown">
+                                                                <a href="javascript:void(0)" data-toggle="dropdown" class="icon" aria-expanded="false">
+                                                                    <i class="fe fe-more-vertical"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                    <a href="javascript:void(0)" ng-click="showDel(file.Id,'file');$event.stopPropagation();" class="dropdown-item">
+                                                                        <i class="fa fa-trash">
+                                                                        </i> Delete
+                                                                    </a>
+                                                                    <a href="javascript:void(0)" ng-if="false" g-click="makeDefault($event,file)" class="dropdown-item">
+                                                                        <i class="fa fa-file-picture-o">
+                                                                        </i> Select Thumbnail
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-11 thumbnail h-160px text-center rounded visible cursor-pointer" ng-if="charCheck" ng-click="toggleCharCheck(file)">
+                                                <span class="fa fa-check fa-4x text-success my-5" ng-if="file.check"></span>
+                                            </div>
+                                        </div>
+                                      
+                                    </div>
+                                    <div class="row clearfix" ng-if="files.length>0">
+                                        <div class="col-sm-12">
+                                            <ul uib-pagination
+                                                total-items="tabContentLength.filesCount"
+                                                ng-model="filesPaging.page"
+                                                items-per-page="12"
+                                                previous-text="&lsaquo;"
+                                                next-text="&rsaquo;"
+                                                class="pull-right font-15"
+                                                ng-change="getDocumentCatFiles()"
+                                                boundary-link-numbers="true"
+                                                rotate="false">
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-12 days col-sm-12 py-2  cursor-pointer rounded bg-light-gray">
+
+                    <span class="h5">Day Out of Days</span>
+                    <i class="fa fa-chevron-up pull-right cursor-pointer "></i>
+                </div>
+                <div class="col-12 days-div my-3">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12 col-12">         <div id="calendar" ui-calendar="uiConfig.calendar" class="calendar" ng-model="events" calendar="Calendar"></div></div>
+                        <div class="col-md-6 col-sm-12 col-12">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label>Number of scenes</label>
+                                    <h6>10</h6>
+                                </div>
+                                <div class="col-12">
+                                    <label>Number of shooting days</label>
+                                    <h6>0</h6>
+                                </div>
+                                <div class="col-12">
+                                    <label>Scenes</label>
+                                    <div>
+
+                                        <button class="badge   m-1 btn bg-light-gray p-2">1</button>
+                                        <button class="badge m-1 btn bg-light-gray p-2">2</button>
+                                        <button class="badge  m-1 btn bg-light-gray p-2">3</button>
+                                        <button class="badge m-1 btn bg-light-gray p-2">4</button>
+                                        <button class="badge m-1 btn bg-light-gray p-2">5</button>
+                                        <button class="badge m-1 btn bg-light-gray p-2">6</button>
+                                        <button class="badge m-1 btn bg-light-gray p-2">7</button>
+                                        <button class="badge m-1 btn bg-light-gray p-2">8</button>
+                                        <button class="badge m-1 btn bg-light-gray p-2">9</button>
+                                        <button class="badge m-1 btn bg-light-gray p-2">10</button>
+                                        <button class="badge m-1 btn bg-light-gray p-2">11</button>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label>Sets</label>
+                                    <div>
+
+                                        <button class="badge m-1 btn bg-light-gray p-2">
+                                            Ferry Ramses / Dining Hall
+                                        </button>
+                                        <button class="badge  m-1 btn bg-light-gray p-2">
+                                            Ferry Ramses / Farah’s Cabin
+                                        </button>
+                                        <button class="badge  m-1 btn bg-light-gray p-2">
+                                            Ferry Ramses / Foredeck
+                                        </button>
+                                        <button class="badge  m-1 btn bg-light-gray p-2">
+                                            Huge Cave
+                                        </button>
+                                        <button class="badge  m-1 btn bg-light-gray p-2">
+                                            River Nile
+                                        </button>
+                                        <button class="badge  m-1 btn bg-light-gray p-2">
+                                            Sand Desert
+                                        </button>
+
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label>Script days</label>
+                                    <h6>-</h6>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--<div class="col-12 border-dashed add">
+                <div class="row metismenu">
+
+                    <div class="col-12  text-center py-5 justify-content-center rounded">
+
+                        <p>To be developed</p>-->
+                        @*<span class="fa fa-2x fa-file"></span>
+                    <p>There are no files yet. You can drop files into the folder.</p>
+                    <button class="btn btn-primary btn-sm add-char-btn" ng-click="show_ext()">Add file <i class="fa fa-plus-circle"></i></button>*@
+                        <!--</div>
+
+                    </div>
+                </div>-->
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-12 tasks col-sm-12 py-2  cursor-pointer rounded bg-light-gray">
+
+                    <span class="h5">My created tasks ({{mytasks.length}})</span>
+                    <i class="fa fa-chevron-up pull-right cursor-pointer "></i>
+                </div>
+                <div class="col-12 tasks-div my-3">
+                    <div class="row clearfix">
+                        <div class="col-12">
+                            <div class="row clearfix mb-3" ng-if="mytasks.length>0">
+                                <div class="col-sm-12">
+                                    <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">
+                                        Create task <i class="fa fa-plus-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row clearfix collapse mb-3" id="newTask">
+                                <div class="col-sm-12">
+                                    <div class="card card-body p-3">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h5>
+                                                    <span class="col-form-label">Create task</span>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12">
+                                                <h6>
+                                                    <small>To create a new task, enter a title. Then, choose specific crew members to assign the task to. Optionally, you can add a deadline to the task.</small>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="row clearfix">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Title</label>
+                                                            <input maxlength="200" type="text" class="form-control"
+                                                                   placeholder="Title" ng-model="taskObj.Title" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Description</label>
+                                                            <textarea class="form-control" rows="5" ng-model="taskObj.Description"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label">
+                                                                Assigned crew members
+                                                            </label>
+                                                            <ui-select multiple class="form-control" ng-model="taskObj.AssignedTo" theme="selectize" sortable="true" close-on-select="false">
+                                                                <ui-select-match>{{$item.name}}</ui-select-match>
+                                                                <ui-select-choices group-by="groupUsers" repeat="visible as visible in projectUsersAndGroups">
+                                                                    <div class="row p-10 clearfix">
+                                                                        <div class="col-sm-1">
+                                                                            <img class="rounded img-fluid" src="{{visible.avatar}}" alt="" />
+                                                                        </div>
+                                                                        <div class="col-sm-11">
+                                                                            <div ng-bind-html="visible.name | highlight: $select.search">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </ui-select-choices>
+                                                            </ui-select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="row clearfix mt-4">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label class="custom-switch">
+                                                                <input type="checkbox" ng-model="taskObj.HasDeadline" id="toggleCalendarDeadline"
+                                                                       data-toggle="collapse" data-target="#deadline-calendar" aria-expanded="false" aria-controls="collapseExample"
+                                                                       name="custom-switch-checkbox" class="custom-switch-input">
+                                                                <span class="custom-switch-indicator"></span>
+                                                                <span class="custom-switch-description">Task has a deadline</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix mt-2">
+                                                    <div class="col-sm-12 collapse" id="deadline-calendar" data-parent="#newTask">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Deadline</label>
+                                                            <div class="input-group">
+                                                                <input type="date" ng-model="taskObj.Deadline" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row clearfix mt-4">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label class="custom-switch">
+                                                                <input type="checkbox" ng-model="taskObj.HasSection" id="toggleSectionSelector"
+                                                                       data-toggle="collapse" data-target="#section-selector" aria-expanded="false" aria-controls="collapseExample"
+                                                                       name="custom-switch-checkbox" class="custom-switch-input">
+                                                                <span class="custom-switch-indicator"></span>
+                                                                <span class="custom-switch-description">Task is linked to a section</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix mt-2">
+                                                    <div class="col-sm-12 collapse" id="section-selector">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Section</label>
+                                                            <div class="input-group">
+                                                                <select chosen
+                                                                        class="form-control"
+                                                                        option="sections"
+                                                                        ng-model="taskObj.Section"
+                                                                        ng-options="section.Url as section.Name for section in sections">
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix mt-2" ng-if="taskObj.Section=='documents'">
+                                                    <div class="col-sm-12" id="object-selector">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Object</label>
+                                                            <div class="input-group">
+                                                                <select chosen
+                                                                        class="form-control"
+                                                                        option="objects"
+                                                                        ng-model="taskObj.DocumentCategoryId"
+                                                                        ng-options="object.Id as object.Name for object in objects">
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 text-right ">
+                                                <div class="d-inline-block">
+                                                    <button type="button" class="btn btn-primary d-flex float-right" ng-click="createTask()" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">Create</button>
+                                                    <button type="button" class="btn btn-default d-flex" ng-click="cancelTaskCreation()" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center py-5 border-dashed" ng-if="mytasks.length==0">
+                                <span class="fa fa-2x fa-edit"></span>
+                                <p>There are no tasks available.</p>
+                                <button type="button" class="btn btn-success mt-3" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="newTask">
+                                    Create Task <i class="fa fa-plus-circle"></i>
+                                </button>
+                            </div>
+                            <div class="row clearfix" ng-if="mytasks.length>0">
+                                <div class="col-sm-12">
+                                    <div style="height:71px !important" class="card task box-shadow mb-2 {{task.ClassName}}" ng-repeat="task in mytasks" ng-click="$event.originalEvent.dropdown || goToTaskProfile(task.Id)">
+                                        <div class="row py-1 p-2 rounded bg-dark" ng-show="task.Id+'task'==charIndex">
+                                            <div class="row">
+                                                <div class="col-12 pl-4">
+                                                    <p class="text-white font-12">
+                                                        Do you really want to delete this task?
+                                                    </p>
+                                                </div>
+                                                <div class="col-12 pl-4">
+                                                    <button class="btn btn-sm btn-primary" confirmed-click="deleteTask($event, task)" ng-confirm-title="Delete Task?" ng-confirm-click="Would you like to delete this task? This cannot be undone!">Yes</button>
+                                                    <button class="btn btn-sm btn-primary" ng-click="hideSplit();$event.stopPropagation();">No</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row clearfix p-0 ml-3" ng-show="task.Id+'task'!=charIndex">
+                                            <div class="col-1 mt-3 p-0 tasks_status_symbol">
+                                                <a class="symbol" href="javascript:void(0)" ng-click="changeTaskStatus($event,task)" data-toggle="tooltip" data-placement="top" tooltip title="{{task.ClassName=='completed' ? 'Mark task as in progress again' : task.ClassName == 'overdue' || task.ClassName == 'pending' ? 'Mark task as completed' : ''}}">
+                                                    <i class="{{task.Completed?'fa fa-check-circle':'fa fa-circle-thin'}}"></i>
+                                                </a>
+                                            </div>
+                                            <div class="col-4 mt-3 text-left">
+                                                {{task.Title}}
+                                                <p ng-if="task.SubTasks.length>0">
+                                                    <small>{{(task.SubTasks | filter:{Completed:true}).length}} of {{task.SubTasks.length}} subtasks have been completed</small>
+                                                </p>
+                                            </div>
+                                            <div class="col-2">
+                                                <div ng-if="task.HasDeadline">
+                                                    <small class="mb-1">Deadline</small>
+                                                    <br />
+                                                    {{task.Deadline}}
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <small class="mb-1">Assigned to</small>
+                                                <br />
+                                                <ul class="list-unstyled team-info sm margin-0 overflow-hidden text-nowrap">
+                                                    <li ng-repeat="assignedTo in task.AssignedTo" data-toggle="tooltip" data-placement="top" tooltip title="{{assignedTo.name}}">
+                                                        <img ng-if="assignedTo.Type=='user'" src="/api/UserProfiles/GetUserPhoto/{{assignedTo.id}}/30/30" alt="Avatar">
+                                                        <img ng-if="assignedTo.Type!='user'" height="32" src="{{assignedTo.icon}}" alt="Avatar">
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-1 p-0">
+                                                <small class="mb-1">Status</small>
+                                                <br />
+                                                <div class="p-0 font-weight-bold">{{task.ClassName}}</div>
+                                            </div>
+                                            <div class="col-1 text-right">
+                                                <div class="item-action dropdown mt-3">
+                                                    <a href="javascript:void(0)" data-toggle="dropdown" ng-click="$event.originalEvent.dropdown = true" class="icon font-20" aria-expanded="false">
+                                                        <i class="fe fe-more-vertical"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                        <a href="javascript:void(0)" ng-click="showDel(task.Id,'task');$event.stopPropagation();" class="dropdown-item">
+                                                            <i class="dropdown-icon fa fa-trash"></i> Delete
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-12 comment col-sm-12 py-2  cursor-pointer rounded bg-light-gray">
+
+                    <span class="h5">Comments ({{comments.length}})</span>
+                    <i class="fa fa-chevron-up pull-right cursor-pointer "></i>
+                </div>
+                <div class="col-12 comment-div my-3">
+                    <div class="row">
+                        <div class="col-sm-12">
+
+                            <div class="row clearfix" ng-repeat="comment in comments">
+                                <div class="col-12 py-1 p-2 rounded bg-dark" ng-show="comment.Id+'comment'==charIndex">
+                                    <div class="row">
+                                        <div class="col-12 pl-4">
+                                            <p class="text-white font-12">
+                                                Do you really want to delete this comment?
+                                            </p>
+                                        </div>
+                                        <div class="col-12 pl-4">
+                                            <button class="btn btn-sm btn-primary" ng-click="deleteComment(comment)">Yes</button>
+                                            <button class="btn btn-sm btn-primary" ng-click="hideSplit()">No</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-1" ng-show="comment.Id+'comment'!=charIndex">
+                                    <div class="avatar_img position-absolute ml-2">
+                                        <img class="rounded img-fluid" src="/api/UserProfiles/GetUserPhoto/{{comment.UserId}}/45/45" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-sm-11 card font-12">
+
+                                    <div class="comment_body p-2" ng-show="comment.Id+'comment'!=charIndex">
+                                        <h6><span class="small">{{comment.UserName}}</span> <small class="float-right font-11">{{comment.Created}}</small></h6>
+                                        <p ng-bind-html="comment.Text"></p>
+
+                                        <div class="text-right">
+                                            <a href="javascript:void(0);" ng-click="showDel(comment.Id,'comment')"><i class="material-icons">delete</i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix" ng-if="comments.length==0">
+                                <div class="col-sm-12">
+                                    <div class="list-empty text-center d-block p-3 border-dashed">
+                                        <div class="row clearfix">
+                                            <div class="col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <span class="material-icons font-20">
+                                                            comment
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <span class="col-form-label">
+                                                            There are no comments yet.
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-sm-12 mt-3">
+                                                <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#newCommentBox" aria-expanded="false" aria-controls="collapseExample">Write Comment</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix mt-3 {{commentObj.newComment?'collapse':''}}" id="newCommentBox">
+                                <div class="col-sm-1">
+                                    <div class="avatar_img position-absolute ml-2">
+                                        <img class="rounded img-fluid" src="/api/UserProfiles/GetLoggedInUserThumbnail/45/45" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-sm-11 p-2 card">
+                                    <div class="comment_body">
+                                        <p class="small"></p>
+                                        <textarea ng-model="commentObj.Text" class="p-2 w-100 font-12 mention" placeholder="Write a comment..."></textarea>
+                                        <div class="text-center small">
+                                            <i class="fa fa-info-circle"></i> You can mention users by using the @@ sign
+                                        </div>
+                                        <div class="text-right">
+                                            <button type="button" ng-click="sendComment()" class="btn btn-success">
+                                                Send
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header border-0">
+
+                <h4 class="modal-title">Merge characters</h4>
+            </div>
+            <div class="modal-body  border-0">
+                <p>In case you want to combine two characters you are able to merge them together into one character. Please select the character you want to merge with '{{char.Name}}' in the list below. During merging the character you selected in the list will be updated with information it misses from '{{char.Name}}' . Afterwards the character '{{char.Name}}' will be deleted.</p>
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label>
+                            Character
+                        </label>
+
+                        <ui-select class="form-control" ng-model="Character.char" theme="selectize" sortable="true" close-on-select="true">
+
+                            <ui-select-match>{{Character.char.Index}}  {{Character.char.Name}}</ui-select-match>
+                            <ui-select-choices repeat="visible as visible in filtered_char">
+                                <div class="row p-10 clearfix">
+
+                                    <div class="col-sm-12">
+                                        <div ng-bind-html="visible.Index +' ' + visible.Name  | highlight: $select.search">
+                                        </div>
+                                    </div>
+                                </div>
+                            </ui-select-choices>
+                        </ui-select>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#ConfrmModal" ng-disabled="!Character.char">Merge character</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="ConfrmModal" class="modal fade" role="dialog">
+
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header border-0">
+
+                <h4 class="modal-title">Merge characters</h4>
+            </div>
+
+            <div class="modal-body  border-0">
+                <p>  Are you sure you want to merge the character  '{{Character.char.Name}}' with '{{char.Name}}' will be deleted.</p>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="MergeChar(Character.char.Id,char.Id)">Yes</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        setTimeout(function () {
+            if ($('body').hasClass("dark-mode")) {
+
+                $('.add').addClass('bg-dark');
+                $('.add').removeClass('border-dashed');
+
+
+
+            } else {
+
+                $('.add').addClass('border-dashed');
+                $('.add').removeClass('bg-dark');
+                $('.add').removeClass('bg-white');
+            }
+        }, 400);
+        $('body').change(function () {
+            if ($('body').hasClass("dark-mode")) {
+
+                $('.add').addClass('bg-dark');
+                $('.add').removeClass('border-dashed');
+
+
+
+            } else {
+
+                $('.add').addClass('border-dashed');
+                $('.add').removeClass('bg-dark');
+                $('.add').removeClass('bg-white');
+            }
+        });
+
+        $('.general-info').click(function () {
+            if ($('.general-info>i').hasClass('fa-chevron-down')) {
+                $('.general-info-div').fadeIn('slow');
+                $('.general-info>i').removeClass('fa-chevron-down');
+                $('.general-info>i').addClass('fa-chevron-up');
+            } else {
+                $('.general-info-div').fadeOut('slow');
+                $('.general-info>i').removeClass('fa-chevron-up');
+                $('.general-info>i').addClass('fa-chevron-down');
+            }
+        });
+        $('.actor-suggest').click(function () {
+            if ($('.actor-suggest>i').hasClass('fa-chevron-down')) {
+                $('.actor-suggest-div').fadeIn('slow');
+                $('.actor-suggest>i').removeClass('fa-chevron-down');
+                $('.actor-suggest>i').addClass('fa-chevron-up');
+            } else {
+                $('.actor-suggest-div').fadeOut('slow');
+                $('.actor-suggest>i').removeClass('fa-chevron-up');
+                $('.actor-suggest>i').addClass('fa-chevron-down');
+            }
+        });
+        $('.images').click(function () {
+            if ($('.images>i').hasClass('fa-chevron-down')) {
+                $('.images-div').fadeIn('slow');
+                $('.images>i').removeClass('fa-chevron-down');
+                $('.images>i').addClass('fa-chevron-up');
+            } else {
+                $('.images-div').fadeOut('slow');
+                $('.images>i').removeClass('fa-chevron-up');
+                $('.images>i').addClass('fa-chevron-down');
+            }
+        });
+        $('.days').click(function () {
+            if ($('.days>i').hasClass('fa-chevron-down')) {
+                $('.days-div').fadeIn('slow');
+                $('.days>i').removeClass('fa-chevron-down');
+                $('.days>i').addClass('fa-chevron-up');
+            } else {
+                $('.days-div').fadeOut('slow');
+                $('.days>i').removeClass('fa-chevron-up');
+                $('.days>i').addClass('fa-chevron-down');
+            }
+        });
+        $('.tasks').click(function () {
+            if ($('.tasks>i').hasClass('fa-chevron-down')) {
+                $('.tasks-div').fadeIn('slow');
+                $('.tasks>i').removeClass('fa-chevron-down');
+                $('.tasks>i').addClass('fa-chevron-up');
+            } else {
+                $('.tasks-div').fadeOut('slow');
+                $('.tasks>i').removeClass('fa-chevron-up');
+                $('.tasks>i').addClass('fa-chevron-down');
+            }
+        });
+        $('.comment').click(function () {
+            if ($('.comment>i').hasClass('fa-chevron-down')) {
+                $('.comment-div').fadeIn('slow');
+                $('.comment>i').removeClass('fa-chevron-down');
+                $('.comment>i').addClass('fa-chevron-up');
+            } else {
+                $('.comment-div').fadeOut('slow');
+                $('.comment>i').removeClass('fa-chevron-up');
+                $('.comment>i').addClass('fa-chevron-down');
+            }
+        });
+        $('.reject').click(function () {
+            if ($('.reject>i').hasClass('fa-chevron-down')) {
+                $('.reject-div').fadeIn('slow');
+                $('.reject>i').removeClass('fa-chevron-down');
+                $('.reject>i').addClass('fa-chevron-up');
+            } else {
+                $('.reject-div').fadeOut('slow');
+                $('.reject>i').removeClass('fa-chevron-up');
+                $('.reject>i').addClass('fa-chevron-down');
+            }
+        });
+        $('.rating').click(function () {
+            if ($('.rating>i').hasClass('fa-chevron-down')) {
+                $('.rating-div').fadeIn('slow');
+                $('.rating>i').removeClass('fa-chevron-down');
+                $('.rating>i').addClass('fa-chevron-up');
+            } else {
+                $('.rating-div').fadeOut('slow');
+                $('.rating>i').removeClass('fa-chevron-up');
+                $('.rating>i').addClass('fa-chevron-down');
+            }
+        });
+        $('.actors').click(function () {
+            if ($('.actors>i').hasClass('fa-chevron-down')) {
+                $('.actors-div').fadeIn('slow');
+                $('.actors>i').removeClass('fa-chevron-down');
+                $('.actors>i').addClass('fa-chevron-up');
+            } else {
+                $('.actors-div').fadeOut('slow');
+                $('.actors>i').removeClass('fa-chevron-up');
+                $('.actors>i').addClass('fa-chevron-down');
+            }
+        });
+    });
+</script>

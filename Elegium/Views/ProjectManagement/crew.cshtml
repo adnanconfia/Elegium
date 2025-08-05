@@ -1,0 +1,477 @@
+﻿
+@{
+    ViewData["Title"] = "Crew";
+    Layout = null;
+}
+
+<link href="~/css/step-wizard.css" rel="stylesheet" />
+
+<div class="section-body" style="max-width:1300px" ui-view="">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <ul class="nav nav-tabs page-header-tab">
+                <li class="nav-item"><a class="nav-link active" id="general-tab" data-toggle="tab" data-target="#crew-list" ng-click="setClass()">Crew List</a></li>
+                <li class="nav-item"><a class="nav-link" id="company-tab" data-toggle="tab" data-target="#access-rights" ng-click="setClass()">Access rights</a></li>
+                <li class="nav-item"><a class="nav-link" id="portfolio-tab" data-toggle="tab" data-target="#external-contacts" ng-click="setClass()">External Contacts</a></li>
+                <li class="nav-item"><a class="nav-link" id="selfPromotion-tab" data-toggle="tab" data-target="#user-groups" ng-click="setClass()">User Groups</a></li>
+                <li class="nav-item"><a class="nav-link" id="weblinks-tab" data-toggle="tab" data-target="#units" ng-click="setClass()">Units</a></li>
+            </ul>
+            <div class="header-action d-md-flex">
+                <button type="button" class="btn btn-primary" ng-click="saveUserProfile()"><i class="fe fe-save mr-2"></i>Save</button>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-12">
+                <div class="card bg-trans" ng-style="backgroundPublicPreview">
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="crew-list">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="row clearfix">
+                                            <div class="col-sm-12 ">
+                                                <a href="javascript:void(0)" ng-click="createExternalUser()" class="btn btn-primary btn-sm">
+                                                    <i class=" fe fe-user-plus"></i> Add External Contact
+                                                </a>
+                                                <a href="javascript:void(0)" ng-click="openInviteCrewUser()" class="btn btn-primary btn-sm">
+                                                    <i class=" fe fe-user-plus"></i> Invite User
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-sm-12">
+                                                <label class="text-center form-label" ng-if="allCrewList.length==0">No users to show!</label>
+                                                <div class="table-responsive-sm" ng-if="allCrewList.length>0">
+                                                    <div ng-repeat="(key, users) in allCrewList | groupBy: 'GroupName'">
+                                                        <p class="mt-2 mb-1">{{key}}</p>
+                                                        <table class="table table-hover table-vcenter mb-0 table_custom spacing8 text-nowrap">
+
+                                                            <tbody>
+                                                                <tr ng-repeat="user in users" class="glass-effect">
+                                                                    <td style="width:60px" class="short-name p-1" ng-if="!user.IsExternalUser">
+                                                                        <span ng-if="!user.CrewUserProfile.ProfileImageAvailable">
+                                                                            {{user.FirstName[0]+user.LastName[0]}}
+                                                                        </span>
+                                                                        <img src="~/api/UserProfiles/GetUserPhoto/{{user.Crew.UserId}}/100/100"
+                                                                             style="border-radius:100%;" ng-if="user.CrewUserProfile.ProfileImageAvailable" alt="" />
+                                                                    </td>
+                                                                    <td style="width:60px" class="short-name p-1" ng-if="user.IsExternalUser">
+                                                                        <span ng-if="!user.defaultImageId">
+                                                                            {{user.FirstName[0]+user.LastName[0]}}
+                                                                        </span>
+                                                                        <img src="~/api/UserProfiles/GetFile/{{user.defaultImageId.FileId}}/100/100"
+                                                                             style="border-radius:100%;" ng-if="user.defaultImageId" alt="" />
+                                                                    </td>
+                                                                    <td class="cursor-pointer" ng-if="!user.IsExternalUser"
+                                                                        ui-sref="crew.userdetail({userId: '{{user.Crew.Id}}', title:'{{user.Name}}'})">
+                                                                        {{user.Name}}<br />
+                                                                        <small ng-hide="user.IsExternalUser" ng-repeat="position in user.CrewPostions">{{position}}&nbsp;&nbsp;</small>
+                                                                        <small ng-show="user.IsExternalUser">{{user.PositionName}} | External User</small>
+                                                                    </td>
+                                                                    <td class="cursor-pointer" ng-if="user.IsExternalUser"
+                                                                        ui-sref="crew.externaluserdetail({userId: '{{user.externalUser.Id}}', title:'{{user.Name}}'})">
+                                                                        {{user.Name}}<br />
+                                                                        <small ng-repeat="position in user.CrewPostions">{{position}}&nbsp;&nbsp;</small>
+                                                                        <small ng-show="user.IsExternalUser">{{user.PositionName}} | External User</small>
+                                                                    </td>
+
+                                                                    <td style="width:30px;" ng-if="user.IsExternalUser">
+                                                                        <button type="button" class="btn btn-icon btn-sm" ng-click="deleteExternalContact(user)" title="Delete"
+                                                                                data-type="confirm">
+                                                                            <i class="fa fa-trash-o text-danger"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                    <td style="width:30px;" ng-if="!user.IsExternalUser">
+                                                                        <button type="button" class="btn btn-icon btn-sm" ng-click="deleteCrew(user.Crew)" title="Delete"
+                                                                                data-type="confirm">
+                                                                            <i class="fa fa-trash-o text-danger"></i>
+                                                                        </button>
+                                                                    </td>
+
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade show" id="access-rights">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="row clearfix">
+                                            <div class="col-sm-12 ">
+                                                <a href="javascript:void(0)" ng-click="createExternalUser()" class="btn btn-primary btn-sm">
+                                                    <i class=" fe fe-user-plus"></i> Add External Contact
+                                                </a>
+                                                <a href="javascript:void(0)" ng-click="openInviteCrewUser()" class="btn btn-primary btn-sm">
+                                                    <i class=" fe fe-user-plus"></i> Invite User
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-sm-12">
+                                                <label class="text-center form-label" ng-if="crewList.length==0">No users to show!</label>
+                                                <div class="table-responsive-sm" ng-if="crewList.length>0">
+                                                    <table class="table table-hover table-vcenter mb-0 table_custom spacing8 text-nowrap">
+
+                                                        <tbody>
+                                                            <tr ng-repeat="user in crewList" class="glass-effect">
+                                                                <td style="width:60px" class="short-name" ng-if="!user.CrewUserProfile.ProfileImageAvailable">
+                                                                    {{user.FirstName[0]+user.LastName[0]}}
+                                                                </td>
+                                                                <td style="width:60px" class="short-name p-1" ng-if="user.CrewUserProfile.ProfileImageAvailable">
+                                                                    <img src="~/api/UserProfiles/GetUserPhoto/{{user.Crew.UserId}}/100/100"
+                                                                         style="border-radius:100%;" alt="" />
+                                                                </td>
+                                                                <td>
+                                                                    {{user.Name}} <br />
+                                                                    <small ng-repeat="position in user.CrewPostions">{{position}}&nbsp;&nbsp;</small>
+                                                                    <div>
+                                                                        <div class="flex">
+                                                                            <span class="btn-rights  {{userRightsCls(user.Crew.CrewRights)}}" data-toggle="tooltip" data-placement="right" title="Crew">
+                                                                                <div class="icon">
+                                                                                    <i class="fa fa-users"></i>
+                                                                                </div>
+                                                                                <div class="btn-icon" ng-click="updateRights('CrewRights',user.Crew)">
+                                                                                    <i ng-class="classRights(user.Crew.CrewRights)"></i>
+                                                                                </div>
+                                                                            </span>
+
+                                                                            <span class="btn-rights  {{userRightsCls(user.Crew.AnnouncementRights)}}" data-toggle="tooltip" data-placement="right" title="Announcement">
+                                                                                <div class="icon">
+                                                                                    <i class="fa fa-bullhorn"></i>
+                                                                                </div>
+                                                                                <div class="btn-icon" ng-click="updateRights('AnnouncementRights',user.Crew)">
+                                                                                    <i ng-class="classRights(user.Crew.AnnouncementRights)"></i>
+                                                                                </div>
+                                                                            </span>
+
+                                                                            <span class="btn-rights  {{userRightsCls(user.Crew.AddressBookRights)}}" data-toggle="tooltip" data-placement="right" title="Address Book">
+                                                                                <div class="icon">
+                                                                                    <i class="fa fa-address-book-o"></i>
+                                                                                </div>
+                                                                                <div class="btn-icon" ng-click="updateRights('AddressBookRights',user.Crew)">
+                                                                                    <i ng-class="classRights(user.Crew.AddressBookRights)"></i>
+                                                                                </div>
+                                                                            </span>
+
+                                                                            <span class="btn-rights  {{userRightsCls(user.Crew.CompanyCalendarRights)}}" data-toggle="tooltip" data-placement="right" title="Company Calendar">
+                                                                                <div class="icon">
+                                                                                    <i class="fa fa-calendar"></i>
+                                                                                </div>
+                                                                                <div class="btn-icon" ng-click="updateRights('CompanyCalendarRights',user.Crew)">
+                                                                                    <i ng-class="classRights(user.Crew.CompanyCalendarRights)"></i>
+                                                                                </div>
+                                                                            </span>
+
+                                                                            <span class="btn-rights  {{userRightsCls(user.Crew.ProductionCalendarRights)}}" data-toggle="tooltip" data-placement="right" title="Production Calendar">
+                                                                                <div class="icon">
+                                                                                    <i class="fa fa-film"></i>
+                                                                                </div>
+                                                                                <div class="btn-icon" ng-click="updateRights('ProductionCalendarRights',user.Crew)">
+                                                                                    <i ng-class="classRights(user.Crew.ProductionCalendarRights)"></i>
+                                                                                </div>
+                                                                            </span>
+
+                                                                            <span class="btn-rights  {{userRightsCls(user.Crew.ActorDatabaseRights)}}" data-toggle="tooltip" data-placement="right" title="Actor Database">
+                                                                                <div class="icon">
+                                                                                    <i class="fa fa-street-view"></i>
+                                                                                </div>
+                                                                                <div class="btn-icon" ng-click="updateRights('ActorDatabaseRights',user.Crew)">
+                                                                                    <i ng-class="classRights(user.Crew.ActorDatabaseRights)"></i>
+                                                                                </div>
+                                                                            </span>
+
+                                                                            <span class="btn-rights  {{userRightsCls(user.Crew.LocationDatabaseRights)}}" data-toggle="tooltip" data-placement="right" title="Location Database">
+                                                                                <div class="icon">
+                                                                                    <i class="fa fa-map-marker"></i>
+                                                                                </div>
+                                                                                <div class="btn-icon" ng-click="updateRights('LocationDatabaseRights',user.Crew)">
+                                                                                    <i ng-class="classRights(user.Crew.LocationDatabaseRights)"></i>
+                                                                                </div>
+                                                                            </span>
+
+                                                                            <span class="btn-rights  {{userRightsCls(user.Crew.CostumeDatabaseRights)}}" data-toggle="tooltip" data-placement="right" title="Costume Database Rights">
+                                                                                <div class="icon">
+                                                                                    <i class="fa fa-user-secret"></i>
+                                                                                </div>
+                                                                                <div class="btn-icon" ng-click="updateRights('CostumeDatabaseRights',user.Crew)">
+                                                                                    <i ng-class="classRights(user.Crew.CostumeDatabaseRights)"></i>
+                                                                                </div>
+                                                                            </span>
+
+                                                                            <span class="btn-rights  {{userRightsCls(user.Crew.ProbItemDatabaseRights)}}" data-toggle="tooltip" data-placement="right" title="Prob Item Database">
+                                                                                <div class="icon">
+                                                                                    <i class="fa fa-ticket"></i>
+                                                                                </div>
+                                                                                <div class="btn-icon" ng-click="updateRights('ProbItemDatabaseRights',user.Crew)">
+                                                                                    <i ng-class="classRights(user.Crew.ProbItemDatabaseRights)"></i>
+                                                                                </div>
+                                                                            </span>
+
+                                                                            <span class="btn-rights  {{userRightsCls(user.Crew.CreateDeleteProjectsRights)}}" data-toggle="tooltip" data-placement="right" title="Create Delete Projects">
+                                                                                <div class="icon">
+                                                                                    <i class="fa fa-folder"></i>
+                                                                                </div>
+                                                                                <div class="btn-icon" ng-click="updateRights('CreateDeleteProjectsRights',user.Crew)">
+                                                                                    <i ng-class="classRights(user.Crew.CreateDeleteProjectsRights)"></i>
+                                                                                </div>
+                                                                            </span>
+
+                                                                            <span class="btn-rights  {{userRightsCls(user.Crew.SubscriptionsRights)}}" data-toggle="tooltip" data-placement="right" title="Subscriptions">
+                                                                                <div class="icon">
+                                                                                    <i class="fa fa-money"></i>
+                                                                                </div>
+                                                                                <div class="btn-icon" ng-click="updateRights('SubscriptionsRights',user.Crew)">
+                                                                                    <i ng-class="classRights(user.Crew.SubscriptionsRights)"></i>
+                                                                                </div>
+                                                                            </span>
+
+                                                                            <span class="btn-rights  {{userRightsCls(user.Crew.SettingsRights)}}" data-toggle="tooltip" data-placement="right" title="Settings">
+                                                                                <div class="icon">
+                                                                                    <i class="fa fa-cog"></i>
+                                                                                </div>
+                                                                                <div class="btn-icon" ng-click="updateRights('SettingsRights',user.Crew)">
+                                                                                    <i ng-class="classRights(user.Crew.SettingsRights)"></i>
+                                                                                </div>
+                                                                            </span>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+
+                                                                <td>
+                                                                </td>
+
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade show" id="external-contacts">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="row clearfix">
+                                            <div class="col-sm-12 ">
+                                                <a href="javascript:void(0)" ng-click="createExternalUser()" class="btn btn-primary btn-sm">
+                                                    <i class=" fe fe-user-plus"></i> Add External Contact
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="row clearfix" style="height:90% !important">
+                                            <div class="col-sm-12 text-center">
+                                                <i class="fa fa-info-circle"></i>
+                                                An external contact has no access to the project
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-sm-12">
+                                                <label class="text-center form-label" ng-if="externalUsers.length==0">No external contact to show!</label>
+                                                <div class="table-responsive-sm">
+                                                    <table class="table table-hover table-vcenter mb-0 table_custom spacing8 text-nowrap">
+
+                                                        <tbody>
+                                                            <tr ng-repeat="user in externalUsers" class="glass-effect">
+                                                                <td style="width:60px" class="short-name p-1">
+                                                                    <i class="fa fa-user" ng-if="!user.defaultImageId"></i>
+                                                                    <img src="~/api/UserProfiles/GetFile/{{user.defaultImageId.FileId}}/100/100"
+                                                                         style="border-radius:100%;" ng-if="user.defaultImageId" alt="" />
+                                                                </td>
+                                                                <td class="cursor-pointer" ui-sref="crew.externaluserdetail({userId: '{{user.Id}}', title: '{{user.Name}}'})">
+                                                                    {{user.Name}}<br />
+                                                                    <small ng-if="user.Position">{{user.Position.Name}}</small>
+                                                                </td>
+                                                                <td style="width:30px;">
+                                                                    <button type="button" class="btn btn-icon btn-sm" ng-click="deleteExternalContact(user)" title="Delete"
+                                                                            data-type="confirm">
+                                                                        <i class="fa fa-trash-o text-danger"></i>
+                                                                    </button>
+                                                                </td>
+
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="tab-pane fade show" id="user-groups">
+                                <div class="row clearfix">
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <a href="javascript:void(0)" ng-click="createUserGroup()" class="btn btn-primary btn-sm">
+                                                    <i class=" fe fe-user-plus"></i> Create User Group
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="text-center form-label" ng-if="projectUserGroups.length==0">No group to show!</label>
+                                                <div class="table-responsive-sm">
+                                                    <table class="table table-hover table-vcenter mb-0 table_custom spacing8 text-nowrap">
+
+                                                        <tbody>
+                                                            <tr ng-show="isEditModeUserGroup" class="glass-effect">
+                                                                <td style="width:50px" class="short-name"><i class="fa fa-users"></i></td>
+                                                                <td>
+
+                                                                    <input type="text" id="txtUserGroupName" ng-blur="saveGroupName()" class="form-control" ng-model="projectUserGroup.Name" />
+                                                                </td>
+                                                                <td>
+                                                                </td>
+
+                                                            </tr>
+                                                            <tr ng-repeat="user in projectUserGroups" class="glass-effect">
+                                                                <td style="width:50px" class="short-name"><i class="fa fa-users"></i></td>
+                                                                <td class="cursor-pointer">
+                                                                    <div class="d-flex " ng-show="user.IsEdit">
+                                                                        <input type="text" id="txtUserGroupName_{{user.Id}}" class="form-control" ng-model="user.Name" />
+                                                                        <label class="custom-switch" style=" margin: 0px 4px !important;">
+                                                                            <input type="checkbox" ng-model="user.IsInCrewList" name="custom-switch-checkbox" class="custom-switch-input">
+                                                                            <span class="custom-switch-indicator"></span>
+                                                                            <span class="custom-switch-description">Display group in crew list</span>
+                                                                        </label>
+                                                                    </div>
+
+                                                                    <div ng-hide="user.IsEdit" ui-sref="crew.group({groupId: '{{user.Id}}'})">
+                                                                        {{user.Name}}
+                                                                    </div>
+
+                                                                </td>
+                                                                <td style="width:30px;">
+                                                                    <div ng-hide="user.IsEdit">
+                                                                        <button type="button" class="btn btn-icon btn-sm" ng-click="deleteProjectUserGroup(user)" title="Delete"
+                                                                                data-type="confirm">
+                                                                            <i class="fa fa-trash-o text-danger"></i>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-icon btn-sm" ng-click="editModeProjectUserGroup(user)" title="Edit"
+                                                                                data-type="confirm">
+                                                                            <i class="fa fa-pencil-square-o text-primary"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div ng-show="user.IsEdit">
+                                                                        <button type="button" class="btn btn-icon btn-sm" ng-click="editProjectUserGroup(user)" title="Save"
+                                                                                data-type="confirm">
+                                                                            <i class="fa fa-save text-success"></i>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-icon btn-sm" ng-click="cancelEditProjectUserGroup()" title="Cancel"
+                                                                                data-type="confirm">
+                                                                            <i class="fa fa-close text-danger"></i>
+                                                                        </button>
+                                                                    </div>
+
+                                                                </td>
+
+
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="tab-pane fade show" id="units">
+                                <div class="row clearfix">
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <a href="javascript:void(0)" ng-click="createProjectUnit()" class="btn btn-primary btn-sm">
+                                                    <i class=" fe fe-user-plus"></i> Create Unit
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="text-center form-label" ng-if="projectUnits.length==0">No unit to show!</label>
+                                                <div class="table-responsive-sm">
+                                                    <table class="table table-hover table-vcenter mb-0 table_custom spacing8 text-nowrap">
+
+                                                        <tbody>
+                                                            <tr ng-show="isEditProjectUnit" class="glass-effect">
+                                                                <td style="width:50px" class="short-name"><i class="fa fa-users"></i></td>
+                                                                <td>
+
+                                                                    <input type="text" id="txtUnitName" ng-blur="saveProjectUnit()" class="form-control" ng-model="projectUnit.Name" />
+                                                                </td>
+                                                                <td>
+                                                                </td>
+
+                                                            </tr>
+                                                            <tr ng-repeat="unit in projectUnits" class="glass-effect">
+
+                                                                <td style="width:50px" class="short-name"><i class="fa fa-users"></i></td>
+                                                                <td class="cursor-pointer">
+                                                                    <input type="text" id="txtUnitName_{{unit.Id}}" ng-show="unit.IsEdit" class="form-control" ng-model="unit.Name" />
+
+                                                                    <div ng-hide="unit.IsEdit" ui-sref="crew.unit({unitId: '{{unit.Id}}',title:'{{unit.Name}}'})">{{unit.Name}}</div>
+                                                                </td>
+                                                                <td style="width:30px;">
+                                                                    <div ng-hide="unit.IsEdit">
+                                                                        <button type="button" class="btn btn-icon btn-sm" ng-click="deleteProjectUnit(unit)" title="Delete"
+                                                                                data-type="confirm">
+                                                                            <i class="fa fa-trash-o text-danger"></i>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-icon btn-sm" ng-click="editModeProjectUnit(unit)" title="Edit"
+                                                                                data-type="confirm">
+                                                                            <i class="fa fa-pencil-square-o text-primary"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div ng-show="unit.IsEdit">
+                                                                        <button type="button" class="btn btn-icon btn-sm" ng-click="editProjectUnit(unit)" title="Save"
+                                                                                data-type="confirm">
+                                                                            <i class="fa fa-save text-success"></i>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-icon btn-sm" ng-click="cancelEditProjectUnit()" title="Cancel"
+                                                                                data-type="confirm">
+                                                                            <i class="fa fa-close text-danger"></i>
+                                                                        </button>
+                                                                    </div>
+
+                                                                </td>
+
+
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewData["Title"] = "Project disputes";
+    Layout = null;
+}
+
+<div class="section-body inner-page mt-3" ng-controller="ProjectDisputeCtrl">
+    <div class="container-fluid">
+        <div class="row" ng-show="disputesList.length>0">
+            <div class="col-md-4 col-sm-12 offset-md-8">
+                <input type="text" class="form-control" placeholder="Search disputes..." ng-model="disputeQuery">
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 mb-3" ng-repeat="dispute in disputesList | filter:disputeQuery">
+                <div class="card box-shadow" style="background: {{dispute.Status == 1?'auto':'#f3f3f3'}};">
+                    @*<div class="card-header border-bottom">
+                            <p>{{dispute.DisputeDate | date:"MMM dd, yyyy"}}</p>
+                        </div>*@
+                    <div class="card-body">
+                        <small>{{dispute.DisputeDate | date:"MMM dd, yyyy"}}</small><br />
+                        <a ui-sref="publicprojectdetail({projectId:'{{dispute.ProjectId}}'})">
+                            <b>{{dispute.Project.Name}}</b>
+                        </a>
+                        <p>
+                            {{dispute.Message}}
+                        </p>
+                        <p>
+                            <span ng-if="dispute.Status == 1" class="tag tag-blue mb-3">Pending</span>
+                            <span ng-if="dispute.Status == 2" class="tag tag-success mb-3">Accepted</span>
+                            <span ng-if="dispute.Status == 3" class="tag tag-danger mb-3">Rejected</span>
+                        </p>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <ul class="new_timeline mt-3">
+                                    <li ng-repeat="detail in dispute.ProjectDisputeDetails">
+                                        <div class="bullet pink" ng-if="dispute.UserId != detail.UserId"></div>
+                                        <div class="bullet green" ng-if="dispute.UserId == detail.UserId"></div>
+                                        <img class="media-object" style="border-radius:100%" ng-src="/api/UserProfiles/GetUserPhoto/{{detail.UserId}}/30/30" alt="">
+                                        <div class="time">{{detail.EnteryDate | date:"MMM dd, yyyy hh:mm"}}</div>
+                                        <div class="desc">
+                                            <h4>{{detail.Description}}</h4>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-4" ng-if="dispute.Status == 1">
+                                <a href="#" class="btn btn-success pull-right ml-2" ng-click="accept(dispute)" style="width:100px">
+                                    <i class="fa fa-handshake-o mr-1"></i> Accept
+                                </a>
+                                <a href="#" class="btn btn-danger pull-right mt-2" ng-click="reject(dispute)"  style="width:100px">
+                                    <i class="fa fa-times-rectangle mr-1"></i> Reject
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,204 @@
+﻿
+@{
+    ViewData["Title"] = "Projects";
+    Layout = null;
+}
+
+<div class="section-body" ng-controller="ProjectController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h3>My Projects</h3>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <button type="button" class="btn btn-secondary" ng-click="openCreateProject()">
+                                        <i class="fe fe-plus mr-2"></i> New Project
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row" ng-show="projectsList.length>0">
+            <div class="col-md-4 col-sm-12 offset-md-8">
+                <input type="text" class="form-control" placeholder="Search project..." ng-model="projectQuery">
+            </div>
+
+        </div>
+        <div class="col-sm-12 text-center" ng-if="projectsList.length==0">
+            <h5>Get start by creating a new Project</h5>
+            <button type="button" class="btn btn-secondary" ng-click="openCreateProject()">
+                <i class="fe fe-plus mr-2"></i> New Project
+            </button>
+        </div>
+
+        <br />
+
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 col-xxxl-2 mb-3" ng-repeat="project in projectsList | filter:projectQuery">
+
+
+                <div class="card project-cover" style="background-image:url('/api/Projects/GetProjectCover/{{project.Project.Id}}/500/200'); height:235px; cursor:pointer;" ng-style="{'border-left':'5px solid '+project.Project.Color}">
+                    <div class="card-body p-0" ng-if="!project.ShowDetail && !project.ShowProfile" ng-click="$event.stopPropagation()">
+                        <div class="row h-100" ui-sref="publicprojectdetail({projectId:'{{project.Project.Id}}'})">
+                            <div class="col-6" style="margin-left: -1px; cursor:default">
+                                <div class="card m-0 h-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; height:200px;">
+                                    <div class="card-body p-0">
+                                        <div class="row pl-2 pt-1">
+                                            <div class="col-12">
+                                                <p class="font-18 m-0 text-info no-overflow" style="font-weight:500;" title="{{project.Project.Name}}">
+                                                    <a ui-sref="publicprojectdetail({projectId:'{{project.Project.Id}}'})" class="link-unstyled">
+                                                        {{project.Project.Name}}
+                                                    </a>
+                                                </p>
+                                                <p class="font-13 m-0 no-overflow" title="{{project.Project.ProductionType.Name}}">
+                                                    {{project.Project.ProductionType.Name}}
+                                                </p>
+                                                <p class="font-10 pt-3">
+                                                    <i class="fa fa-calendar"></i> {{project.Project.CreatedDateTime | date:"MMM dd, yyyy"}}
+                                                </p>
+                                                <div class="font-11">
+                                                    <p class="pt-1">
+                                                        <span class="no-overflow">Project Budget is </span>
+                                                        <span class="text-info">{{project.ProjectPartnerRequirement.Budget}} {{project.Project.Currency.Symbol}}</span>
+                                                    </p>
+                                                </div>
+                                                <div class="font-11" ng-if="showProjectOwnerLooking(project)">
+                                                    <p class="no-overflow" title="Project owner is looking for">
+                                                        Project owner is looking for:
+                                                    </p>
+                                                    <p class="m-0 no-overflow" title="Project Partner"
+                                                       ng-if="project.ProjectPartners.length>0">
+                                                        <i class="fa fa-check-circle text-info"></i> Project Partner
+                                                    </p>
+                                                    <p class="m-0 no-overflow" title="Financial Participator"
+                                                       ng-if="project.ProjectPartnerRequirement.NeedFinancialParticipation">
+                                                        <i class="fa fa-check-circle text-info"></i> Financial Participator
+                                                    </p>
+                                                    <p class="m-0" ng-if="!project.ProjectPartnerRequirement.NeedFinancialParticipation && project.ProjectFunding.Amount">
+                                                        <i class="fa fa-check-circle text-info"></i> Funding
+                                                    </p>
+                                                </div>
+                                                <div ng-if="project.Project.IsStarted && !project.Project.IsFinished">
+                                                    <p class="text-red font-12 pt-2" title="Project is started">
+                                                        <i class="fa fa-stop-circle-o"></i> {{project.Project.StartDate | date:"MMM dd, yyyy"}}
+                                                    </p>
+                                                </div>
+                                                <div ng-if="project.Project.IsFinished">
+                                                    <p class="text-green font-12 pt-2" title="Project is completed">
+                                                        <i class="fa fa-check-square-o"></i> {{project.Project.FinishDate | date:"MMM dd, yyyy"}}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 text-right">
+                                <div class="row pr-2 pt-2">
+                                    <div class="col-12">
+                                        <span class="material-icons text-white" style="cursor:pointer;"
+                                              title="Click to see more the info"
+                                              ng-click="project.ShowDetail = !project.ShowDetail">
+                                            info
+                                        </span>
+                                    </div>
+                                    <div class="col-12">
+                                        <a ui-sref="publicprojectdetail({projectId:'{{project.Project.Id}}'})"
+                                           title="Goto project page">
+                                            <span class="material-icons text-white">
+                                                pageview
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div class="col-12">
+                                        <span class="material-icons text-white" style="cursor:pointer;"
+                                              title="Edit this project"
+                                              ng-click="$event.stopPropagation(); editProject(project)">
+                                            edit
+                                        </span>
+                                    </div>
+                                    <div class="col-12">
+                                        <span class="material-icons text-white" style="cursor:pointer;"
+                                              title="Delete this project"
+                                              ng-click="$event.stopPropagation(); deleteProject(project.Project.Id)">
+                                            delete_forever
+                                        </span>
+                                    </div>
+                                    <div class="col-12" ng-if="!project.Project.IsFinished">
+                                        <span class="material-icons text-white" style="cursor:pointer;"
+                                              title="Start this project"
+                                              ng-if="!project.Project.IsStarted" ng-click="$event.stopPropagation(); startProject(project.Project)">
+                                            play_circle_filled
+                                        </span>
+                                        <span class="material-icons text-white" style="cursor:pointer;"
+                                              title="Finish this project"
+                                              ng-if="project.Project.IsStarted" ng-click="$event.stopPropagation(); finishProject(project.Project)">
+                                            pause_circle_filled
+                                        </span>
+                                    </div>
+                                    <div class="col-12">
+                                        <a class="material-icons text-white" ng-click="$event.stopPropagation();" ui-sref="home({id: '{{project.Project.Id}}'})">
+                                            article
+                                        </a>
+                                    </div>
+                                    @*<div class="col-12">
+                                        <a class="material-icons text-white" href="javascript:void(0)" ng-click="deleteProject(project.Project.Id)">
+                                            delete
+                                        </a>
+                                    </div>*@
+                                    @*<div class="col-12" ng-if="!project.Project.IsFinished">
+                                            <span class="material-icons text-white" style="cursor:pointer;"
+                                                  title="Apply for vote funding" ng-click="applyVoteFunding(project.Project)">
+                                                add_task
+                                            </span>
+                                        </div>*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0" ng-if="project.ShowDetail && !project.ShowProfile">
+                        <div class="card m-0 h-100">
+                            <div class="card-body p-0">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <p class="m-3">
+                                            {{project.Project.Detail | limitTo:200 }}{{ project.Project.Detail.length > 200 ? '...' : ''}}
+                                        </p>
+                                    </div>
+                                    <div class="col-2 text-right">
+                                        <div class="row pr-2 pt-2">
+                                            <div class="col-sm-12">
+                                                <span class="material-icons" style="cursor:pointer;"
+                                                      title="Close this"
+                                                      ng-click="project.ShowDetail = !project.ShowDetail">
+                                                    close
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/js/ng-controllers/project-ctrl.js"></script>
+}

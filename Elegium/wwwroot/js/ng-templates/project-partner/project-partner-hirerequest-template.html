@@ -1,0 +1,63 @@
+﻿
+    <style>
+        .uppy-size--md .uppy-Dashboard-Item-preview {
+            height: 30px !important;
+        }
+
+        @media screen and (min-width: 1000px) {
+            .icon-container {
+                margin-left: 25% !important;
+            }
+        }
+
+        @media screen and (max-width: 800px) {
+            .icon-container {
+                margin-left: 30% !important;
+            }
+        }
+    </style>
+<div class="modal-header">
+    <div class="row clearfix">
+        <div class="col-sm-12">
+            <h4 class="modal-title" id="modal-title">Offer Project Partnership to {{project.ProjectOwner.FirstName}} {{project.ProjectOwner.LastName}}</h4>
+        </div>
+    </div>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 col-sm-12">
+                <div class="icon-container {{project.ProjectOwner.Online?'avatar-online':'avatar-offline'}} d-block {{project.ProjectOwner.UserId}}">
+                    <img class="card-profile-img" ng-src="/api/UserProfiles/GetUserPhoto/{{project.ProjectOwner.UserId}}/100/100" alt="">
+                    <span class="status-circle"></span>
+                </div>
+                <p class="m-1 mt-2 text-center font-weight-bold">{{project.ProjectOwner.CompanyPosition.Name}}</p>
+                <p class="text-center">
+                    <i ng-if="project.ProjectOwner.Country || project.ProjectOwner.City" class="fa fa-map-marker text-gray"></i>
+                    <span>{{project.ProjectOwner.Country.Name}}</span>
+                    <span ng-if="project.ProjectOwner.Country && project.ProjectOwner.City">,</span>
+                    <span>{{project.ProjectOwner.City.Name}}</span>
+                </p>
+            </div>
+            <div class="col-md-9 col-sm-12">
+                <form class="" name="form" style="width:100%">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Message</label>
+                                <textarea rows="4" required ng-model="data.Description" class="form-control" placeholder="Write an appealing message to become a partner"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="DashboardContainer"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning btn-sm" type="button" ng-click="cancel()"><span class="fa fa-close"></span> Close</button>
+    <button class="btn btn-primary btn-sm" ng-disabled="form.$invalid" type="button" ng-click="send()"><span class="fa fa-send"></span> Send</button>
+</div>

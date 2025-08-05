@@ -1,0 +1,730 @@
+﻿<style>
+    .filetype {
+        pointer-events: none;
+        width: 100% !important;
+        height: 130px;
+        display: block;
+        /* position: absolute; */
+        top: 0;
+        left: 0;
+        background: #272727;
+        color: #fff;
+        text-align: center;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+        .filetype.preview .extention {
+            font-size: 35px;
+            line-height: 130px;
+        }
+
+        .filetype .extention {
+            pointer-events: all;
+            font-family: 'Work Sans',sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 90%;
+            display: inline-block;
+            line-height: 55px;
+            font-size: 15px;
+        }
+
+    #uppy-uploader {
+        font-size: 12px;
+        display: none;
+        width: 300px !important;
+        right: 60px;
+        bottom: 20px;
+        border-radius: 10px;
+        padding: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,.5);
+        background: #272727 !important;
+        z-index: 1;
+        display: block;
+        position: fixed;
+    }
+
+    textarea:focus {
+        border: 1px #0d96ce solid !important;
+    }
+
+
+
+    textarea {
+        height: 160px !important;
+        background: none;
+        border: 0;
+        border: 1px #888 solid;
+        color: #363636;
+        padding: 5px 10px;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -moz-transition: border .3s linear;
+        -o-transition: border .3s linear;
+        -webkit-transition: border .3s linear;
+        transition: border .3s linear;
+        font-size: 12px;
+        font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+        border-radius: 5px;
+    }
+</style>
+
+
+<div class="section-body" ui-view="" style="max-width:1300px">
+    <div class="container-fluid p-0">
+        <div class="row clearfix">
+            <div class="col-xl-2 col-lg-3 col-md-5">
+                <div class="row clearfix">
+                    <div class="col-sm-12 p-0">
+                        <div class="task-event profile_thumbnail text-white box-radius-10 " id="task_67119_thumbnail" style="background-color:{{event.Color==''?'#007eb2':event.Color}}">
+                            <span class="date conflicted">{{event.StartDate | date:'dd'}}</span><br><span class="monthname">{{event.StartDate | date:'MMMM'}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2 clearfix">
+                    <div class="col-sm-12 text-break">
+                        <label class="h5">
+                            {{event.Title}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-10 col-lg-9 col-md-7">
+                <div class="d-flex justify-content-between align-items-center" style="width:97%; margin-left:3%;">
+                    <ul class="nav nav-tabs page-header-tab">
+                        <li class="nav-item"><a class="nav-link active" id="gen-tab" data-toggle="tab" data-target="#generalInfo" ng-click="setClass()">   General Information</a></li>
+                        <li class="nav-item" ng-if="task.ParentTask==null"><a class="nav-link" id="tasks-tab" data-toggle="tab" data-target="#tasks" ng-click="setClass()">Tasks ({{tabContentLength.tasksCount}})</a></li>
+                        <li class="nav-item"><a class="nav-link" id="files-tab" data-toggle="tab" data-target="#images-files" ng-click="setClass()">Images and Files ({{tabContentLength.filesCount}})</a></li>
+                        <li class="nav-item"><a class="nav-link" id="comments-tab" data-toggle="tab" data-target="#comments" ng-click="setClass()">Comments ({{tabContentLength.commentsCount}})</a></li>
+                    </ul>
+                </div>
+                <div class="row clearfix" style="width:97%; margin-left:3%;">
+                    <div class="col-12">
+                        <div class="card bg-none" ng-style="backgroundPublicPreview">
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show" id="images-files">
+                                        <div class="row clearfix">
+                                            <div class="col-sm-12">
+                                                <div class="progressFiles">
+
+                                                </div>
+                                                <div id="draggableContainer">
+                                                    <div id="uppy-uploader" class="w-100" ng-show="hasFilesinUppy">
+
+                                                    </div>
+                                                    <input type="file" multiple hidden id="projectFile" />
+                                                    <div class="row clearfix mb-3" ng-if="files.length>0">
+                                                        <div class="col-sm-12">
+                                                            <button type="button" class="btn btn-success" data-toggle="collapse" ng-click="openProjectFileDialog()" data-target="#createFiles" aria-expanded="false" aria-controls="collapseExample">
+                                                                Add file <i class="fa fa-plus-circle"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix" ng-if="files.length==0">
+                                                        <div class="col-sm-12">
+                                                            <div class="list-empty text-center d-block p-3" style="border: 3px dashed #ccc;">
+                                                                <div class="row clearfix">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12">
+                                                                                <span class="material-icons font-20">
+                                                                                    insert_drive_file
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12">
+                                                                                <span class="col-form-label">
+                                                                                    There are no files yet. You can drop files here.
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row clearfix">
+                                                                    <div class="col-sm-12 mt-3">
+                                                                        <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#createLink" aria-expanded="false" ng-click="openProjectFileDialog()" aria-controls="collapseExample">Add file</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-sm-6 col-md-4 col-lg-3 col-xxl-2 col-xxxl-2 mb-3" ng-repeat="file in files" style="height:160px !important">
+                                                            <div class="card box-shadow">
+                                                                <div class="cursor-pointer" ng-click="openProjectFileViewer(file)">
+                                                                    <div ng-if="file.Type=='image'" class="img-fluid pointer-event cat-image"
+                                                                         style="height: 130px;
+                                                                                background-image: url('/api/UserProfiles/GetFileThumbnail/{{file.FileId}}/200/200');
+                                                                                background-size: cover;
+                                                                                background-repeat: no-repeat;
+                                                                                -webkit-transition: background-image 1s ease-in-out;
+                                                                                transition: background-image 1s ease-in-out;
+                                                                                border-top-left-radius: 5px;
+                                                                                border-top-right-radius: 5px; ">
+                                                                    </div>
+                                                                    <div ng-if="file.Type!='image'" class="preview filetype filetype_json" style="pointer-events: all;">
+                                                                        <span class="extention" style="pointer-events: all;"> <i class="fa fa-file"></i> {{file.Extension}}</span>
+                                                                    </div>
+                                                                    <div ng-if="file.LatestVersion" class="tags hide_in_colorlist" style=" position: absolute; right: 10px; top: 10px; color: #fff; font-size: 10px;">
+                                                                        <span class="bg-dark text-white" style="padding: 2px 4px; border-radius: 5px;">{{file.LatestVersion}}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body p-1">
+                                                                    <div class="row clearfix">
+                                                                        <div class="col-10 text-nowrap overflow-ellipsis" title="{{file.Name}}" data-toggle="tooltip" data-placement="top" tooltip>
+                                                                            {{file.Name}}
+                                                                        </div>
+                                                                        <div class="col-2 text-right">
+                                                                            <div class="item-action dropdown">
+                                                                                <a href="javascript:void(0)" data-toggle="dropdown" class="icon" aria-expanded="false">
+                                                                                    <i class="fe fe-more-vertical"></i>
+                                                                                </a>
+                                                                                <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                                    <a href="javascript:void(0)" ng-click="deleteFile($event,file)" class="dropdown-item">
+                                                                                        <i class="fa fa-trash">
+                                                                                        </i> Delete
+                                                                                    </a>
+                                                                                    <a href="javascript:void(0)" ng-if="false" ng-click="makeDefault($event,file)" class="dropdown-item">
+                                                                                        <i class="fa fa-file-picture-o">
+                                                                                        </i> Select Thumbnail
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix" ng-if="files.length>0">
+                                                        <div class="col-sm-12">
+                                                            <ul uib-pagination
+                                                                total-items="tabContentLength.filesCount"
+                                                                ng-model="filesPaging.page"
+                                                                items-per-page="12"
+                                                                previous-text="&lsaquo;"
+                                                                next-text="&rsaquo;"
+                                                                class="pull-right font-15"
+                                                                ng-change="getDocumentCatFiles()"
+                                                                boundary-link-numbers="true"
+                                                                rotate="false">
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade show active" id="generalInfo">
+                                        <div class="row clearfix mb-3">
+                                            <div class="col-sm-12">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="multi-collapse show" id="multiCollapseExample1">
+                                                            <button type="button" class="btn btn-success" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">
+                                                                Edit general information <i class="fa fa-plus-circle"></i>
+                                                            </button>
+                                                            <div class="card section-body">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="col-md-6 col-sm-12">
+                                                                            <div class="row clearfix">
+                                                                                <div class="col-sm-12">
+                                                                                    <div class="form-group">
+                                                                                        <label class="form-label">Title</label>
+                                                                                        <span class="font-12" disabled="" placeholder="Company" value="Creative Code Inc.">{{event.Title}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-sm-12">
+                                                                                    <div class="form-group">
+                                                                                        <label class="form-label">Description</label>
+                                                                                        <span class="font-12" disabled="" placeholder="Company" value="Creative Code Inc.">{{event.Description}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-sm-12">
+                                                                                    <div class="form-group">
+                                                                                        <label class="form-label">Location</label>
+                                                                                        <span class="font-12" disabled="" placeholder="Company" value="Creative Code Inc.">{{event.Location}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-sm-12">
+                                                                                    <div class="form-group">
+                                                                                        <label class="form-label">Calendar category</label>
+                                                                                        <span class="font-12" disabled="" placeholder="Company" value="Creative Code Inc.">{{event.CalenderCategory.Name}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-sm-12">
+                                                                                    <div class="form-group">
+                                                                                        <label class="form-label">Created By</label>
+                                                                                        <ul class="list-unstyled team-info sm margin-0  overflow-hidden text-nowrap">
+                                                                                            <li data-toggle="tooltip" data-placement="top" tooltip title="{{event.UserName}}">
+                                                                                                <img src="/api/UserProfiles/GetUserPhoto/{{event.UserId}}/30/30" alt="Avatar">
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6 col-sm-12">
+                                                                            <div class="row clearfix">
+                                                                                <div class="col-sm-12">
+                                                                                    <div class="form-group">
+                                                                                        <label class="form-label">Start</label>
+                                                                                        <span class="font-12" disabled="" placeholder="Company" value="Creative Code Inc.">{{event.StartDate | date:'MM/dd/yyyy '}}{{event.StartTime==''?'':event.StartTime}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-sm-12">
+                                                                                    <div class="form-group">
+                                                                                        <label class="form-label">End</label>
+                                                                                        <span class="font-12" disabled="" placeholder="Company" value="Creative Code Inc.">{{event.EndDate | date:'MM/dd/yyyy '}}{{event.EndTime==""?"":event.EndTime}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-sm-12 mt-3">
+                                                                                    <div class="form-group">
+                                                                                        <label class="form-label">Participants</label>
+                                                                                        <ul class="list-unstyled team-info sm margin-0  overflow-hidden text-nowrap">
+                                                                                            <li ng-repeat="assignedTo in event.AssignedTo" data-toggle="tooltip" data-placement="top" tooltip title="{{assignedTo.name}}">
+                                                                                                <img ng-if="assignedTo.Type=='user'" src="/api/UserProfiles/GetUserPhoto/{{assignedTo.id}}/30/30" alt="Avatar">
+                                                                                                <img ng-if="assignedTo.Type!='user'" height="32" src="{{assignedTo.icon}}" alt="Avatar">
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-sm-12 mt-3">
+                                                                                    <div class="form-group">
+                                                                                        <label class="form-label">Also visible for</label>
+                                                                                        <ul class="list-unstyled team-info sm margin-0  overflow-hidden text-nowrap">
+                                                                                            <li ng-repeat="assignedTo in event.AdditionalViewers" data-toggle="tooltip" data-placement="top" tooltip title="{{assignedTo.name}}">
+                                                                                                <img ng-if="assignedTo.Type=='user'" src="/api/UserProfiles/GetUserPhoto/{{assignedTo.id}}/30/30" alt="Avatar">
+                                                                                                <img ng-if="assignedTo.Type!='user'" height="32" src="{{assignedTo.icon}}" alt="Avatar">
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="collapse multi-collapse" id="multiCollapseExample2">
+                                                            <div class="card card-body p-3">
+                                                                <div class="row">
+                                                                    <div class="col-md-6 col-sm-12">
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Title</label>
+                                                                                    <input maxlength="200" type="text" class="form-control"
+                                                                                           placeholder="Title" ng-model="event.Title" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Description</label>
+                                                                                    <textarea class="form-control" ng-model="event.Description"></textarea>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Location</label>
+                                                                                    <input type="text" ng-model="event.Location" class="form-control form-control-sm" googleplace />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix mt-4 mb-4">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">
+                                                                                        Participants
+                                                                                    </label>
+                                                                                    <ui-select multiple class="form-control" ng-model="event.AssignedTo" theme="selectize" sortable="true" close-on-select="false">
+                                                                                        <ui-select-match>{{$item.name}}</ui-select-match>
+                                                                                        <ui-select-choices group-by="groupUsers" repeat="visible as visible in projectUsersAndGroups">
+                                                                                            <div class="row p-10 clearfix">
+                                                                                                <div class="col-sm-1">
+                                                                                                    <img class="rounded img-fluid" src="{{visible.avatar}}" alt="" />
+                                                                                                </div>
+                                                                                                <div class="col-sm-11">
+                                                                                                    <div ng-bind-html="visible.name | highlight: $select.search">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </ui-select-choices>
+                                                                                    </ui-select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">
+                                                                                        Also visible for
+                                                                                    </label>
+                                                                                    <ui-select multiple class="form-control" ng-model="event.AdditionalViewers" theme="selectize" sortable="true" close-on-select="false">
+                                                                                        <ui-select-match>{{$item.name}}</ui-select-match>
+                                                                                        <ui-select-choices group-by="groupUsers" repeat="visible as visible in projectUsersAndGroups">
+                                                                                            <div class="row p-10 clearfix">
+                                                                                                <div class="col-sm-1">
+                                                                                                    <img class="rounded img-fluid" src="{{visible.avatar}}" alt="" />
+                                                                                                </div>
+                                                                                                <div class="col-sm-11">
+                                                                                                    <div ng-bind-html="visible.name | highlight: $select.search">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </ui-select-choices>
+                                                                                    </ui-select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-12 py-5">
+                                                                                <div class="selectgroup selectgroup-pills">
+                                                                                    <label class="selectgroup-item" ng-repeat="item in categories">
+                                                                                        <input type="radio" name="icon-input" value="item.Id"
+                                                                                               class="selectgroup-input" ng-click="selectCategory(item.Id)"
+                                                                                               ng-checked="event.CalenderCategoryId == item.Id">
+                                                                                        <span class="selectgroup-button selectgroup-button-icon"
+                                                                                              style="border: 3px solid {{item.Color}}">{{item.Name}}</span>
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-12 col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Color</label>
+                                                                                    <color-picker ng-model="event.Color" options="options" class="form-control"></color-picker>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6 col-sm-12">
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-12 mb-3">
+                                                                                <button class="btn btn-secondary" role="button" ng-click="showTime = !showTime">
+                                                                                    <i class="fa fa-clock-o"></i> <span ng-if="!showTime">Add time</span><span ng-if="showTime">Remove time</span>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix" id="requestForm">
+                                                                            <div class="col-md-6 col-sm-12">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Start Date <small>(required)</small></label>
+                                                                                    <input type="date" class=" form-control" ng-model="event.StartDate" required />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-6 col-sm-12" ng-if="showTime">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">Start Time</label>
+                                                                                    <input type="text" class="time start form-control" ng-model="event.StartTime" xp-timepicker required />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-6 col-sm-12">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">End Date <small>(required)</small></label>
+                                                                                    <input type="date" class=" form-control" ng-model="event.EndDate" required />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-6 col-sm-12" ng-if="showTime">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">End Time</label>
+                                                                                    <input type="text" class="time end form-control" ng-model="event.EndTime" xp-timepicker required />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12 text-right ">
+                                                                        <div class="d-inline-block">
+                                                                            <button type="button" class="btn btn-success d-flex" ng-click="updateCalendar()" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="collapseExample">Done</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="tasks" class="tab-pane fade show">
+                                        <div class="row clearfix">
+                                            <div class="col-sm-12">
+                                                <div class="row clearfix mb-3" ng-if="tasks.length>0">
+                                                    <div class="col-sm-12">
+                                                        <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">
+                                                            Create task <i class="fa fa-plus-circle"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix collapse mb-3" id="newTask">
+                                                    <div class="col-sm-12">
+                                                        <div class="card card-body p-3">
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <h5>
+                                                                        <span class="col-form-label">Create task</span>
+                                                                    </h5>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-sm-12">
+                                                                    <h6>
+                                                                        <small>To create a new task, enter a title. Then, choose specific crew members to assign the task to. Optionally, you can add a deadline to the task.</small>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6 col-sm-12">
+                                                                    <div class="row clearfix">
+                                                                        <div class="col-sm-12">
+                                                                            <div class="form-group">
+                                                                                <label class="form-label">Title</label>
+                                                                                <input maxlength="200" type="text" class="form-control"
+                                                                                       placeholder="Title" ng-model="taskObj.Title" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row clearfix">
+                                                                        <div class="col-sm-12">
+                                                                            <div class="form-group">
+                                                                                <label class="form-label">Description</label>
+                                                                                <textarea class="form-control" ng-model="taskObj.Description"></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row clearfix">
+                                                                        <div class="col-sm-12">
+                                                                            <div class="form-group">
+                                                                                <label class="form-label">
+                                                                                    Assigned crew members
+                                                                                </label>
+                                                                                <ui-select multiple class="form-control" ng-model="taskObj.AssignedTo" theme="selectize" sortable="true" close-on-select="false">
+                                                                                    <ui-select-match>{{$item.name}}</ui-select-match>
+                                                                                    <ui-select-choices group-by="groupUsers" repeat="visible as visible in projectUsersAndGroups">
+                                                                                        <div class="row p-10 clearfix">
+                                                                                            <div class="col-sm-1">
+                                                                                                <img class="rounded img-fluid" src="{{visible.avatar}}" alt="" />
+                                                                                            </div>
+                                                                                            <div class="col-sm-11">
+                                                                                                <div ng-bind-html="visible.name | highlight: $select.search">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </ui-select-choices>
+                                                                                </ui-select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6 col-sm-12">
+                                                                    <div class="row clearfix mt-4">
+                                                                        <div class="col-sm-12">
+                                                                            <div class="form-group">
+                                                                                <label class="custom-switch">
+                                                                                    <input type="checkbox" ng-model="taskObj.HasDeadline" id="toggleCalendarDeadline"
+                                                                                           data-toggle="collapse" data-target="#deadline-calendar" aria-expanded="false" aria-controls="collapseExample"
+                                                                                           name="custom-switch-checkbox" class="custom-switch-input">
+                                                                                    <span class="custom-switch-indicator"></span>
+                                                                                    <span class="custom-switch-description">Task has a deadline</span>
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row clearfix mt-2">
+                                                                        <div class="col-sm-12 collapse" id="deadline-calendar" data-parent="#newTask">
+                                                                            <div class="form-group">
+                                                                                <label class="form-label">Deadline</label>
+                                                                                <div class="input-group">
+                                                                                    <input type="date" ng-model="taskObj.Deadline" class="form-control">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-12 text-right ">
+                                                                    <div class="d-inline-block">
+                                                                        <button type="button" class="btn btn-primary d-flex float-right" ng-click="createTask()" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">Create</button>
+                                                                        <button type="button" class="btn btn-default d-flex" ng-click="cancelTaskCreation()" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">Cancel</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix" ng-if="tasks.length==0">
+                                                    <div class="col-sm-12">
+                                                        <div class="list-empty text-center d-block p-3" style="border: 3px dashed #ccc;">
+                                                            <div class="row clearfix">
+                                                                <div class="col-sm-12">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12">
+                                                                            <span class="material-icons font-20">
+                                                                                schedule
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12">
+                                                                            <span class="col-form-label">
+                                                                                There are no tasks available.
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix">
+                                                                <div class="col-sm-12 mt-3">
+                                                                    <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">Create task</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix" ng-if="tasks.length>0">
+                                                    <div class="col-sm-12">
+                                                        <div class="card task box-shadow {{task.ClassName}}" ng-click="$event.originalEvent.dropdown || goToTaskProfile(task.Id)" ng-repeat="task in tasks">
+                                                            <div class="row clearfix p-2 ml-3">
+                                                                <div class="col-1 mt-2 tasks_status_symbol">
+                                                                    <a class="symbol" href="javascript:void(0)" ng-click="changeTaskStatus($event,task)" data-toggle="tooltip" data-placement="top" tooltip title="{{task.ClassName=='completed' ? 'Mark task as in progress again' : task.ClassName == 'overdue' || task.ClassName == 'pending' ? 'Mark task as completed' : ''}}">
+                                                                        <i class="{{task.Completed?'fa fa-check-circle':'fa fa-circle-thin'}}"></i>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col-4 mt-3">
+                                                                    {{task.Title}}
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    <div ng-if="task.HasDeadline">
+                                                                        <small class="mb-1">Deadline</small>
+                                                                        <br />
+                                                                        {{task.Deadline}}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    <small class="mb-1">Assigned to</small>
+                                                                    <br />
+                                                                    <ul class="list-unstyled team-info sm margin-0  overflow-hidden text-nowrap">
+                                                                        <li ng-repeat="assignedTo in task.AssignedTo" data-toggle="tooltip" data-placement="top" tooltip title="{{assignedTo.name}}">
+                                                                            <img ng-if="assignedTo.Type=='user'" src="/api/UserProfiles/GetUserPhoto/{{assignedTo.id}}/30/30" alt="Avatar">
+                                                                            <img ng-if="assignedTo.Type!='user'" height="32" src="{{assignedTo.icon}}" alt="Avatar">
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                                <div class="col-1 text-right">
+                                                                    <div class="item-action dropdown mt-3">
+                                                                        <a href="javascript:void(0)" data-toggle="dropdown" ng-click="$event.originalEvent.dropdown = true" class="icon font-20" aria-expanded="false">
+                                                                            <i class="fe fe-more-vertical"></i>
+                                                                        </a>
+                                                                        <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                            <a href="javascript:void(0)" ng-click="deleteTask($event,task)" class="dropdown-item">
+                                                                                <i class="dropdown-icon fa fa-trash"></i> Delete
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade show" id="comments">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="row clearfix" ng-repeat="comment in comments">
+                                                    <div class="col-sm-1">
+                                                        <div class="avatar_img position-absolute ml-2">
+                                                            <img class="rounded img-fluid" src="/api/UserProfiles/GetUserPhoto/{{comment.UserId}}/45/45" alt="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-11 card font-12">
+                                                        <div class="comment_body p-2">
+                                                            <h6><span class="small">{{comment.UserName}}</span> <small class="float-right font-11">{{comment.Created}}</small></h6>
+                                                            <p ng-bind-html="comment.Text"></p>
+                                                            <div class="text-right">
+                                                                <a href="javascript:void(0);" ng-click="deleteComment(comment)"><i class="material-icons">delete</i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix" ng-if="comments.length==0">
+                                                    <div class="col-sm-12">
+                                                        <div class="list-empty text-center d-block p-3" style="border: 3px dashed #ccc;">
+                                                            <div class="row clearfix">
+                                                                <div class="col-sm-12">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12">
+                                                                            <span class="material-icons font-20">
+                                                                                comment
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12">
+                                                                            <span class="col-form-label">
+                                                                                There are no comments yet.
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix">
+                                                                <div class="col-sm-12 mt-3">
+                                                                    <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#newCommentBox" aria-expanded="false" aria-controls="collapseExample">Write Comment</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix mt-3 {{commentObj.newComment?'collapse':''}}" id="newCommentBox">
+                                                    <div class="col-sm-1">
+                                                        <div class="avatar_img position-absolute ml-2">
+                                                            <img class="rounded img-fluid" src="/api/UserProfiles/GetLoggedInUserThumbnail/45/45" alt="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-11 p-2 card">
+                                                        <div class="comment_body">
+                                                            <p class="small"></p>
+                                                            <textarea ng-model="commentObj.Text" class="p-2 w-100 font-12 mention" placeholder="Write a comment..."></textarea>
+                                                            <div class="text-center small">
+                                                                <i class="fa fa-info-circle"></i> You can mention users by using the @@ sign
+                                                            </div>
+                                                            <div class="text-right">
+                                                                <button type="button" ng-click="sendComment()" class="btn btn-success">
+                                                                    Send
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

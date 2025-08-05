@@ -1,0 +1,242 @@
+﻿
+@{
+    ViewData["Title"] = "Unit";
+    Layout = null;
+}
+
+
+<div class="section-body" style="max-width:1300px" ui-view="">
+
+    <div class="container-fluid">
+
+        <div id="accordion">
+            <div class="card mt-3">
+                <div class="card-header p-2" id="headingTwo">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                            User
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo">
+                    <div class="card-body">
+                        <div class="row clearfix">
+                            <div class="col-12" style="margin-bottom:10px" id="addUserPanel1">
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="collapse" data-target="#addUserPanel" aria-expanded="false" aria-controls="addUserPanel">
+                                    <i class=" fe fe-user-plus"></i> Add User
+                                </a>
+                            </div>
+                            <div class="col-12 collapse" aria-labelledby="addUserPanel1" id="addUserPanel" data-parent="#collapseTwo">
+
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Add user to unit</h3>
+                                        <div class="card-options">
+                                            <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#addUserPanel" aria-expanded="false" aria-controls="addUserPanel"><i class="fa fa-times"></i>Close</button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <input ng-model="searchUser" placeholder="Search User" class="form-control form-control-sm" type="text" />
+                                        <label class="text-center form-label" ng-if="results.length==0">
+                                            <h2><i class="fa fa-search"></i></h2>
+                                            There are no results for your search '{{searchUser}}'.
+                                        </label>
+                                        <div class="table-responsive-sm">
+
+                                            <div class="row clearfix">
+                                                <div class="col-3" ng-disabled="true" ng-style="{'opacity':user.IsCrewUserUnit?.3:1}" ng-repeat="user in allUsers | filter :{Name:searchUser} as results">
+
+                                                    <table class="table table-hover table-vcenter mb-0 table_custom spacing8 text-nowrap">
+
+                                                        <tbody>
+                                                            <!-- ngRepeat: user in crewList -->
+                                                            <tr class="ng-scope">
+                                                                <td style="width:50px" class="short-name ng-binding p-1">
+                                                                    <i class="fa fa-user" ng-if="!user.ProfileImageAvailable"></i>
+                                                                    <img src="~/api/UserProfiles/GetUserPhoto/{{user.UserId}}/100/100"
+                                                                         style="border-radius:100%;" ng-if="user.ProfileImageAvailable" alt="" />
+                                                                </td>
+                                                                <td ng-disabled="true" class="cursor-pointer ng-binding" ng-click="addUserToUnit(user)">
+                                                                    {{user.Name}}
+                                                                </td>
+
+                                                                <td>
+                                                                </td>
+
+                                                            </tr><!-- end ngRepeat: user in crewList -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-12">
+
+                                <div class="card">
+
+                                    <div class="card-body">
+                                        <label class="text-center form-label" ng-if="users.length==0">No user to show!</label>
+                                        <div class="table-responsive-sm">
+                                            <table class="table table-hover table-vcenter mb-0 table_custom spacing8 text-nowrap">
+
+                                                <tbody>
+                                                    <tr ng-repeat="user in users">
+
+                                                        <td style="width:50px" class="short-name p-1">
+                                                            <i class="fa fa-user" ng-if="!user.ProfileImageAvailable"></i>
+                                                            <img src="~/api/UserProfiles/GetUserPhoto/{{user.UserId}}/100/100"
+                                                                 style="border-radius:100%;" ng-if="user.ProfileImageAvailable" alt="" />
+                                                        </td>
+                                                        <td class="d-flex cursor-pointer" ui-sref="crew.unit.userdetail({userId: '{{user.CrewId}}', title:'{{user.Name}}'})">
+
+                                                            {{user.Name}}
+                                                        </td>
+                                                        <td style="width:30px;">
+                                                            <button type="button" class="btn btn-icon btn-sm" ng-click="deleteUnitUser(user)" title="Delete"
+                                                                    data-type="confirm">
+                                                                <i class="fa fa-trash-o text-danger"></i>
+                                                            </button>
+                                                        </td>
+
+
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header p-2" id="headingThree">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                            External contacts
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseThree" class="collapse show" aria-labelledby="headingThree">
+                    <div class="card-body">
+                        <div class="row clearfix">
+                            <div class="col-12" style="margin-bottom:10px" id="btnAddExternalPanel">
+
+                                <a href="javascript:void(0)" data-toggle="collapse" data-target="#externalContactPanel" aria-expanded="true" aria-controls="externalContactPanel" class="btn btn-primary btn-sm">
+                                    <i class=" fe fe-user-plus"></i> Add External Contact
+                                </a>
+                            </div>
+                            <div class="col-12 collapse" aria-labelledby="btnAddExternalPanel" id="externalContactPanel" data-parent="#collapseThree">
+
+                                <div class="card">
+                                    <div class="card-header p-2">
+                                        <h3 class="card-title">Add external contact to group</h3>
+                                        <div class="card-options">
+                                            <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#externalContactPanel" aria-expanded="true" aria-controls="externalContactPanel"><i class="fa fa-times"></i>Close</button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <input ng-model="searchExternalUser" placeholder="Search External Contact" class="form-control form-control-sm" type="text" />
+                                        <label class="text-center form-label" ng-if="results1.length==0">
+                                            <h2><i class="fa fa-search"></i></h2>
+                                            There are no results for your search '{{searchExternalUser}}'.
+                                        </label>
+                                        <div class="table-responsive-sm">
+
+                                            <div class="row clearfix">
+                                                <div class="col-3" ng-disabled="true" ng-style="{'opacity':user.IsExternalUserUnit?.3:1}" ng-repeat="user in allExternalUsers | filter :{Name:searchExternalUser} as results1">
+
+                                                    <table class="table table-hover table-vcenter mb-0 table_custom spacing8 text-nowrap">
+
+                                                        <tbody>
+                                                            <!-- ngRepeat: user in crewList -->
+                                                            <tr class="ng-scope">
+                                                                <td style="width:50px" class="short-name ng-binding p-1">
+                                                                    <i class="fa fa-user" ng-if="!user.defaultImageId"></i>
+                                                                    <img src="~/api/UserProfiles/GetFile/{{user.defaultImageId.FileId}}/100/100"
+                                                                         style="border-radius:100%;" ng-if="user.defaultImageId" alt="" />
+                                                                </td>
+                                                                <td ng-disabled="true" class="cursor-pointer ng-binding" ng-click="addExternalUserToUnit(user)">
+                                                                    {{user.Name}}
+                                                                </td>
+
+                                                                <td>
+                                                                </td>
+
+                                                            </tr><!-- end ngRepeat: user in crewList -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-12">
+
+                                <div class="card">
+
+                                    <div class="card-body">
+                                        <label class="text-center form-label" ng-if="externalUsers.length==0">No external contact to show!</label>
+                                        <div class="table-responsive-sm">
+                                            <table class="table table-hover table-vcenter mb-0 table_custom spacing8 text-nowrap">
+
+                                                <tbody>
+                                                    <tr ng-repeat="user in externalUsers">
+
+                                                        <td style="width:50px" class="short-name p-1">
+                                                            <i class="fa fa-user" ng-if="!user.defaultImageId"></i>
+                                                            <img src="~/api/UserProfiles/GetFile/{{user.defaultImageId.FileId}}/100/100"
+                                                                 style="border-radius:100%;" ng-if="user.defaultImageId" alt="" />
+                                                        </td>
+                                                        <td class="d-flex cursor-pointer" ui-sref="crew.unit.externaluserdetail({userId: '{{user.Id}}', title: '{{user.Name}}'})">
+                                                            {{user.Name}}
+                                                        </td>
+                                                        <td style="width:30px;">
+                                                            <button type="button" class="btn btn-icon btn-sm" ng-click="deleteUnitExternalUser(user)" title="Delete"
+                                                                    data-type="confirm">
+                                                                <i class="fa fa-trash-o text-danger"></i>
+                                                            </button>
+                                                        </td>
+
+
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+
+    @*<script src="~/js/ng-controllers/crew-ctrl.js"></script>*@
+
+    <script>
+        $(document).ready(function () {
+
+
+        });
+    </script>
+}
+
+
+

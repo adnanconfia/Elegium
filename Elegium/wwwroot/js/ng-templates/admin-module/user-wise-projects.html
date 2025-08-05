@@ -1,0 +1,95 @@
+﻿<style>
+    .modal-dialog {
+        max-width: 95% !important;
+    }
+</style>
+<div class=" modal-header">
+    <h3 class="modal-title" id="modal-title">
+        {{title}}
+    </h3>
+</div>
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12" ng-if="projectsList.length==0">
+                <label class="form-label text-center text-info">No projects!</label>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3" ng-repeat="project in projectsList | filter:projectQuery">
+                <div class="card box-shadow" ng-style="{'border-top':'5px solid '+project.Project.Color}">
+                    <div class="card-header box-shadow">
+                        <h3 class="card-title">{{project.Project.Name}}</h3>
+                        <div class="card-options">
+                            <div class="item-action dropdown ml-2">
+                                <a href="javascript:void(0)" data-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-vertical"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(18px, 24px, 0px);">
+                                    <a href="javascript:void(0)" class="dropdown-item">
+                                        <i class="dropdown-icon fa fa-edit"></i>Detail
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <small> {{project.Project.ProductionType.Name}}</small>
+                            </div>
+                            <div class="col-sm-5 text-right">
+                                <small>
+                                    <i class="fa fa-calendar"></i> {{project.Project.CreatedDateTime | date:"MMM dd, yyyy"}}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row p-1 mb-2 box-radius-5 box-shadow">
+                            <div class="col-sm-12 p-2 text-center">
+                                <img class="box-radius-5 mb-2 img-fluid" ng-show="project.Project.Logo!=null" ng-src="data:image/jpg;base64,{{project.Project.Logo}}" />
+                                <img class="box-radius-5 mb-2" ng-show="project.Project.Logo==null" src="/img/no-image.png" height="100px" />
+                            </div>
+                        </div>
+
+                        <div class="row font-11">
+                            <div class="col-sm-12 p-2">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12"><strong>Budget:</strong></div>
+                                        <div class="col-sm-12 overflow-ellipsis">{{project.ProjectPartnerRequirement.Budget}} {{project.Project.Currency.Symbol}}</div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12"><strong>Currency:</strong></div>
+                                        <div class="col-sm-12 overflow-ellipsis">{{project.Project.Currency.Name}}</div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12"><strong>Length:</strong></div>
+                                        <div class="col-sm-12 overflow-ellipsis">{{project.Project.ProductionLength}}</div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12"><strong>Language:</strong></div>
+                                        <div class="col-sm-12 overflow-ellipsis">{{project.Project.ProductionLanguage.Name}}</div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12" ng-if="project.ProjectPartners.length>0"><strong>Partners:</strong></div>
+                                        <div class="col-sm-12 overflow-ellipsis" ng-if="project.ProjectPartners.length>0">{{project.ProjectPartners.length}}</div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-sm-12 pl-2 pr-2">
+                                        <div class="clearfix">
+                                            <div class="float-left"><strong>{{project.ProjectPartnerRequirement.YourFinancialShare}}%</strong></div>
+                                            <div class="float-right"><small class="text-muted">Your Share</small></div>
+                                        </div>
+                                        <div class="progress progress-xs">
+                                            <div class="progress-bar bg-red" role="progressbar" style="width: {{project.ProjectPartnerRequirement.YourFinancialShare}}%" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

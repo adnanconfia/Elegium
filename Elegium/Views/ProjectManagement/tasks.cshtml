@@ -1,0 +1,33 @@
+﻿<div class="section-body" style="max-width:1300px" ui-view="">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <ul class="nav nav-tabs page-header-tab">
+                <li class="nav-item"><a class="nav-link active" id="general-tab" ui-sref="tasks.mytasks">My tasks</a></li>
+                <li class="nav-item"><a class="nav-link" id="company-tab" ui-sref="tasks.mycreatedtasks">My created tasks</a></li>
+                <li class="nav-item"><a class="nav-link" id="portfolio-tab" data-toggle="tab" data-target="#external-contacts" ng-click="setClass()">Completed tasks</a></li>
+                <li class="nav-item"><a class="nav-link" id="selfPromotion-tab" data-toggle="tab" data-target="#user-groups" ng-click="setClass()">All tasks</a></li>
+            </ul>
+            <div class="header-action d-md-flex">
+                <button type="button" class="btn btn-primary" ng-click="saveUserProfile()"><i class="fe fe-save mr-2"></i>Save</button>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active">
+                                <div class="row">
+                                    <div class="col-12">
+                                        hellooo world
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

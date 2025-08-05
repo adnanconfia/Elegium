@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewData["Title"] = "My offered requests";
+    Layout = null;
+}
+
+<div class="section-body" ng-controller="MyHireRequestCtrl">
+    <div class="container-fluid">
+        <div class="row" ng-show="requestsList.length>0">
+            <div class="col-md-4 col-sm-12 offset-md-8">
+                <input type="text" class="form-control" placeholder="Search requests..." ng-model="requestQuery">
+            </div>
+
+        </div>
+        <div class="row mt-1">
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 mb-3" ng-repeat="request in requestsList | filter:requestQuery">
+                <div class="card" style="min-height: 210px; background: {{request.Status == 1?'auto':'#f3f3f3'}};">
+                    @*<div class="card-header border-bottom">
+                            <p>{{request.RequestDateTime | date:"MMM dd, yyyy"}}</p>
+                        </div>*@
+                    <div class="card-body">
+                        <small>{{request.RequestDateTime | date:"MMM dd, yyyy"}}</small><br />
+                        <a ui-sref="publicprojectdetail({projectId:'{{request.ProjectId}}'})">
+                            <b>{{request.Project.Name}}</b>
+                        </a>
+                        <p>
+                            {{request.Message}}
+                        </p>
+                        <p>
+                            <span ng-if="request.Status == 1" class="tag tag-blue">Pending</span>
+                            <span ng-if="request.Status == 2" class="tag tag-success">Accepted</span>
+                            <span ng-if="request.Status == 3" class="tag tag-danger">Rejected</span>
+                        </p>
+                        <a href="/api/UserProfiles/DownloadFile/{{media.FileId}}" ng-repeat="media in request.MediaFiles" class="font-10 m-1"
+                           download="" target="_blank" role="button">
+                            {{media.Name}}<br />
+                        </a>
+                        @*<div class="row" ng-if="request.Status == 1">
+            <div class="col-sm-12">
+                <a href="#" class="btn btn-success pull-right ml-2" ng-click="accept(request)">
+                    <i class="fa fa-handshake-o mr-1"></i> Accept offer
+                </a>
+                <a href="#" class="btn btn-danger pull-right" ng-click="reject(request)">
+                    <i class="fa fa-times-rectangle mr-1"></i> Reject
+                </a>
+            </div>
+
+        </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/ng-controllers/professional-hirerequest-ctrl.js"></script>
+}
+

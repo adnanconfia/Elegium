@@ -1,0 +1,81 @@
+﻿
+    <style>
+        .uppy-size--md .uppy-Dashboard-Item-preview {
+            height: 30px !important;
+        }
+
+        @media screen and (min-width: 1000px) {
+            .icon-container {
+                margin-left: 25% !important;
+            }
+        }
+
+        @media screen and (max-width: 800px) {
+            .icon-container {
+                margin-left: 30% !important;
+            }
+        }
+    </style>
+<div class="modal-header">
+    <div class="row clearfix">
+        <div class="col-sm-12">
+            <h4 class="modal-title" id="modal-title">Send hire request to {{userProfile.FirstName}} {{userProfile.LastName}} Profile</h4>
+            <label class="col-form-label">
+                <small class="text-muted">Select a project and write a good message to attract the professional to your project.</small>
+            </label>
+        </div>
+    </div>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 col-sm-12">
+                <div class="icon-container {{userProfile.Online?'avatar-online':'avatar-offline'}} d-block {{userProfile.UserId}}">
+                    <img class="card-profile-img" ng-src="/api/UserProfiles/GetUserPhoto/{{userProfile.UserId}}/100/100" alt="">
+                    <span class="status-circle"></span>
+                </div>
+                <p class="m-1 mt-2 text-center font-weight-bold">{{userProfile.CompanyPosition.Name}}</p>
+                <p class="text-center">
+                    <i ng-if="userProfile.Country || userProfile.City" class="fa fa-map-marker text-gray"></i>
+                    <span>{{userProfile.Country.Name}}</span>
+                    <span ng-if="userProfile.Country && userProfile.City">,</span>
+                    <span>{{userProfile.City.Name}}</span>
+                </p>
+            </div>
+            <div class="col-md-9 col-sm-12">
+                <form class="" name="form" style="width:100%">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-label">Select Project</label>
+                                <select name="language" class="form-control custom-select" required ng-options="item.Id as item.Name for item in projectsList"
+                                        ng-model="data.ProjectId">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-label">Working position in project</label>
+                                <select class="form-control custom-select" ng-options="item.Id as item.Name for item in workingPositions" ng-model="data.WorkingPositionId">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Message</label>
+                                <textarea rows="4" required ng-model="data.Message" class="form-control" placeholder="Additional notes"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="DashboardContainer"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning btn-sm" type="button" ng-click="cancel()"><span class="fa fa-close"></span> Close</button>
+    <button class="btn btn-primary btn-sm" ng-disabled="form.$invalid" type="button" ng-click="send()"><span class="fa fa-send"></span> Send</button>
+</div>

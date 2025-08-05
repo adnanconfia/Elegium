@@ -1,0 +1,152 @@
+﻿<style>
+    .modal-dialog {
+        max-width: 90% !important;
+    }
+    /* Styles go here */
+
+
+    .placeholder {
+        background-color: transparent;
+        background-size: cover;
+        background-repeat: no-repeat;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .placeholder img {
+            position: absolute;
+            opacity: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transition: opacity 1s linear;
+        }
+
+            .placeholder img.loaded {
+                /*This is a overqualified selector. For the html as is now .loaded is enough*/
+                opacity: 1;
+            }
+
+    .img-small {
+        filter: blur(50px);
+    }
+
+    .padding {
+        padding-bottom: 50%
+    }
+</style>
+<div class="modal-header p-0" ng-if="false">
+    <div class="row w-100">
+        <div class="col-sm-12 text-right">
+            <h6 class="text-right mb-0 p-2">
+                <a href="/api/UserProfiles/DownloadFile/{{data.FileId}}" download="{{data.Name}}" target="_blank" role="button" class="btn-minimal btn-ico" style="outline:none">
+                    <span class="material-icons">vertical_align_bottom</span>
+                </a>
+            </h6>
+        </div>
+    </div>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-1">
+                <div ng-click="prev(data.FileId)" role="button" aria-label="Previous" aria-disabled="false" tabindex="0" class="_2UGa7 djOrh _3y5oW">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30" height="30">
+                        <path fill="currentColor" d="M19.214 21.212L12.865 15l6.35-6.35-1.933-1.932L9 15l8.282 8.282 1.932-2.07z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="col-sm-10 text-center">
+
+                <!--<div class="placeholder" data-large="/api/UserProfiles/GetFile/data.FileId/1000/500">
+                    <img src="https://unsplash.it/20/15?image=1010" class="img-small">
+                    <div class="padding"></div>
+                </div>-->
+                <div class="placeholder" img-preload img-src="data">
+                    <label class="col-form-label" ng-if="false"><b>{{data.Name}}</b></label>
+                    <img ng-src="/api/UserProfiles/GetFileThumbnail/{{data.FileId}}/3/3" class="img-fluid img-small" />
+                    <div class="padding"></div>
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <div ng-click="next(data.FileId)" role="button" aria-label="Next" aria-disabled="true" tabindex="0" class="_2UGa7 _137Se _2r39M _3y5oW _1-C1c">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30" height="30">
+                        <path fill="currentColor" d="M11 21.212L17.35 15 11 8.65l1.932-1.932L21.215 15l-8.282 8.282L11 21.212z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <!--<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>-->
+    <a href="/api/UserProfiles/DownloadFile/{{data.FileId}}" download="{{data.Name}}" target="_blank" role="button" class="btn-minimal btn btn-success btn-ico" style="outline:none">
+        <i class="fa fa-download"></i> Download
+    </a>
+    <button class="btn btn-danger" type="button" ng-click="cancel()">
+        <i class="fa fa-times"></i> Close
+    </button>
+</div>
+<style type="text/css">
+    /*copied from whatsapp :)*/
+    div._2UGa7 {
+        background-color: rgba(0,0,0,0.35);
+        outline: none;
+        cursor: pointer
+    }
+
+    div._3y5oW {
+        padding: 0;
+        border-radius: 50%;
+        box-shadow: 0 1px 3px rgba(0,0,0,.4);
+    }
+
+    div._2UGa7 {
+        position: absolute;
+        top: calc(50% - 16px);
+        z-index: 100;
+    }
+
+    ._3y5oW {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 46px;
+        height: 46px;
+        color: #fff;
+        font-weight: 500;
+        font-size: 14px;
+        text-transform: uppercase;
+        transition: box-shadow .08s cubic-bezier(.4,0,.2,1);
+    }
+</style>
+
+<script>
+
+
+    //var placeholders = document.querySelectorAll('.placeholder'),
+    //    i;
+
+    //for (i = 0; i < placeholders.length; i++) {
+    //    blurryLoad(placeholders[i]);
+    //}
+
+    //function blurryLoad(element) {
+    //    var small = element.querySelector('.img-small');
+
+    //    // 1: load small image and show it
+    //    var img = new Image();
+    //    img.src = small.src;
+    //    img.onload = function () {
+    //        small.classList.add('loaded');
+    //    };
+
+    //    // 2: load large image
+    //    var imgLarge = new Image();
+    //    imgLarge.src = element.dataset.large;
+    //    imgLarge.onload = function () {
+    //        imgLarge.classList.add('loaded');
+    //    };
+    //    element.appendChild(imgLarge);
+    //}
+</script>

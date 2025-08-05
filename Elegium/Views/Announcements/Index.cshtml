@@ -1,0 +1,67 @@
+﻿<div class="section-body" style="max-width:1300px" ui-view="">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-12">
+                <div class="card bg-none">
+                    <div class="card-body">
+                        <div class="row clearfix">
+                            <div class="col-12">
+                                <div class="row clearfix mb-3" ng-if="announcements.length>0">
+                                    <div class="col-sm-12">
+                                        <button type="button" ng-click="createNewAnnouncement()" class="btn btn-success">
+                                            Create a new announcement <i class="fa fa-plus-circle"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-title text-center" ng-if="announcements.length==0">
+                                    <label class="h4 text-muted">
+                                        Communicate important information to departments or the entire crew in one go and avoid time-draining email follow-ups.
+                                    </label>
+                                    <button type="button" class="btn btn-success mt-3" ng-click="createNewAnnouncement()">
+                                        Create a new announcement <i class="fa fa-plus-circle"></i>
+                                    </button>
+                                </div>
+                                <div class="row clearfix" ng-if="announcements.length>0">
+                                    <div class="col-sm-12">
+                                        <div style="height:71px !important" class="card task box-shadow mb-2 cursor-pointer announcement" ng-repeat="announcement in announcements" ng-click="$event.originalEvent.dropdown || goToAnnouncementProfile(announcement.Id)">
+                                            <div class="row clearfix p-0 ml-3">
+                                                <div class="col-1 mt-3 p-0">
+                                                    <img src="~/icons/ANNOUNCEMENTS.svg" class="icon-svg" width="35" />
+                                                </div>
+                                                <div class="col-5 mt-3 text-left font-weight-bolder">
+                                                    {{announcement.Title}}
+                                                    <p>
+                                                        <small>{{announcement.Created}} | {{announcement.UserName}}</small>
+                                                    </p>
+                                                </div>
+                                                <div class="col-5 mt-3">
+                                                    <div ng-if="announcement.HasDeadline">
+                                                        <small class="mb-1">Expiration date</small>
+                                                        <br />
+                                                        {{announcement.Deadline}}
+                                                    </div>
+                                                </div>
+                                                <div class="col-1 text-right">
+                                                    <div class="item-action dropdown mt-3">
+                                                        <a href="javascript:void(0)" data-toggle="dropdown" ng-click="$event.originalEvent.dropdown = true" class="icon font-20" aria-expanded="false">
+                                                            <i class="fe fe-more-vertical"></i>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                            <a href="javascript:void(0)" ng-click="deleteAnnouncement($event, announcement)" class="dropdown-item">
+                                                                <i class="dropdown-icon fa fa-trash"></i> Delete
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

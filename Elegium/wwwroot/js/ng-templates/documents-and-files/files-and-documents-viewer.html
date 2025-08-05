@@ -1,0 +1,473 @@
+<div class="modal-body" id="modal-body" ng-if="hasloaded">
+    <div class="row clearfix">
+        <div class="col-sm-12 col-md-9 {{file.Type=='pdf'?'pdf_class':''}}">
+            <a role="button" class=" prevnext prev cursor-pointer" ng-click="nextPrev('N')">
+                <i class="fa fa-angle-left"></i>
+            </a>
+            <div class="img-gallery position-static d-block">
+                <div class="row image_wrapper" style="min-height:90vh !important">
+                    <div id="image">
+                        <div ng-if="file.Type=='image'" class="image z-index-1" style="background-image: url('/api/Messages/GetFileThumbnail/{{file.FileId}}/2000/2000')"></div>
+                        <object ng-if="file.Type=='pdf'" class="z-index-1" data="/api/Userprofiles/DownloadFile/{{file.FileId}}" type="application/pdf" width="100%" height="100%" __idm_frm__="184"></object>
+                        <div ng-if="file.Type=='video'" class="video video-js z-index-1 vjs-controls-enabled vjs-workinghover vjs-v7 timeformat_standard vjs-has-started vjs-paused vjs-ended vjs-user-inactive">
+                            <video id="my-video"
+                                   class="vjs-tech vjs-theme-city"
+                                   controls
+                                   preload="auto"
+                                   data-setup="{}">
+                                <source src="/api/UserProfiles/GetVideoFile/{{file.FileId}}" type="{{file.MimeType}}" />
+                                <p class="vjs-no-js">
+                                    To view this video please enable JavaScript, and consider upgrading to a
+                                    web browser that
+                                    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                                </p>
+                            </video>
+                        </div>
+                        <div id="AudioContainer" ng-if="file.Type=='audio'" class="z-index-1">
+                            <div id="audio_thumbnail" style="height: 652px;">
+                                <span class="extension text-white text-capitalize" style="line-height: 652px;"><i class="fa fa-file"></i> {{file.Extension}}</span>
+                            </div>
+                            <audio src="/api/UserProfiles/GetAudioFile/{{file.FileId}}" volume="1" controls="controls" autoplay="autoplay"></audio>
+                        </div>
+                        <div id="AudioContainer" class="h-100 z-index-1" ng-if="file.Type=='other'">
+                            <div id="audio_thumbnail" style="height: 652px;">
+                                <span class="extension text-white text-uppercase" style="line-height: 652px;"><i class="fa fa-file"></i> {{file.Extension}}</span>
+                            </div>
+                        </div>
+                        <div class="gallery_loading" ng-if="file.Type!='pdf'&&file.Type!='other'">
+                            <i class="fa fa-spin fa-2x fa-circle-o-notch"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a role="button" class=" prevnext next cursor-pointer" ng-click="nextPrev('P')">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        </div>
+        <div class="col-sm-12 col-md-3 d-block overflow-hidden" id="gallery_comments_wrapper">
+            <div class="row mt-10">
+                <div class="col-sm-12 font-15" style="word-break:break-all">
+                    <p class="mb-1 font-weight-bold font-20">
+                        {{file.Name}}
+                    </p>
+                    <small>Uploaded by <a href="#/professionaldetails/{{file.UserId}}" class="font-weight-bold">{{file.UserName}}</a> at {{file.UserFriendlyTime}}</small>
+                </div>
+            </div>
+            <div class="row mt-10">
+                <div class="ml-2 col-sm-3">
+                    <a role="button" class="btn-minimal btn-ico btn" style="color: inherit;text-decoration: none;outline: 0 !important" href="/api/UserProfiles/DownloadFile/{{file.FileId}}" download="{{file.Name.split('.')[0]+file.Extension}}" target="_blank">
+                        <span class="material-icons">
+                            vertical_align_bottom
+                        </span>
+                        <small class="font-10 d-block">Download</small>
+                    </a>
+                </div>
+                <div class="ml-2 col-sm-3">
+                    <a role="button" class="btn-minimal btn-ico btn cursor-pointer" style="outline:0" data-toggle="collapse" data-target="#sendMessage" aria-expanded="false" aria-controls="collapseExample">
+                        <span class="material-icons">
+                            email
+                        </span>
+                        <small class="font-10 d-block">
+                            Send via message
+                        </small>
+                    </a>
+                </div>
+                <div class="ml-2 col-sm-3">
+                    <a role="button" class="btn-minimal btn-ico btn cursor-pointer" style="outline:0" ng-click="navigateToFileDetailsView(file)">
+                        <span class="material-icons">
+                            edit
+                        </span>
+                        <small class="font-10 d-block">
+                            Details View
+                        </small>
+                    </a>
+                </div>
+            </div>
+            <div class="row clearfix collapse mt-3" style="border: 1px solid lightgray !important;" id="sendMessage">
+                <div class="col-sm-12">
+                    <div class="card card-body p-3">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h5>
+                                    <span class="col-form-label">Send file via message</span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-12">
+                                <h6>
+                                    <small>
+                                        You can send this file attachment.
+                                        To send the attachment, select the recipients and enter a message.
+                                    </small>
+                                </h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row clearfix">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                Assigned crew members
+                                            </label>
+                                            <ui-select multiple class="form-control" ng-model="sendFileAsMessage.SendTo" theme="selectize" sortable="true" close-on-select="false">
+                                                <ui-select-match>{{$item.name}}</ui-select-match>
+                                                <ui-select-choices group-by="groupUsers" repeat="visible.id as visible in projectUsersAndGroups">
+                                                    <div class="row p-10 clearfix">
+                                                        <div class="col-sm-3">
+                                                            <img class="rounded img-fluid" src="/api/UserProfiles/GetUserPhoto/{{visible.id}}/35/35" alt="" />
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div ng-bind-html="visible.name | highlight: $select.search">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Message</label>
+                                            <textarea class="form-control" ng-model="sendFileAsMessage.Message"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 text-right ">
+                                <div class="d-inline-block">
+                                    <button type="button" class="btn btn-primary ml-2 d-flex float-right" ng-click="sendFileInMessage()" data-toggle="collapse" data-target="#sendMessage" aria-expanded="false" aria-controls="collapseExample">Send</button>
+                                    <button type="button" id="closeNewMessageFile" class="btn btn-default d-flex" ng-click="cancelSendFileInMessage()" data-toggle="collapse" data-target="#sendMessage" aria-expanded="false" aria-controls="collapseExample">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix mt-2" ng-repeat="comment in fileComments">
+                <div class="col-2">
+                    <div class="avatar_img position-absolute ml-2">
+                        <img class="rounded img-fluid" src="/api/UserProfiles/GetUserPhoto/{{comment.UserId}}/25/25" alt="">
+                    </div>
+                </div>
+                <div class="col-10 card font-12 pr-0 pl-0" style="background-color: #f0f2f5 !important">
+                    <div class="card-header pl-2 pr-1 pt-1">
+                        <h3 style="text-transform: capitalize;" class="card-title">
+                            {{comment.UserName}} <small>{{comment.Created}}</small>
+                        </h3>
+                        <div class="card-options">
+                            <div class="item-action dropdown ml-2">
+                                <a href="javascript:void(0)" data-toggle="dropdown"><i class="fe fe-more-vertical"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="javascript:void(0);" class="ml-2" ng-click="deleteFileComment(comment)"><i class="fa fa-trash"> Delete</i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-2">
+                        <p class="font-weight-normal font-12" ng-bind-html="comment.Text"></p>
+                    </div>
+                </div>
+                <hr />
+            </div>
+            <div class="row clearfix mt-3">
+                <div class="col-2">
+                    <div class="avatar_img position-absolute ml-2">
+                        <img class="rounded img-fluid" src="/api/UserProfiles/GetLoggedInUserThumbnail/25/25" alt="">
+                    </div>
+                </div>
+                <div class="col-10 pt-0 pl-0 pr-0 card">
+                    <div class="comment_body">
+                        <textarea ng-model="fileCommentObj.Text" class="p-2 box-radius-10 w-100 font-12 mention" placeholder="Write a comment..." id="fileCommentTextArea"></textarea>
+                        <div class="text-center small">
+                            <i class="fa fa-info-circle"></i> You can mention users by using the @ sign
+                        </div>
+                        <div class="text-right mt-1">
+                            <button type="button" ng-click="postFileComment()" class="btn btn-success">
+                                Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a role="button" class="close-btn cursor-pointer" ng-click="cancel()">
+        <span class="material-icons">close</span>
+    </a>
+</div>
+<style>
+    .project-icons {
+        opacity: 0.4;
+        transition: opacity linear 1s;
+    }
+
+        .project-icons:hover {
+            opacity: 1;
+        }
+
+    .modal {
+        display: block !important; /* I added this to see the modal, you don't need this */
+    }
+
+    /* Important part */
+    .modal-dialog {
+        overflow-y: initial !important
+    }
+
+    .modal-body {
+        height: 90vh;
+        overflow-y: auto;
+        padding-top: 0 !important;
+        padding-left: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .modal-dialog.modal-lg {
+        max-width: 100% !important;
+        padding: 0 5px !important;
+        max-height: 100% !important;
+    }
+
+    .modal-content {
+        border: none !important;
+    }
+
+    .prevnext {
+        position: absolute !important;
+        font-size: 40px;
+        opacity: .6;
+        transition: opacity .3s linear;
+        width: 30px;
+        padding: 0 10px;
+        display: block;
+        box-sizing: border-box;
+        position: fixed;
+        color: #fff !important;
+        z-index: 10;
+        height: 10%;
+        top: 50%;
+    }
+
+        .prevnext:hover {
+            opacity: 1 !important;
+        }
+
+        .prevnext.next {
+            right: 0;
+        }
+
+        .prevnext.prev {
+            left: 0;
+        }
+
+    .image_wrapper #image {
+        z-index: 2;
+        position: relative;
+        background-color: #000;
+    }
+
+    #image {
+        width: 100%;
+        text-align: center;
+    }
+
+    .image_wrapper #image .image {
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+        z-index: 2;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .image_wrapper #image .video {
+        width: 100%;
+        height: 100%;
+    }
+
+    #AudioContainer {
+        width: 100%;
+        margin: auto;
+        background: #212121;
+    }
+
+        #AudioContainer #audio_thumbnail {
+            min-height: 325px;
+            width: 100%;
+            margin: auto;
+        }
+
+        #AudioContainer .extension {
+            font-size: 80px;
+            line-height: 250px;
+            font-family: 'Work Sans',sans-serif;
+            font-weight: 400;
+        }
+
+    audio {
+        width: 100%;
+        display: block;
+        margin-top: 20px;
+        margin: auto;
+    }
+
+    #gallery_comments_wrapper {
+        margin-bottom: 0;
+        right: 0;
+        top: 0;
+        float: none;
+        height: 90vh;
+        overflow-y: scroll !important;
+        overflow: hidden;
+        padding: 20px 15px;
+        box-sizing: border-box;
+        margin-top: 0;
+        display: block !important;
+    }
+
+    .pdf_class .prevnext.next {
+        right: 1.2% !important;
+    }
+
+    .gallery_loading {
+        position: absolute;
+        top: 50%;
+        text-align: center;
+        margin-top: -40px;
+        width: 100%;
+    }
+
+    .close-btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+        color: red;
+    }
+
+    .ui-select-choices-group-label {
+        font-size: 20px !important;
+    }
+
+    [data-selectable] {
+        margin-left: 10px !important;
+    }
+
+    .option.ui-select-choices-row-inner {
+        transition: background linear .3s;
+        background: #f2f2f2 !important;
+        margin-top: 5px !important;
+        border-radius: 10px !important;
+    }
+
+        .option.ui-select-choices-row-inner:hover {
+            background: #0d96ce !important;
+            color: #fff !important;
+        }
+
+
+    textarea {
+        height: 160px !important;
+        background: none;
+        border: 0;
+        border: 1px #888 solid;
+        color: #363636;
+        padding: 5px 10px;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -moz-transition: border .3s linear;
+        -o-transition: border .3s linear;
+        -webkit-transition: border .3s linear;
+        transition: border .3s linear;
+        font-size: 12px;
+        font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+        border-radius: 5px;
+    }
+
+    .mentions-input-box {
+        font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+        color: #000;
+        margin-bottom: 16px;
+        font-size: 12px;
+    }
+
+        .mentions-input-box textarea {
+            color: #000;
+            font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+            font-size: 12px;
+        }
+
+    .mentions > div > strong {
+        border-bottom: 2px solid #0d96ce;
+        background: none !important;
+    }
+
+    .mentions-input-box .mentions-autocomplete-list {
+        display: none;
+        background: #d6d9db;
+        position: absolute;
+        left: 0;
+        right: 0;
+        z-index: 10000;
+        margin-top: -5px;
+    }
+
+        .mentions-input-box .mentions-autocomplete-list ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        .mentions-input-box .mentions-autocomplete-list li {
+            padding: 0 5px 0 0;
+            margin: 0 0 1px;
+            width: auto;
+            height: 30px;
+            line-height: 30px;
+            overflow: hidden;
+            cursor: pointer;
+            list-style: none;
+            white-space: nowrap;
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 400;
+            transition: background linear .5s;
+        }
+
+            .mentions-input-box .mentions-autocomplete-list li > img,
+            .mentions-input-box .mentions-autocomplete-list li > div.icon {
+                width: 24px;
+                height: 24px;
+                float: left;
+                margin: 3px 10px 3px 3px;
+                border-radius: 3px;
+                -moz-background-origin: 3px;
+            }
+
+            .mentions-input-box .mentions-autocomplete-list li em {
+                font-weight: bold;
+                font-style: none;
+            }
+
+            .mentions-input-box .mentions-autocomplete-list li b {
+                font-weight: normal;
+            }
+
+            .mentions-input-box .mentions-autocomplete-list li:hover,
+            .mentions-input-box .mentions-autocomplete-list li.active {
+                background-color: #0d96ce;
+                color: #fff;
+            }
+
+    a.mention {
+        font-weight: bold;
+        color: #363636;
+    }
+</style>

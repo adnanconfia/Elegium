@@ -1,0 +1,534 @@
+﻿
+@{ ViewData["Title"] = "Professionals";
+    Layout = null; }
+
+<style>
+    /*.card-profile {
+        height: 100%;
+    }*/
+
+    .top-section {
+        height: 195px;
+    }
+</style>
+<div class="section-body">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <ul class="nav nav-tabs page-header-tab">
+                <li class="nav-item">
+                    <a class="nav-link active" id="public-tab" data-toggle="tab" data-target="#public">Public</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="favorite-tab" data-toggle="tab" data-target="#favorite">Favorite</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="saved-tab" data-toggle="tab" data-target="#saved">Saved</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="tab-content">
+            <div class="tab-pane fade active show" id="public" role="tabpanel">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button type="button" class="btn btn-primary pull-right mb-1" ng-click="showHideFilters()"><i class="fe fe-filter mr-2"></i>Show/Hide Filters</button>
+                    </div>
+                </div>
+                <div class="row" ng-if="hideFilters">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="selectgroup selectgroup-pills">
+                                <label class="selectgroup-item" ng-repeat="item in promotionCategories">
+                                    <input type="radio" name="icon-input" value="item.Id"
+                                           class="selectgroup-input" ng-click="searchCat(item.Id)"
+                                           ng-checked="searchQuery.PromotionCategory == item.Id">
+                                    <span class="selectgroup-button selectgroup-button-icon">{{item.Name}}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-if="!hideFilters">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Search Film, TV & Theatre Professionals</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Use the search engine to quickly browse through the Elegium network</p>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Category to Search</label>
+                                            <ui-select class="form-control" ng-model="searchQuery.PromotionCategory" theme="selectize" sortable="true" close-on-select="true">
+                                                <ui-select-match placeholder="Select Category...">{{$select.selected.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in promotionCategories | filter: $select.search">
+                                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                </ui-select-choices>
+                                            </ui-select>
+                                            @*<select class="form-control custom-select" ng-options="x.Id as x.Name for x in promotionCategories"
+                                                        ng-model="searchQuery.PromotionCategory">
+                                                </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Location</label>
+                                            <ui-select class="form-control" ng-model="searchQuery.CountryId" theme="selectize" sortable="true" close-on-select="true">
+                                                <ui-select-match placeholder="Select Location...">{{$select.selected.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in countries | filter: $select.search">
+                                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                </ui-select-choices>
+                                            </ui-select>
+                                            @*<select class="form-control custom-select" ng-options="x.Id as x.Name for x in countries"
+                                                        ng-model="searchQuery.CountryId" ng-change="getCitiesOfCountry(searchQuery.CountryId)">
+                                                    <option value="" disabled selected>Search by Location</option>
+                                                </select>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            @*<label class="form-label">Job Title</label>*@
+                                            <ui-select class="form-control" ng-model="searchQuery.CompanyPositionId" theme="selectize" sortable="true" close-on-select="true">
+                                                <ui-select-match placeholder="Search by Job Title">{{$select.selected.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in workingPositions | filter: $select.search">
+                                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                            </ui-select>
+                                            @*<select class="form-control custom-select" ng-options="item.Id as item.Name for item in workingPositions"
+                                                        ng-model="searchQuery.CompanyPositionId">
+                                                    <option value="" disabled selected>Search by Job Title</option>
+                                                </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            @*<label class="form-label">Search by Service</label>*@
+                                            <ui-select class="form-control" ng-model="searchQuery.SkillId" theme="selectize" sortable="true" close-on-select="true">
+                                                <ui-select-match placeholder="Search by Service">{{$select.selected.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in skills | filter: $select.search">
+                                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+                                            </ui-select>
+                                            @*<select class="form-control custom-select" ng-options="item.Id as item.Name for item in skills"
+                                                        ng-model="searchQuery.SkillId">
+                                                    <option value="" disabled selected>Search by Service</option>
+                                                </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            @*<label class="form-label">Level of Experience</label>*@
+                                            <ui-select class="form-control" ng-model="searchQuery.SkillLevelId" theme="selectize" sortable="true" close-on-select="true">
+                                                <ui-select-match placeholder="Search by Experience level">{{$select.selected.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in skillLevels | filter: $select.search">
+                                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+                                            </ui-select>
+                                            @*<select class="form-control custom-select" ng-options="item.Id as item.Name for item in skillLevels"
+                                                    ng-model="searchQuery.SkillLevelId">
+                                                <option value="" disabled selected>Search by Experience level</option>
+                                            </select>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Search by Name"
+                                                   ng-model="searchQuery.Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Search by Keyword"
+                                                   ng-model="searchQuery.Keyword">
+                                        </div>
+                                    </div>
+                                    @*<div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <select class="form-control custom-select" ng-options="x.Id as x.Name for x in cities"
+                                                    ng-model="searchQuery.CityId">
+                                                <option value="" disabled selected>Search by City</option>
+                                            </select>
+                                        </div>
+                                    </div>*@
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 text-right">
+                                        <button type="button" class="btn btn-primary" ng-click="search()"><i class="fe fe-search mr-2"></i>Search</button>
+                                        <button type="button" class="btn btn-warning" ng-click="clearFilters()"><i class="fe fe-filter mr-2"></i>Clear Filters</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="searchedProfessionals.length>0 && !hideFilters">
+                    <hr />
+                    <h6 class="ml-10">Searched results:</h6>
+                </div>
+
+                <div class="row mt-5" ng-if="isLoading">
+                    <div class="col-12 text-center">
+                        <i class="fa fa-circle-o-notch fa-2x fa-spin"></i>
+                        <p>Loading...Please wait</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 col-xxxl-2 mb-3" ng-repeat="professional in searchedProfessionals">
+                        @*<a href="~/ProfessionalDetail/{{professional.UserProfile.UserId}}" target="_blank">*@
+                        <div class="card card-profile">
+                            <flip flip-show="{{professional.whichCard?professional.whichCard:'front'}}" flip-width="100%" flip-height="235px">
+                                <div class="card-body text-center p-x-7">
+                                    <div class="row">
+                                        <div class="col-sm-10" style="height:150px;">
+                                            <div class="row">
+                                                <flip-panel>
+                                                    <div class="row ml-0">
+                                                        <div class="col-sm-4">
+                                                            <div class="icon-container {{professional.Online?'avatar-online':'avatar-offline'}} m-auto d-block {{professional.UserProfile.UserId}}">
+                                                                <span class="status-circle"></span>
+                                                            </div>
+                                                            <div class="mt-3">
+                                                                <a ui-sref="professionaldetails({userId:'{{professional.UserProfile.UserId}}'})">
+                                                                    <img class="card-profile-img" style="width:100%" src="/api/UserProfiles/GetUserPhoto/{{professional.UserProfile.UserId}}/200/200" alt="">
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-8 text-left mt-2">
+                                                            <div class="row">
+                                                                <div class="col-sm-12 font-12">
+                                                                    <i ng-if="professional.UserProfile.Country || professional.UserProfile.City" class="fa fa-map-marker text-gray"></i>
+                                                                    <span>{{professional.UserProfile.Country.Name}}</span>
+                                                                    <span ng-if="professional.UserProfile.Country && professional.UserProfile.City">,</span>
+                                                                    <span>{{professional.UserProfile.City.Name}}</span>
+                                                                </div>
+                                                                <div class="col-sm-12 font-20" style="font-weight:500;">
+                                                                    <span>{{professional.UserProfile.FirstName}} {{professional.UserProfile.LastName}}</span>
+                                                                </div>
+                                                                <div class="col-sm-12 font-15" style="font-weight:500;">
+                                                                    <span>{{professional.UserProfile.CompanyPosition.Name}}</span>
+                                                                </div>
+                                                                <div class="col-sm-12 font-12 mt-2">
+                                                                    <i class="fa fa-globe"></i>
+                                                                    <span ng-repeat="item in professional.UserOtherLanguages">
+                                                                        <span ng-if="$index!=0">,</span> {{item.Language.Name}}
+                                                                    </span>
+                                                                    <span ng-if="professional.UserOtherLanguages.length==0">
+                                                                        No language specified
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </flip-panel>
+                                                <flip-panel>
+                                                    <div class="row ml-0">
+                                                        <div class="col-sm-12 text-left font-14 pl-3">
+                                                            {{professional.UserProfile.IntroText | limitTo:200 }}{{ professional.UserProfile.IntroText.length > 200 ? '...' : ''}}
+                                                        </div>
+                                                    </div>
+                                                </flip-panel>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <span class="material-icons" style="cursor:pointer;"
+                                                          title="Click to see more the info"
+                                                          ng-click="toggle(professional)">
+                                                        info
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-12" ng-if="professional.UserProfile.UserId != $parent.currUser">
+                                                    <span class="material-icons" style="cursor:pointer;"
+                                                          title="Send email to professional"
+                                                          ng-click="sendEmailToProfessional(professional.UserProfile)">
+                                                        mail
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-12" ng-if="professional.UserProfile.UserId != $parent.currUser">
+                                                    <span class="material-icons" style="cursor:pointer;"
+                                                          title="Start Chat with professional"
+                                                          ng-click="openChatBox(professional.UserProfile.UserId)">
+                                                        message
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <span class="material-icons {{professional.IsFavorite?'text-info':''}}"
+                                                          style="cursor:pointer;"
+                                                          title="Add to favorite list" ng-click="toggleFavorite(professional)">
+                                                        stars
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <span class="material-icons {{professional.IsSaved?'text-info':''}}"
+                                                          style="cursor:pointer;"
+                                                          title="Add to saved list" ng-click="toggleSave(professional)">
+                                                        save_alt
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    <div class="row font-12 font-weight-bold">
+                                        <div class="col-sm-4">
+                                            {{professional.FollowersCount}} <span>Followers</span>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            {{professional.FollowingCount}} <span>Following</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </flip>
+
+
+                        </div>
+                        @*</a>*@
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="favorite" role="tabpanel">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 col-xxxl-2 mb-3" ng-repeat="professional in favoriteProfessionals">
+                        <div class="card card-profile">
+                            <flip flip-show="{{professional.whichCard?professional.whichCard:'front'}}" flip-width="100%" flip-height="235px">
+                                <div class="card-body text-center p-x-7">
+                                    <div class="row">
+                                        <div class="col-sm-10" style="height:150px;">
+                                            <div class="row">
+                                                <flip-panel>
+                                                    <div class="row ml-0">
+                                                        <div class="col-sm-4">
+                                                            <div class="icon-container {{professional.Online?'avatar-online':'avatar-offline'}} m-auto d-block {{professional.UserProfile.UserId}}">
+                                                                <span class="status-circle"></span>
+                                                            </div>
+                                                            <div class="mt-3">
+                                                                <a ui-sref="professionaldetails({userId:'{{professional.UserProfile.UserId}}'})">
+                                                                    <img class="card-profile-img" style="width:100%" src="/api/UserProfiles/GetUserPhoto/{{professional.UserProfile.UserId}}/200/200" alt="">
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-8 text-left mt-2">
+                                                            <div class="row">
+                                                                <div class="col-sm-12 font-12">
+                                                                    <i ng-if="professional.UserProfile.Country || professional.UserProfile.City" class="fa fa-map-marker text-gray"></i>
+                                                                    <span>{{professional.UserProfile.Country.Name}}</span>
+                                                                    <span ng-if="professional.UserProfile.Country && professional.UserProfile.City">,</span>
+                                                                    <span>{{professional.UserProfile.City.Name}}</span>
+                                                                </div>
+                                                                <div class="col-sm-12 font-20" style="font-weight:500;">
+                                                                    <span>{{professional.UserProfile.FirstName}} {{professional.UserProfile.LastName}}</span>
+                                                                </div>
+                                                                <div class="col-sm-12 font-15" style="font-weight:500;">
+                                                                    <span>{{professional.UserProfile.CompanyPosition.Name}}</span>
+                                                                </div>
+                                                                <div class="col-sm-12 font-12 mt-2">
+                                                                    <i class="fa fa-globe"></i>
+                                                                    <span ng-repeat="item in professional.UserOtherLanguages">
+                                                                        <span ng-if="$index!=0">,</span> {{item.Language.Name}}
+                                                                    </span>
+                                                                    <span ng-if="professional.UserOtherLanguages.length==0">
+                                                                        No language specified
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </flip-panel>
+                                                <flip-panel>
+                                                    <div class="row ml-0">
+                                                        <div class="col-sm-12 text-left font-14 pl-3">
+                                                            {{professional.UserProfile.IntroText | limitTo:200 }}{{ professional.UserProfile.IntroText.length > 200 ? '...' : ''}}
+                                                        </div>
+                                                    </div>
+                                                </flip-panel>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <span class="material-icons" style="cursor:pointer;"
+                                                          title="Click to see more the info"
+                                                          ng-click="toggle(professional)">
+                                                        info
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-12" ng-if="professional.UserProfile.UserId != $parent.currUser">
+                                                    <span class="material-icons" style="cursor:pointer;"
+                                                          title="Send email to professional"
+                                                          ng-click="sendEmailToProfessional(professional.UserProfile)">
+                                                        mail
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-12" ng-if="professional.UserProfile.UserId != $parent.currUser">
+                                                    <span class="material-icons" style="cursor:pointer;"
+                                                          title="Start Chat with professional"
+                                                          ng-click="openChatBox(professional.UserProfile.UserId)">
+                                                        message
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <span class="material-icons {{professional.IsFavorite?'text-info':''}}"
+                                                          style="cursor:pointer;"
+                                                          title="Add to favorite list" ng-click="toggleFavorite(professional)">
+                                                        stars
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <span class="material-icons {{professional.IsSaved?'text-info':''}}"
+                                                          style="cursor:pointer;"
+                                                          title="Add to saved list" ng-click="toggleSave(professional)">
+                                                        save_alt
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    <div class="row font-12 font-weight-bold">
+                                        <div class="col-sm-4">
+                                            {{professional.FollowersCount}} <span>Followers</span>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            {{professional.FollowingCount}} <span>Following</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </flip>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="saved" role="tabpanel">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 col-xxxl-2 mb-3" ng-repeat="professional in savedProfessionals">
+                        <div class="card card-profile">
+                            <flip flip-show="{{professional.whichCard?professional.whichCard:'front'}}" flip-width="100%" flip-height="235px">
+                                <div class="card-body text-center p-x-7">
+                                    <div class="row">
+                                        <div class="col-sm-10" style="height:150px;">
+                                            <div class="row">
+                                                <flip-panel>
+                                                    <div class="row ml-0">
+                                                        <div class="col-sm-4">
+                                                            <div class="icon-container {{professional.Online?'avatar-online':'avatar-offline'}} m-auto d-block {{professional.UserProfile.UserId}}">
+                                                                <span class="status-circle"></span>
+                                                            </div>
+                                                            <div class="mt-3">
+                                                                <a ui-sref="professionaldetails({userId:'{{professional.UserProfile.UserId}}'})">
+                                                                    <img class="card-profile-img" style="width:100%" ng-src="data:image/jpg;base64,{{professional.UserProfile.Photo}}" alt="">
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-8 text-left mt-2">
+                                                            <div class="row">
+                                                                <div class="col-sm-12 font-12">
+                                                                    <i ng-if="professional.UserProfile.Country || professional.UserProfile.City" class="fa fa-map-marker text-gray"></i>
+                                                                    <span>{{professional.UserProfile.Country.Name}}</span>
+                                                                    <span ng-if="professional.UserProfile.Country && professional.UserProfile.City">,</span>
+                                                                    <span>{{professional.UserProfile.City.Name}}</span>
+                                                                </div>
+                                                                <div class="col-sm-12 font-20" style="font-weight:500;">
+                                                                    <span>{{professional.UserProfile.FirstName}} {{professional.UserProfile.LastName}}</span>
+                                                                </div>
+                                                                <div class="col-sm-12 font-15" style="font-weight:500;">
+                                                                    <span>{{professional.UserProfile.CompanyPosition.Name}}</span>
+                                                                </div>
+                                                                <div class="col-sm-12 font-12 mt-2">
+                                                                    <i class="fa fa-globe"></i>
+                                                                    <span ng-repeat="item in professional.UserOtherLanguages">
+                                                                        <span ng-if="$index!=0">,</span> {{item.Language.Name}}
+                                                                    </span>
+                                                                    <span ng-if="professional.UserOtherLanguages.length==0">
+                                                                        No language specified
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </flip-panel>
+                                                <flip-panel>
+                                                    <div class="row ml-0">
+                                                        <div class="col-sm-12 text-left font-14 pl-3">
+                                                            {{professional.UserProfile.IntroText | limitTo:200 }}{{ professional.UserProfile.IntroText.length > 200 ? '...' : ''}}
+                                                        </div>
+                                                    </div>
+                                                </flip-panel>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <span class="material-icons" style="cursor:pointer;"
+                                                          title="Click to see more the info"
+                                                          ng-click="toggle(professional)">
+                                                        info
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-12" ng-if="professional.UserProfile.UserId != $parent.currUser">
+                                                    <span class="material-icons" style="cursor:pointer;"
+                                                          title="Send email to professional"
+                                                          ng-click="sendEmailToProfessional(professional.UserProfile)">
+                                                        mail
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-12" ng-if="professional.UserProfile.UserId != $parent.currUser">
+                                                    <span class="material-icons" style="cursor:pointer;"
+                                                          title="Start Chat with professional"
+                                                          ng-click="openChatBox(professional.UserProfile.UserId)">
+                                                        message
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <span class="material-icons {{professional.IsFavorite?'text-info':''}}"
+                                                          style="cursor:pointer;"
+                                                          title="Add to favorite list" ng-click="toggleFavorite(professional)">
+                                                        stars
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <span class="material-icons {{professional.IsSaved?'text-info':''}}"
+                                                          style="cursor:pointer;"
+                                                          title="Add to saved list" ng-click="toggleSave(professional)">
+                                                        save_alt
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr />
+                                    <div class="row font-12 font-weight-bold">
+                                        <div class="col-sm-4">
+                                            {{professional.FollowersCount}} <span>Followers</span>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            {{professional.FollowingCount}} <span>Following</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </flip>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>

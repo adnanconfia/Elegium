@@ -1,0 +1,41 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">
+        {{nomination.Name}}
+    </h3>
+    <span class="pull-right label label-primary">
+        <button class="btn btn-danger" ng-click="cancel()">Close</button>
+    </span>
+</div>
+<div class="modal-body">
+    <p>
+        <span class="badge badge-primary">{{nomination.ProductionType.Name}}</span>
+    </p>
+    <h6>
+        {{nomination.Name}} <small class="float-right">Due <time am-time-ago="nomination.EndDate"></time></small>
+    </h6>
+    <p>
+        {{nomination.Description}}
+    </p>
+    <p ng-if="nomination.TermsAndConditions">
+        <b>Terms & Conditions:</b>
+        <span>
+            {{nomination.TermsAndConditions}}
+        </span>
+    </p>
+    <p>
+        <b>
+            Price:
+        </b>
+        <span>{{nomination.Price}} {{nomination.Currency.Name}}</span>
+    </p>
+    <p class="text-right">
+        <i class="fa fa-map-marker"></i>
+        <span ng-if="nomination.Country"> {{nomination.Country.Name}}</span>
+        <span ng-if="!nomination.Country"> Over the globe</span>
+    </p>
+</div>
+
+<div class="modal-footer" data-exclude="true">
+    
+    <button class="btn btn-danger" ng-click="cancel()">Close</button>
+</div>

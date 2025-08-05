@@ -1,0 +1,65 @@
+﻿<div class="modal-header" style="display:none">
+    <h3 class="modal-title" id="modal-title">I'm a modal!</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-1">
+                <div ng-click="prev(data.FileId)" role="button" aria-label="Previous" aria-disabled="false" tabindex="0" class="_2UGa7 djOrh _3y5oW">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30" height="30">
+                        <path fill="currentColor" d="M19.214 21.212L12.865 15l6.35-6.35-1.933-1.932L9 15l8.282 8.282 1.932-2.07z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="col-sm-10 text-center">
+                <label class="col-form-label">Now Playing <b>{{data.Name}}</b></label>
+                <video controls autoplay preload="none" class="img-fluid" ng-src="/api/UserProfiles/GetVideoFile/{{data.FileId}}">
+                </video>
+            </div>
+            <div class="col-sm-1">
+                <div ng-click="next(data.FileId)" role="button" aria-label="Next" aria-disabled="true" tabindex="0" class="_2UGa7 _137Se _2r39M _3y5oW _1-C1c">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30" height="30">
+                        <path fill="currentColor" d="M11 21.212L17.35 15 11 8.65l1.932-1.932L21.215 15l-8.282 8.282L11 21.212z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <!--<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>-->
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Close</button>
+</div>
+<style type="text/css">
+    /*copied from whatsapp :)*/
+    div._2UGa7 {
+        background-color: rgba(0,0,0,0.35);
+        outline: none;
+        cursor: auto
+    }
+
+    div._3y5oW {
+        padding: 0;
+        border-radius: 50%;
+        box-shadow: 0 1px 3px rgba(0,0,0,.4);
+    }
+
+    div._2UGa7 {
+        position: absolute;
+        top: calc(50% - 16px);
+        z-index: 100;
+    }
+
+    ._3y5oW {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 46px;
+        height: 46px;
+        color: #fff;
+        font-weight: 500;
+        font-size: 14px;
+        text-transform: uppercase;
+        transition: box-shadow .08s cubic-bezier(.4,0,.2,1);
+    }
+</style>

@@ -1,0 +1,20 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+    <span class="pull-right label label-primary"></span>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <input type="file" id="upload" accept="image/*" />
+            <br /><br />
+            <!-- Croppie needs a container -> using 'boundary' option -->
+            <croppie ng-if="cropped.source&&loaded" src="cropped.source" ng-model="cropped.image" options="{boundary:{width:boundaryWidth,height:boundaryHeight}, viewport:{width:viewportWidth,height:viewportHeight}}"></croppie>
+
+        </div>
+    </div>
+</div>
+<div class="modal-footer" data-exclude="true">
+    <button class="btn btn-primary" ng-click="ok()">Save</button>
+    <br />
+    <button class="btn btn-danger" ng-click="Cancel()">Cancel</button>
+</div>

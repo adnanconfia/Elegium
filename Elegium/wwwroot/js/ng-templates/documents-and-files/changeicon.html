@@ -1,0 +1,64 @@
+﻿<div class="modal-header p-1">
+    <div class="container-fluid p-0">
+        <div class="container">
+            <div class="row p-0">
+                <div class="col-sm-12">
+                    <h3 class="modal-title" id="modal-title">
+                        {{title}}
+                    </h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <p>
+                        Click on your favorite icon and it will be used to represent the folder in the future.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col-1 p-2" ng-repeat="(key,value) in icons">
+                    <a class="project-icons" style="cursor:pointer !important" ng-click="changeDocumentCategoryIcon(key)">
+                        <i class="material-icons" style="font-size: 30px !important">
+                            {{key}}
+                        </i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-danger" ng-click="cancel()">
+        <i class="fa fa-times"></i> Close
+    </button>
+</div>
+<style>
+    .project-icons {
+        opacity: 0.4;
+        transition: opacity linear 1s;
+    }
+
+        .project-icons:hover {
+            opacity: 1;
+        }
+
+    .modal {
+        display: block !important; /* I added this to see the modal, you don't need this */
+    }
+
+    /* Important part */
+    .modal-dialog {
+        overflow-y: initial !important
+    }
+
+    .modal-body {
+        height: 73vh;
+        overflow-y: auto;
+    }
+</style>

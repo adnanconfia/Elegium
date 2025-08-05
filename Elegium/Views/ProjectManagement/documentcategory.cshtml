@@ -1,0 +1,160 @@
+﻿<style>
+    .filetype {
+        pointer-events: none;
+        width: 100% !important;
+        height: 130px;
+        display: block;
+        /* position: absolute; */
+        top: 0;
+        left: 0;
+        background: #272727;
+        color: #fff;
+        text-align: center;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+        .filetype.preview .extention {
+            font-size: 35px;
+            line-height: 225px;
+        }
+
+        .filetype .extention {
+            pointer-events: all;
+            font-family: 'Work Sans',sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 90%;
+            display: inline-block;
+            line-height: 55px;
+            font-size: 15px;
+        }
+</style>
+
+<div ui-view="">
+    <div class="row mb-2">
+        <div class="col-sm-12">
+            <span class="material-icons" style="font-size:40px">
+                {{document.Icon}}
+            </span>
+            <span class="ml-2 position-absolute mt-2 h4" ng-bind-html="document.Name"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-primary d-flex" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <i class="mr-2"> Create object </i><i class="material-icons p-0">add_circle_outline</i>
+            </button>
+        </div>
+        <div class="col-sm-10" ng-if="false">
+            <div class="row  float-right">
+                <div class="col-sm-6">
+                    <button type="button" class="btn btn-success d-flex">
+                        <i class="material-icons p-0">search</i>
+                    </button>
+                </div>
+                <div class="col-sm-6">
+                    <button type="button" class="btn btn-success d-flex">
+                        <span class="material-icons">
+                            sort_by_alpha
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="collapseExample">
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h5>
+                                <span class="col-form-label">Create object</span>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-12 ">
+                            <h6>
+                                <small>Enter the name of the new object to create it.</small>
+                            </h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <input maxlength="200" type="text" class="form-control"
+                                       placeholder="Name" ng-model="data.objectName" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                        </div>
+                        <div class="col-md-6 col-sm-12 text-right">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <button type="button" class="btn btn-primary d-flex float-right" ng-click="createObj()" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Create</button>
+                                </div>
+                                <div class="col-sm-6">
+                                    <button type="button" class="btn btn-default d-flex" ng-click="cancelObjectCreation()" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-sm-12 col-md-6 col-lg-3 col-xxl-2 col-xxxl-2 mb-3 {{docCat.HasFile?'opacity-100':'opacity-60'}}" ng-repeat="docCat in documentCategories" ng-init="$last && callback('callback')">
+            <div class="card mb-2" ng-click="goToFiles(docCat, $event)" style=" cursor: pointer !important;transition: background .2s linear,box-shadow .2s linear,opacity .8s linear .3s;">
+                <div class="card-header p-1" ng-show="docCat.Id!=-1">
+                    <h3 style="text-transform: capitalize;" class="card-title  ml-1 mt-1 overflow-ellipsis">
+                        <div ng-click="$event.stopPropagation()" contenteditable class="font-15 can_be_edited overflow-ellipsis d-block" ng-model="docCat.Name" ng-change="saveOrUpdateCatName(docCat)" title="{{docCat.Name}}" data-toggle="tooltip" data-placement="top" tooltip>{{docCat.Name}}</div>
+                        <small>Contains {{docCat.FileCount}} files</small>
+                    </h3>
+                    <div class="card-options">
+                        <div class="item-action dropdown ml-2">
+                            <a href="javascript:void(0)" data-toggle="dropdown" class="ignore-click">
+                                <i class="fe fe-more-vertical ignore-click"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="deleteDocCat(docCat)"><i class="dropdown-icon fa fa-trash"></i> Delete</a>
+                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-if="docCat.FileType=='image'" ng-click="openCroppie(docCat)"><i class="dropdown-icon fa fa-trash"></i> Crop Image</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body card-body p-0">
+                    <div ng-if="docCat.HasFile" class="imgLiquidFill" style="        height: 200px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{docCat.FileId}}/10/10') no-repeat;
+        background-size:cover;
+">
+                        <div ng-if="docCat.FileType!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 200px !important;">
+                            <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{docCat.FileExtension}}</span>
+                        </div>
+                        <div id="img{{docCat.Id}}" ng-if="docCat.FileType=='image'" class="img-fluid pointer-event cat-image"
+                             style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{docCat.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                        </div>
+                    </div>
+                    <div ng-if="!docCat.HasFile" style="        height: 200px !important">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

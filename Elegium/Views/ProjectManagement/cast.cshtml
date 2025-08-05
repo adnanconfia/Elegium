@@ -1,0 +1,1263 @@
+﻿@{
+    ViewData["Title"] = "Cast";
+}
+<style>
+
+    .thumbnail {
+        background: rgba(0,0,0,0.5);
+        color: white;
+        position: absolute;
+        top: 0;
+        visibility: hidden;
+    }
+
+    .thumbnail_content:hover .thumbnail {
+        visibility: visible;
+    }
+
+    .imgLiquidFill {
+        background-size: cover !important;
+        background-position: center !important
+    }
+</style>
+<link href="~/css/step-wizard.css" rel="stylesheet" />
+
+<div class="section-body mb-4" style="max-width:1300px" ui-view="">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <ul class="nav nav-tabs page-header-tab">
+                <li class="nav-item"><a class="nav-link h3 active" data-toggle="tab" data-target="#characters" href="javascript:void(0)" ng-click="getcharacters()">Characters</a></li>
+                <li class="nav-item"><a class="nav-link h3" data-toggle="tab" data-target="#extras" href="javascript:void(0)"  ng-click="getExtras()">Extras</a></li>
+                <li class="nav-item"><a class="nav-link h3" data-toggle="tab" data-target="#actors" href="javascript:void(0)"  ng-click="getactor()">Actors</a></li>
+                <li class="nav-item"><a class="nav-link h3" data-toggle="tab" data-target="#other_talents" href="javascript:void(0)"  ng-click="getTalent()">Other Talents</a></li>
+                <li class="nav-item"><a class="nav-link h3" data-toggle="tab" data-target="#agencies" href="javascript:void(0)"  ng-click="getAgency()">Agencies</a></li>
+            </ul>
+
+        </div>
+        <div class="tab-content">
+            @* Character *@
+            <div class="tab-pane show fade active" id="characters">
+                <div class="row">
+                    <div class=" d-flex col-md-12 col-sm-12 col-12 justify-content-between align-items-center">
+                        <ul class="nav nav-tabs page-header-tab">
+                            <li class="nav-item"><a class="btn btn-sm btn-dark bg-black  mt-3" id="general-tab" data-toggle="tab" data-target="#crew-list" href="javascript:void(0)" ng-click="create_char()">Create Character <i class="fa fa-plus-circle"></i></a></li>
+                            <li class="nav-item"><a class="btn btn-sm btn-dark bg-black  mt-3" id="company-tab" data-toggle="tab" data-target="#access-rights">Import characters from screenplay <i class="fa fa-upload"></i></a></li>
+                        </ul>
+
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-12 text-md-left text-sm-left text-left mt-3  " ng-hide="chars1.length==0">
+
+                        <div class="d-inline-flex">
+
+                            <a class="btn btn-sm bg-light-gray  mt-3" ng-show="DelAll" href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#charDelAll">Delete selected entries <i class="fa fa-trash"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-12 col-12 text-md-right text-sm-left text-left mt-3  " ng-hide="chars1.length==0">
+
+                        <div class="d-inline-flex">
+
+                            <span class="avatar cursor-pointer  {{checksearch()}}  {{(charCheck==true?'d-none':'')}} fa-2x bg-light-gray  mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Search" ng-click="show_search()"></span>
+                            <span class="avatar cursor-pointer fa  fa-check-square-o fa-2x bg-light-gray  {{(srchbtn||charCheck==true?'d-none':'')}}" mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Select multiple" ng-click="toggleMulti()"></span>
+                            <span class="avatar cursor-pointer fa  fa-sort-alpha-asc fa-2x bg-light-gray  {{(srchbtn||charCheck==true?'d-none':'')}}" mr-1" ng-click="ShowDropDown(1,'chr');$event.stopPropagation()" tooltip data-toggle="tooltip" data-placement="top" title="Sort"></span>
+                            <span class="avatar cursor-pointer fa  fa-eraser fa-2x bg-light-gray  {{(srchbtn||charCheck==true?'d-none':'')}}" mr-1" confirmed-click="tidyup()" ng-confirm-title="Delete all items?" ng-confirm-click="Would you like to delete all the items? This cannot be undone!" tooltip data-toggle="tooltip" data-placement="top" title="Tidy up list"></span>
+                            <div class="dropdown-menu dropdown-menu-right show " ng-show="dropdown==1+'chr'">
+                                <h6 class="dropdown-item bg-transparent font-weight-bold ignore-click">Sort</h6>
+                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="sortByid();$event.stopPropagation()"><i class="dropdown-icon {{_sort==1?'fa fa-check':''}}"></i>  by ID </a>
+                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="sortByname();$event.stopPropagation()"><i class="dropdown-icon  {{_sort==2?'fa fa-check':''}}"></i> by Name</a>
+
+                            </div>
+                            <span class="avatar cursor-pointer  fa fa-check-circle-o fa-2x bg-light-gray mr-1 {{(srchbtn||charCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Select all" ng-click="selectAll()"></span>
+                            <span class="avatar cursor-pointer  fa fa-circle-o fa-2x bg-light-gray mr-1 {{(srchbtn||charCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Deselect all" ng-click="deselectAll()"></span>
+                            <span class="avatar cursor-pointer  fa fa-times fa-2x bg-red mr-1 {{(srchbtn||charCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Close" ng-click="toggleMulti()"></span>
+
+                            <span class="avatar cursor-pointer  fa fa-list fa-2x bg-light-gray mr-1 {{(srchbtn||listview==false||charCheck==true?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="List view" ng-click="toggleListView()"></span>
+                            <span class="avatar cursor-pointer  fa fa-th fa-2x bg-light-gray mr-1 {{(srchbtn||listview==true||charCheck==true?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Tile view" ng-click="toggleListView()"></span>
+                            <span class="avatar cursor-pointer  fa fa-file-pdf-o  fa-2x bg-light-gray mr-1 {{(srchbtn||charCheck==true?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Export Pdf" ng-click="downloadPdf()"></span>
+                            <input type="text" class="form-control " ng-show="srchbtn" ng-model="_search" ng-keyup="search(_search)" />
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3">
+
+                        <div class="row mb-2" ng-hide="listview">
+
+                            <div class="mt-1 col-12 " ng-repeat="char in chars ">
+                                <div class=" py-1 p-2 rounded bg-black" ng-show="char.Id+'c'==charIndex">
+                                    <div class="row">
+                                        <div class="col-12 pl-4">
+                                            <p class="text-white font-12">
+                                                Do you really want to delete this character '{{char.Name}}'?
+                                            </p>
+                                        </div>
+                                        <div class="col-12 pl-4">
+                                            <button class="btn btn-sm btn-primary" ng-click="DeleteChar(char.Id)">Yes</button>
+                                            <button class="btn btn-sm btn-primary" ng-click="hideDel();$event.stopPropagation();">No</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row  py-1 rounded bg-white" style="color: #888; border-left:75px solid #ccc" ng-show="char.Id+'c'!=charIndex ">
+
+
+                                    <div class="col-11 col-md-11 cursor-pointer m-0 p-0" ui-sref="cast.character_details({charId: '{{char.Id}}'})">
+                                        <div class="row m-0 p-0 ">
+                                            <div class="col-md-5 col-sm-12 m-0 p-0 ">
+                                                <div class="col-12 text-wrap d-lg-inline-flex text-truncate" id="txtCharName_{{char.Id}}" tabindex="1" contenteditable ng-model="char.Name" ng-blur="updateChar(char)" ng-click="$event.stopPropagation()">
+                                                    <div class="form-group m-0 text-truncate">
+                                                        @*<input type="text" class="form-control" id="inp{{char.Id}}" ng-model="chName" ng-keyup="updateField($event,chName)" ng-hide="char.Id!=ChinpId" />*@
+
+                                                        <span>{{char.Name}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12" ng-click="$event.stopPropagation()">
+                                                    <span class="small">ID <span contenteditable ng-model="char.Index" tabindex="1" ng-blur="updateChar(char)" ng-click="$event.stopPropagation()">{{char.Index}}</span></span>
+                                                    <span class="small"> | </span>
+                                                    <span class="small">not assigned yet</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-1 col-md-1 pull-right text-right my-auto dropleft">
+                                        <span ng-show="char.marked"><i class="fa fa-bookmark"></i></span>
+                                        <span class=" cursor-pointer btn-transparent btn-sm " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></span>
+                                        <div class="dropdown-menu">
+
+
+
+                                            <a class="dropdown-item cursor-pointer" ng-click="Merge(char,0);$event.stopPropagation()">Merge character</a>
+                                            <a class="dropdown-item cursor-pointer" ng-click="ShowDel(char.Id,'c');$event.stopPropagation()">Delete</a>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-12 thumbnail visible h-100 cursor-pointer rounded" ng-if="charCheck" ng-click="toggleCharCheck(char)">
+                                    <span class="fa fa-check fa-3x text-success" ng-if="char.check"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row" ng-show="listview">
+
+                            <div class="col-md-3 col-sm-4 col-11 m-2 rounded " ng-repeat="char in chars ">
+                                <div class=" col-12 h-160px rounded  bg-black" ng-show="char.Id+'c'==charIndex">
+                                    <p class="text-white">       Do you really want to delete the character '{{char.Name}}' ?</p>
+                                    <div class="flex-row d-flex">
+                                        <button class="btn btn-sm btn-primary m-1" ng-click="DeleteChar(char.Id)">Yes</button>
+                                        <button class="btn btn-sm btn-primary m-1" ng-click="hideDel()">No</button>
+                                    </div>
+
+                                </div>
+                                <div class=" col-12 rounded h-160px bg-white" ng-show="char.Id+'c'!=charIndex" ui-sref="cast.character_details({charId: '{{char.Id}}'})">
+                                    <div class="row mt-2">
+
+
+                                        <div class="col-md-10 col-sm-10 col-10">
+                                            <div class="form-group m-0 text-truncate">
+                                                @*<input type="text" class="form-control" id="inp{{char.Id}}" ng-model="chName" ng-keyup="updateField($event,chName)" ng-hide="char.Id!=ChinpId" />*@
+
+                                                <div contenteditable ng-model="char.Name" change-on-blur="updateChar(char)" tabindex="0" id="txtCharNameNew_{{char.Id}}" ng-click="$event.stopPropagation()">{{char.Name}}</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-sm-2 col-2">
+                                            <div class="text-right w-100 dropleft ">
+                                                <span ng-show="char.marked" style="        position: absolute;
+        top: -6px;
+        font-size: larger;
+        right: -6px;
+"><i class="fa fa-bookmark"></i></span>
+                                                <button class=" cursor-pointer btn-sm btn btn-transparent  bg-light-gray" ng-click="ShowDropDown(char.Id,'c');$event.stopPropagation()" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></button>
+                                                <div class="dropdown-menu show" ng-show="dropdown==char.Id+'c'">
+
+                                                    <a class="dropdown-item cursor-pointer" ng-click="Merge(char,0);$event.stopPropagation()">Merge character</a>
+                                                    <a class="dropdown-item cursor-pointer" ng-click="ShowDel(char.Id,'c');$event.stopPropagation()">Delete</a>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12" ng-click="$event.stopPropagation()">
+                                            <span class="small">ID <span contenteditable ng-model="char.Index" ng-change="updateChar(char)" ng-click="$event.stopPropagation()">{{char.Index}}</span></span>
+                                            <span class="small"> | </span>
+                                            <span class="small">not assigned yet</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row position-relative" style="
+    bottom: 0;
+    right: 0;
+" ng-show="char.charActor">
+
+                                        <div class="col-12 p-0 m-0 text-right thumbnail_content" ng-show="char.charActor[0].Default" style="top:23px">
+                                            <img src="/api/DocumentCategories/GetFileThumbnail/{{char.charActor[0].file.FileId}}/100/100" class="wh-60px text-right pull-right mt-4 cursor-pointer " />
+                                            <span class=" wh-60px mt-4 cursor-pointer  thumbnail text-center" ng-show="char.charActor[0].actor" ng-click="gotoActor(char.charActor[0].Id);$event.stopPropagation()">
+                                                <i class="fa fa-external-link  mt-4"></i>
+                                            </span> <span class=" wh-60px mt-4 cursor-pointer  thumbnail text-center" ng-hide="char.charActor[0].actor" ng-click="gotoTalent(char.charActor[0].Id);$event.stopPropagation()">
+                                                <i class="fa fa-external-link  mt-4"></i>
+                                            </span>
+                                        </div> <div class="col-12 p-0 m-0 text-right thumbnail_content" ng-hide="char.charActor[0].Default">
+                                            <span class="wh-60px text-center bg-light-gray pull-right mt-4 mr-3 cursor-pointer ">
+                                                <i class=" fa fa-image fa-2x mt-2"></i>
+                                            </span>
+                                            <span class=" wh-60px mt-4 cursor-pointer  thumbnail text-center" ng-show="char.charActor[0].actor" ng-click="gotoActor(char.charActor[0].Id);$event.stopPropagation()">
+                                                <i class="fa fa-external-link  mt-4"></i>
+                                            </span> <span class=" wh-60px mt-4 cursor-pointer  thumbnail text-center" ng-hide="char.charActor[0].actor" ng-click="gotoTalent(char.charActor[0].Id);$event.stopPropagation()">
+                                                <i class="fa fa-external-link  mt-4"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @*<div class="card-body  p-0">
+                                                                            <div ng-if="char.HasFile" class="imgLiquidFill" style="    height: 200px !important;
+                                            background: url('/api/DocumentCategories/GetFileThumbnail/{{char.file.FileId}}/100/100') no-repeat;
+                                            background-size: cover;
+                                        ">
+                                                                                <div ng-if="char.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 200px !important;">
+                                                                                    <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{char.file.Extension}}</span>
+                                                                                </div>
+                                                                                <div id="img{{char.file.Id}}" ng-if="char.FileType=='image'" class="img-fluid pointer-event cat-image"
+                                                                                     style="        height: 200px;
+                                            background: url('/api/DocumentCategories/GetFileThumbnail/{{char.FileId}}/200/200') no-repeat 50% 50%;
+                                            -webkit-transition: background-image 1s ease-in-out;
+                                            transition: background-image 1s ease-in-out;
+                                            border-bottom-left-radius: 0px;
+                                            border-bottom-right-radius: 0px;">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div ng-if="!char.HasFile" style="        height: 200px !important">
+
+                                                                            </div>
+                                                                        </div>*@
+                                </div>
+                                <div class="col-12 thumbnail h-160px text-center rounded visible cursor-pointer" ng-if="charCheck" ng-click="toggleCharCheck(char)">
+                                    <span class="fa fa-check fa-4x text-success my-5" ng-if="char.check"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @* Extras *@
+            <div class="tab-pane show fade" id="extras">
+                <div class="row">
+                    <div class=" d-flex col-md-12 col-sm-12 col-12 justify-content-between align-items-center">
+                        <ul class="nav nav-tabs page-header-tab">
+                            <li class="nav-item"><a class="btn btn-sm btn-dark bg-black  mt-3" id="general-tab" data-toggle="tab" data-target="#crew-list" href="javascript:void(0)" ng-click="create_ex()">Create Extra<i class="fa fa-plus-circle"></i></a></li>
+                            <li class="nav-item"><a class="btn btn-sm btn-dark bg-black  mt-3" id="company-tab" data-toggle="tab" data-target="#access-rights">Import extras from screenplay <i class="fa fa-upload"></i></a></li>
+                        </ul>
+
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-12 text-md-left text-sm-left text-left mt-3  " ng-hide="extra1.length==0">
+
+                        <div class="d-inline-flex">
+
+                            <a class="btn btn-sm bg-light-gray  mt-3" ng-show="exDelAll" href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#exDelAll">Delete selected entries <i class="fa fa-trash"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-12 col-12 text-md-right text-sm-left text-left mt-3  " ng-hide="extra1.length==0">
+
+                        <div class="d-inline-flex">
+
+                            <span class="avatar cursor-pointer  {{exchecksearch()}}  {{(excharCheck==true?'d-none':'')}} fa-2x bg-light-gray  mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Search" ng-click="exshow_search()"></span>
+                            <span class="avatar cursor-pointer fa  fa-check-square-o fa-2x bg-light-gray  {{(exsrchbtn||excharCheck==true?'d-none':'')}}" mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Select multiple" ng-click="extoggleMulti()"></span>
+                            <span class="avatar cursor-pointer fa  fa-sort-alpha-asc fa-2x bg-light-gray  {{(exsrchbtn||excharCheck==true?'d-none':'')}}" mr-1" ng-click="ShowDropDown(1,'ext');$event.stopPropagation()" tooltip data-toggle="tooltip" data-placement="top" title="Sort"></span>
+                            <span class="avatar cursor-pointer fa  fa-eraser fa-2x bg-light-gray  {{(exsrchbtn||excharCheck==true?'d-none':'')}}" mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Tidy up list"></span>
+                            <div class="dropdown-menu dropdown-menu-right show" ng-show="dropdown==1+'ext'">
+                                <h6 class="dropdown-item bg-transparent font-weight-bold ignore-click">Sort</h6>
+                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="exsortByid();$event.stopPropagation()"><i class="dropdown-icon {{ex_sort==1?'fa fa-check':''}}"></i>  by ID </a>
+                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="exsortByname();$event.stopPropagation()"><i class="dropdown-icon  {{ex_sort==2?'fa fa-check':''}}"></i> by Name</a>
+
+                            </div>
+                            <span class="avatar cursor-pointer  fa fa-check-circle-o fa-2x bg-light-gray mr-1 {{(exsrchbtn||excharCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Select all" ng-click="exselectAll()"></span>
+                            <span class="avatar cursor-pointer  fa fa-circle-o fa-2x bg-light-gray mr-1 {{(exsrchbtn||excharCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Deselect all" ng-click="exdeselectAll()"></span>
+                            <span class="avatar cursor-pointer  fa fa-times fa-2x bg-red mr-1 {{(exsrchbtn||excharCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Close" ng-click="extoggleMulti()"></span>
+
+                            <span class="avatar cursor-pointer  fa fa-list fa-2x bg-light-gray mr-1 {{(exsrchbtn||exlistview==false||excharCheck==true?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="List view" ng-click="extoggleListView()"></span>
+                            <span class="avatar cursor-pointer  fa fa-th fa-2x bg-light-gray mr-1 {{(exsrchbtn||exlistview==true||excharCheck==true?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Tile view" ng-click="extoggleListView()"></span>
+                            <span class="avatar cursor-pointer  fa fa-file-pdf-o  fa-2x bg-light-gray mr-1 {{(exsrchbtn||excharCheck==true?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Export Pdf"></span>
+                            <input type="text" class="form-control " ng-show="exsrchbtn" ng-model="ex_search" ng-keyup="exsearch(ex_search)" />
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3">
+
+                        <div class="row mb-2" ng-hide="exlistview">
+
+                            <div class="mt-1 col-12 " ng-repeat="char in extra ">
+                                <div class=" py-1 p-2 rounded bg-black" ng-show="char.Id+'e'==charIndex">
+                                    <div class="row">
+                                        <div class="col-12 pl-4">
+                                            <p class="text-white font-12">
+                                                Do you really want to delete this character '{{char.Name}}'?
+                                            </p>
+                                        </div>
+                                        <div class="col-12 pl-4">
+                                            <button class="btn btn-sm btn-primary" ng-click="DeleteEx(char.Id)">Yes</button>
+                                            <button class="btn btn-sm btn-primary" ng-click="hideDel();$event.stopPropagation();">No</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row  py-1 rounded bg-white" style="color: #888; border-left:75px solid #ccc" ng-show="char.Id+'e'!=charIndex ">
+
+
+                                    <div class="col-11 col-md-11 cursor-pointer m-0 p-0" ui-sref="cast.extra_details({charId: '{{char.Id}}'})">
+                                        <div class="row m-0 p-0 ">
+                                            <div class="col-md-5 col-sm-12 m-0 p-0 ">
+                                                <div class="col-12 text-wrap d-lg-inline-flex text-truncate" contenteditable ng-model="char.Name" change-on-blur="updateEx(char)" ng-click="$event.stopPropagation()">
+                                                    <div class="form-group m-0 text-truncate">
+                                                        @*<input type="text" class="form-control" id="inp{{char.Id}}" ng-model="chName" ng-keyup="updateField($event,chName)" ng-hide="char.Id!=ChinpId" />*@
+
+                                                        <span>{{char.Name}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12" ng-click="$event.stopPropagation()">
+                                                    <span class="small">ID <span contenteditable ng-model="char.Index" ng-blur="updateEx(char)" ng-click="$event.stopPropagation()">{{char.Index}}</span></span>
+
+                                                    <span class="small"> | </span>
+                                                    <span class="small">not assigned yet</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-1 col-md-1 pull-right text-right my-auto dropleft">
+                                        <span ng-show="char.marked"><i class="fa fa-bookmark"></i></span>
+                                        <span class=" cursor-pointer btn-transparent btn-sm " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></span>
+                                        <div class="dropdown-menu">
+
+
+
+                                            <a class="dropdown-item cursor-pointer" ng-click="Merge(char,1);$event.stopPropagation()">Merge character</a>
+                                            <a class="dropdown-item cursor-pointer" ng-click="ShowDel(char.Id,'e');$event.stopPropagation()">Delete</a>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-12 thumbnail visible h-100 cursor-pointer rounded" ng-if="excharCheck" ng-click="extoggleCharCheck(char)">
+                                    <span class="fa fa-check fa-3x text-success" ng-if="char.check"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row" ng-show="exlistview">
+
+                            <div class="col-md-3 col-sm-4 col-11 m-2 rounded " ng-repeat="char in extra ">
+                                <div class=" col-12 h-160px rounded  bg-black" ng-show="char.Id+'e'==charIndex">
+                                    <p class="text-white">       Do you really want to delete the character '{{char.Name}}' ?</p>
+                                    <div class="flex-row d-flex">
+                                        <button class="btn btn-sm btn-primary m-1" ng-click="DeleteEx(char.Id)">Yes</button>
+                                        <button class="btn btn-sm btn-primary m-1" ng-click="hideDel()">No</button>
+                                    </div>
+
+                                </div>
+                                <div class=" col-12 rounded h-160px bg-white" ng-show="char.Id+'e'!=charIndex" ui-sref="cast.extra_details({charId: '{{char.Id}}'})">
+                                    <div class="row mt-2">
+
+
+                                        <div class="col-md-10 col-sm-10 col-10">
+                                            <div class="form-group m-0 text-truncate">
+                                                @*<input type="text" class="form-control" id="inp{{char.Id}}" ng-model="chName" ng-keyup="updateField($event,chName)" ng-hide="char.Id!=ChinpId" />*@
+
+                                                <div contenteditable ng-model="char.Name" change-on-blur="updateEx(char)" id="txtNewExtraName_{{char.Id}}" ng-click="$event.stopPropagation()">{{char.Name}}</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-sm-2 col-2">
+                                            <div class="text-right w-100 dropleft ">
+                                                <span ng-show="char.marked" style="        position: absolute;
+        top: -6px;
+        font-size: larger;
+        right: -6px;
+"><i class="fa fa-bookmark"></i></span>
+                                                <button class=" cursor-pointer btn-sm btn btn-transparent  bg-light-gray" ng-click="ShowDropDown(char.Id,'e');$event.stopPropagation()" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></button>
+                                                <div class="dropdown-menu show" ng-show="dropdown==char.Id+'e'">
+
+                                                    <a class="dropdown-item cursor-pointer" ng-click="Merge(char,1);$event.stopPropagation()">Merge character</a>
+                                                    <a class="dropdown-item cursor-pointer" ng-click="ShowDel(char.Id,'e');$event.stopPropagation()">Delete</a>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12" ng-click="$event.stopPropagation()">
+                                            <span class="small">ID <span contenteditable ng-model="char.Index" ng-change="updateEx(char)" ng-click="$event.stopPropagation()">{{char.Index}}</span></span>
+
+                                            <span class="small"> | </span>
+                                            <span class="small">not assigned yet</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" ng-show="char.charActor">
+
+                                        <div class="col-12 p-0 m-0 text-right thumbnail_content" ng-show="char.charActor[0].Default">
+                                            <img src="/api/DocumentCategories/GetFileThumbnail/{{char.charActor[0].file.FileId}}/100/100" class="wh-60px text-right pull-right mt-4 cursor-pointer " />
+                                            <span class=" wh-60px mt-4 cursor-pointer  thumbnail text-center" ng-show="char.charActor[0].actor" ng-click="gotoActor(char.charActor[0].Id);$event.stopPropagation()">
+                                                <i class="fa fa-external-link  mt-4"></i>
+                                            </span> <span class=" wh-60px mt-4 cursor-pointer  thumbnail text-center" ng-hide="char.charActor[0].actor" ng-click="gotoTalent(char.charActor[0].Id);$event.stopPropagation()">
+                                                <i class="fa fa-external-link  mt-4"></i>
+                                            </span>
+                                        </div> <div class="col-12 p-0 m-0 text-right thumbnail_content" ng-hide="char.charActor[0].Default">
+                                            <span class="wh-60px text-center bg-light-gray pull-right mt-4 mr-3 cursor-pointer ">
+                                                <i class=" fa fa-image fa-2x mt-2"></i>
+                                            </span>
+                                            <span class=" wh-60px mt-4 cursor-pointer  thumbnail text-center" ng-show="char.charActor[0].actor" ng-click="gotoActor(char.charActor[0].Id);$event.stopPropagation()">
+                                                <i class="fa fa-external-link  mt-4"></i>
+                                            </span> <span class=" wh-60px mt-4 cursor-pointer  thumbnail text-center" ng-hide="char.charActor[0].actor" ng-click="gotoTalent(char.charActor[0].Id);$event.stopPropagation()">
+                                                <i class="fa fa-external-link  mt-4"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @*<div class="card-body  p-0">
+                                                                            <div ng-if="char.HasFile" class="imgLiquidFill" style="    height: 200px !important;
+                                            background: url('/api/DocumentCategories/GetFileThumbnail/{{char.file.FileId}}/100/100') no-repeat;
+                                            background-size: cover;
+                                        ">
+                                                                                <div ng-if="char.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 200px !important;">
+                                                                                    <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{char.file.Extension}}</span>
+                                                                                </div>
+                                                                                <div id="img{{char.file.Id}}" ng-if="char.FileType=='image'" class="img-fluid pointer-event cat-image"
+                                                                                     style="        height: 200px;
+                                            background: url('/api/DocumentCategories/GetFileThumbnail/{{char.FileId}}/200/200') no-repeat 50% 50%;
+                                            -webkit-transition: background-image 1s ease-in-out;
+                                            transition: background-image 1s ease-in-out;
+                                            border-bottom-left-radius: 0px;
+                                            border-bottom-right-radius: 0px;">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div ng-if="!char.HasFile" style="        height: 200px !important">
+
+                                                                            </div>
+                                                                        </div>*@
+                                </div>
+                                <div class="col-12 thumbnail h-160px text-center rounded visible cursor-pointer" ng-if="excharCheck" ng-click="extoggleCharCheck(char)">
+                                    <span class="fa fa-check fa-4x text-success my-5" ng-if="char.check"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Actors *@
+            <div class="tab-pane show fade" id="actors">
+                <div class="row">
+
+                    <div class=" d-flex col-md-12 col-sm-12 col-12 justify-content-between align-items-center" ng-hide="Actor1.length==0">
+                        <ul class="nav nav-tabs page-header-tab">
+                            <li class="nav-item"><a class="btn btn-sm btn-dark bg-black  mt-3" id="general-tab" data-toggle="tab" data-target="#crew-list" href="javascript:void(0)" ng-click="create_actor()">Create actor<i class="fa fa-plus-circle"></i></a></li>
+                            <li class="nav-item"><a class="btn btn-sm btn-dark bg-black  mt-3" id="company-tab" data-toggle="tab" data-target="#access-rights">Import actor <i class="fa fa-upload"></i></a></li>
+                        </ul>
+
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-12 text-md-left text-sm-left text-left mt-3  " ng-hide="Actor1.length==0">
+
+                        <div class="d-inline-flex">
+
+                            <a class="btn btn-sm bg-light-gray  mt-3" ng-show="acDelAll" href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#acDelAll">Delete selected entries <i class="fa fa-trash"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-12 col-12 text-md-right text-sm-left text-left mt-3  " ng-hide="Actor1.length==0">
+
+                        <div class="d-inline-flex">
+
+                            <span class="avatar cursor-pointer  {{acchecksearch()}}  {{(accharCheck==true?'d-none':'')}} fa-2x bg-light-gray  mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Search" ng-click="acshow_search()"></span>
+                            <span class="avatar cursor-pointer fa  fa-check-square-o fa-2x bg-light-gray  {{(acsrchbtn||accharCheck==true?'d-none':'')}}" mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Select multiple" ng-click="actoggleMulti()"></span>
+                            <span class="avatar cursor-pointer fa  fa-sort-alpha-asc fa-2x bg-light-gray  {{(acsrchbtn||accharCheck==true?'d-none':'')}}" mr-1" ng-click="ShowDropDown(1,'ac');$event.stopPropagation()" tooltip data-toggle="tooltip" data-placement="top" title="Sort"></span>
+
+                            <div class="dropdown-menu dropdown-menu-right show " ng-show="dropdown==1+'ac'">
+                                <h6 class="dropdown-item bg-transparent font-weight-bold ignore-click">Sort</h6>
+                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="acsortByid();$event.stopPropagation()"><i class="dropdown-icon {{ac_sort==1?'fa fa-check':''}}"></i>  by ID </a>
+                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="acsortByname();$event.stopPropagation()"><i class="dropdown-icon  {{ac_sort==2?'fa fa-check':''}}"></i> by Name</a>
+
+                            </div>
+                            <span class="avatar cursor-pointer  fa fa-check-circle-o fa-2x bg-light-gray mr-1 {{(acsrchbtn||accharCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Select all" ng-click="acselectAll()"></span>
+                            <span class="avatar cursor-pointer  fa fa-circle-o fa-2x bg-light-gray mr-1 {{(acsrchbtn||accharCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Deselect all" ng-click="acdeselectAll()"></span>
+                            <span class="avatar cursor-pointer  fa fa-times fa-2x bg-red mr-1 {{(acsrchbtn||accharCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Close" ng-click="actoggleMulti()"></span>
+
+                            <span class="avatar cursor-pointer  fa fa-list fa-2x bg-light-gray mr-1 {{(acsrchbtn||aclistview==false||accharCheck==true?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="List view" ng-click="actoggleListView()"></span>
+                            <span class="avatar cursor-pointer  fa fa-th fa-2x bg-light-gray mr-1 {{(acsrchbtn||aclistview==true||accharCheck==true?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Tile view" ng-click="actoggleListView()"></span>
+
+                            <input type="text" class="form-control " ng-show="acsrchbtn" ng-model="ac_search" ng-keyup="acsearch(ac_search)" />
+                        </div>
+                    </div>
+                    <div class=" col-md-12 col-sm-12 col-12 justify-content-center d-flex align-items-center border-dashed text-center h-160px" ng-show="Actor.length==0">
+
+                        <button class="btn btn-sm btn-dark bg-black  mt-3 mx-1 active" id="general-tab" data-toggle="tab" data-target="#crew-list" ng-click="create_actor()">Create actor <i class="fa fa-plus-circle"></i></button>
+                        <button class="btn btn-sm btn-dark bg-black  mt-3 mx-1 active" id="company-tab" data-toggle="tab" data-target="#access-rights">Import actor <i class="fa fa-upload"></i></button>
+
+
+                    </div>
+                    <div class="col-12 mt-2">
+
+                        <div class="row mb-2" ng-hide="aclistview">
+
+                            <div class="mt-1 col-12 " ng-repeat="a in Actor ">
+                                <div class=" py-1 p-2 rounded bg-black" ng-show="a.Id+'a'==charIndex">
+                                    <div class="row">
+                                        <div class="col-12 pl-4">
+                                            <p class="text-white font-12">
+                                                Do you really want to delete this Actor '{{a.Name}}'?
+                                            </p>
+                                        </div>
+                                        <div class="col-12 pl-4">
+                                            <button class="btn btn-sm btn-primary" ng-click="DeleteActor(a)">Yes</button>
+                                            <button class="btn btn-sm btn-primary" ng-click="hideDel();$event.stopPropagation();">No</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row  py-1 rounded bg-white" ng-show="a.Id+'a'!=charIndex ">
+                                    <div class="col-1 col-md-1 col-sm-1 d-none d-md-block d-sm-block bg-light p-0 border-right">
+                                        <div ng-if="a.HasFile" class="imgLiquidFill" style="        height: 100px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.file.FileId}}') no-repeat;
+        background-size: 100% 100%;
+">
+                                            <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 100px !important;">
+                                                <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                            </div>
+                                            <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid imgLiquidFill pointer-event cat-image"
+                                                 style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                            </div>
+                                        </div>
+                                        <div ng-if="!a.HasFile" style="        height: 100px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                            <span class="fa fa-image fa-3x my-auto mt-5 text-center"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-11 col-md-10 col-sm-10 cursor-pointer m-0 p-0" ui-sref="cast.actor_details({charId: '{{a.Id}}'})">
+                                        <div class="row m-0 p-0 ">
+                                            <div class="col-md-5 col-sm-12 m-0 p-0 ">
+                                                <div class="col-12 text-wrap d-lg-inline-flex text-truncate">
+                                                    <span><a class="  btn-sm btn-transparent font-weight-bold" ng-model="a.Name" ng-change="UpdateActor(a)" ng-click="$event.stopPropagation()">{{a.Name}}</a></span>
+
+
+                                                    @*<span><a class="text-white  btn-sm btn-transparent font-weight-bold">Day</a></span>*@
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-1 col-md-1 pull-right text-right my-auto dropleft">
+                                        <span class=" cursor-pointer btn-transparent btn-sm " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></span>
+                                        <div class="dropdown-menu">
+
+
+
+
+                                            <a class="dropdown-item cursor-pointer" ng-click="ShowDel(a.Id,'a');$event.stopPropagation()">Delete</a>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-12 thumbnail visible h-100 cursor-pointer rounded" ng-if="accharCheck" ng-click="actoggleCharCheck(a)">
+                                    <span class="fa fa-check fa-3x text-success" ng-if="a.check"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row" ng-show="aclistview">
+                            <div class="col-sm-12 col-md-6 col-lg-3 col-xxl-3 col-xxxl-3 mx-1 mb-3 " ng-repeat="a in Actor" ng-init="$last && callback('callback')">
+                                <div class=" col-12 h-160px rounded  bg-black" ng-show="a.Id+'a'==charIndex">
+                                    <p class="text-white">       Do you really want to delete the actor '{{a.Name}}' ?</p>
+                                    <div class="flex-row d-flex">
+                                        <button class="btn btn-sm btn-primary m-1" ng-click="DeleteActor(a)">Yes</button>
+                                        <button class="btn btn-sm btn-primary m-1" ng-click="hideDel()">No</button>
+                                    </div>
+
+                                </div>
+                                <div class="row bg-white rounded  " ng-show="a.Id+'a'!=charIndex" ui-sref="cast.actor_details({charId: '{{a.Id}}'})">
+                                    <div class="col-5 bg-light p-0 border-right">
+                                        <div ng-if="a.HasFile" class="imgLiquidFill" style="        height: 200px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.file.FileId}}') no-repeat;
+        background-size: 100% 100%;
+">
+                                            <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 200px !important;">
+                                                <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                            </div>
+                                            <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid pointer-event cat-image imgLiquidFill"
+                                                 style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                            </div>
+                                        </div>
+                                        <div ng-if="!a.HasFile" style="        height: 200px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                            <span class="fa fa-image fa-3x my-auto mt-5 text-center"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-7 mb-2" style=" cursor: pointer !important;transition: background .2s linear,box-shadow .2s linear,opacity .8s linear .3s;">
+                                        <div class="card-header p-1" ng-show="a.Id!=-1">
+                                            <h3 style="text-transform: capitalize;" class="card-title  ml-1 mt-1 overflow-ellipsis">
+                                                <div ng-click="$event.stopPropagation()" contenteditable class="font-15 can_be_edited overflow-ellipsis d-block" ng-model="a.Name" ng-change="UpdateActor(a)" title="{{a.Name}}" data-toggle="tooltip" data-placement="top" tooltip>{{a.Agency.Name}}</div>
+
+                                            </h3>
+                                            <div class="card-options">
+                                                <div class="item-action dropdown ml-2">
+                                                    <a href="javascript:void(0)" data-toggle="dropdown" class="ignore-click" ng-click="ShowDropDown(a.Id,'a');$event.stopPropagation()">
+                                                        <i class="fe fe-more-vertical ignore-click"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right show" ng-show="dropdown==a.Id+'a'">
+                                                        <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="ShowDel(a.Id,'a')"><i class="dropdown-icon fa fa-trash"></i> Delete</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-12 thumbnail h-100 text-center rounded visible cursor-pointer" ng-if="accharCheck" ng-click="actoggleCharCheck(a)">
+                                    <span class="fa fa-check fa-4x text-success my-5" ng-if="a.check"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            @* Other Talent *@
+            <div class="tab-pane show fade" id="other_talents">
+                <div class="row">
+                    <div class="col-12 bg-light-gray rounded py-2 my-2">
+                        <h6><i class="fa fa-info-circle mx-2"></i>In this area you can manage non-acting talents: Interviewees, performers, dancers, voices, featured persons etc.</h6>
+                    </div>
+                    <div class=" d-flex col-md-12 col-sm-12 col-12 justify-content-between align-items-center" ng-hide="Talent1.length==0">
+                        <ul class="nav nav-tabs page-header-tab">
+                            <li class="nav-item"><a class="btn btn-sm btn-dark bg-black  mt-3" id="general-tab" data-toggle="tab" data-target="#crew-list" href="javascript:void(0)" ng-click="create_talent()">Create talent<i class="fa fa-plus-circle"></i></a></li>
+                            <li class="nav-item"><a class="btn btn-sm btn-dark bg-black  mt-3" id="company-tab" data-toggle="tab" data-target="#access-rights">Import talent <i class="fa fa-upload"></i></a></li>
+                        </ul>
+
+                    </div>
+                    <div class=" col-md-12 col-sm-12 col-12 justify-content-center d-flex align-items-center border-dashed text-center h-160px" ng-show="Talent1.length==0">
+
+                        <button class="btn btn-sm btn-dark bg-black  mt-3 mx-1 active" id="general-tab" data-toggle="tab" data-target="#crew-list" ng-click="create_talent()">Create talent <i class="fa fa-plus-circle"></i></button>
+                        <button class="btn btn-sm btn-dark bg-black  mt-3 mx-1 active" id="company-tab" data-toggle="tab" data-target="#access-rights">Import talent <i class="fa fa-upload"></i></button>
+
+
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-12 text-md-left text-sm-left text-left mt-3  " ng-hide="Talent1.length==0">
+
+                        <div class="d-inline-flex">
+
+                            <a class="btn btn-sm bg-light-gray  mt-3" ng-show="tlDelAll" href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#tlDelAll">Delete selected entries <i class="fa fa-trash"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-12 col-12 text-md-right text-sm-left text-left mt-3  " ng-hide="Talent.length==0">
+
+                        <div class="d-inline-flex">
+
+                            <span class="avatar cursor-pointer  {{tlchecksearch()}}  {{(tlcharCheck==true?'d-none':'')}} fa-2x bg-light-gray  mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Search" ng-click="tlshow_search()"></span>
+                            <span class="avatar cursor-pointer fa  fa-check-square-o fa-2x bg-light-gray  {{(tlsrchbtn||tlcharCheck==true?'d-none':'')}}" mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Select multiple" ng-click="tltoggleMulti()"></span>
+                            <span class="avatar cursor-pointer fa  fa-sort-alpha-asc fa-2x bg-light-gray  {{(tlsrchbtn||tlcharCheck==true?'d-none':'')}}" mr-1" ng-click="ShowDropDown(1,'tl');$event.stopPropagation()" tooltip data-toggle="tooltip" data-placeement="top" title="Sort"></span>
+
+                            <div class="dropdown-menu dropdown-menu-right show " ng-show="dropdown==1+'tl'">
+                                <h6 class="dropdown-item bg-transparent font-weight-bold ignore-click">Sort</h6>
+                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="tlsortByid();$event.stopPropagation()"><i class="dropdown-icon {{tl_sort==1?'fa fa-check':''}}"></i>  by ID </a>
+                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="tlsortByname();$event.stopPropagation()"><i class="dropdown-icon  {{tl_sort==2?'fa fa-check':''}}"></i> by Name</a>
+
+                            </div>
+                            <span class="avatar cursor-pointer  fa fa-check-circle-o fa-2x bg-light-gray mr-1 {{(tlsrchbtn||tlcharCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Select all" ng-click="tlselectAll()"></span>
+                            <span class="avatar cursor-pointer  fa fa-circle-o fa-2x bg-light-gray mr-1 {{(tlsrchbtn||tlcharCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Deselect all" ng-click="tldeselectAll()"></span>
+                            <span class="avatar cursor-pointer  fa fa-times fa-2x bg-red mr-1 {{(tlsrchbtn||tlcharCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Close" ng-click="tltoggleMulti()"></span>
+
+                            <span class="avatar cursor-pointer  fa fa-list fa-2x bg-light-gray mr-1 {{(tlsrchbtn||tllistview==false||tlcharCheck==true?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="List view" ng-click="tltoggleListView()"></span>
+                            <span class="avatar cursor-pointer  fa fa-th fa-2x bg-light-gray mr-1 {{(tlsrchbtn||tllistview==true||tlcharCheck==true?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Tile view" ng-click="tltoggleListView()"></span>
+
+                            <input type="text" class="form-control " ng-show="tlsrchbtn" ng-model="tl_search" ng-keyup="tlsearch(tl_search)" />
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <div class="row mb-2" ng-hide="tllistview">
+
+                            <div class="mt-1 col-12 " ng-repeat="a in Talent ">
+                                <div class=" py-1 p-2 rounded bg-black" ng-show="a.Id+'t'==charIndex">
+                                    <div class="row">
+                                        <div class="col-12 pl-4">
+                                            <p class="text-white font-12">
+                                                Do you really want to delete this Actor '{{a.Name}}'?
+                                            </p>
+                                        </div>
+                                        <div class="col-12 pl-4">
+                                            <button class="btn btn-sm btn-primary" ng-click="DeleteTalent(a)">Yes</button>
+                                            <button class="btn btn-sm btn-primary" ng-click="hideDel();$event.stopPropagation();">No</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row  py-1 rounded bg-white" ng-show="a.Id+'t'!=charIndex ">
+                                    <div class="col-1 col-md-1 col-sm-1 d-none d-md-block d-sm-block bg-light p-0 border-right">
+                                        <div ng-if="a.HasFile" class="imgLiquidFill" style="height: 100px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.file.FileId}}') no-repeat;
+        background-size: 100% 100%;
+">
+                                            <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 100px !important;">
+                                                <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                            </div>
+                                            <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid imgLiquidFill pointer-event cat-image"
+                                                 style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                            </div>
+                                        </div>
+                                        <div ng-if="!a.HasFile" style="        height: 100px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                            <span class="fa fa-image fa-3x my-auto mt-5 text-center"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-11 col-md-10 col-sm-10 cursor-pointer m-0 p-0" ui-sref="cast.talent_details({charId: '{{a.Id}}'})">
+                                        <div class="row m-0 p-0 ">
+                                            <div class="col-md-5 col-sm-12 m-0 p-0 ">
+                                                <div class="col-12 text-wrap d-lg-inline-flex text-truncate">
+                                                    <span><a class="  btn-sm btn-transparent font-weight-bold" ng-model="a.Name" ng-change="UpdateTalent(a)" ng-click="$event.stopPropagation()">{{a.Name}}</a></span>
+
+
+                                                    @*<span><a class="text-white  btn-sm btn-transparent font-weight-bold">Day</a></span>*@
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-1 col-md-1 pull-right text-right my-auto dropleft">
+                                        <span class=" cursor-pointer btn-transparent btn-sm " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></span>
+                                        <div class="dropdown-menu">
+
+
+
+
+                                            <a class="dropdown-item cursor-pointer" ng-click="ShowDel(a.Id,'t');$event.stopPropagation()">Delete</a>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-12 thumbnail visible h-100 cursor-pointer rounded" ng-if="tlcharCheck" ng-click="tltoggleCharCheck(a)">
+                                    <span class="fa fa-check fa-3x text-success" ng-if="a.check"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row" ng-show="tllistview">
+                            <div class="col-sm-12 col-md-6 col-lg-3  col-xxl-3 col-xxxl-3 mx-1 mb-3 " ng-repeat="a in Talent" ng-init="$last && callback('callback')">
+                                <div class=" col-12 h-160px rounded  bg-black" ng-show="a.Id+'t'==charIndex">
+                                    <p class="text-white">       Do you really want to delete the talent '{{a.Name}}' ?</p>
+                                    <div class="flex-row d-flex">
+                                        <button class="btn btn-sm btn-primary m-1" ng-click="DeleteTalent(a)">Yes</button>
+                                        <button class="btn btn-sm btn-primary m-1" ng-click="hideDel()">No</button>
+                                    </div>
+
+                                </div>
+                                <div class="row bg-white rounded " ng-show="a.Id+'t'!=charIndex" ui-sref="cast.talent_details({charId: '{{a.Id}}'})">
+                                    <div class="col-5 bg-light p-0 border-right">
+                                        <div ng-if="a.HasFile" class="imgLiquidFill" style="    height: 200px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.file.FileId}}') no-repeat;
+        background-size: 100% 100%;
+    ">
+                                            <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 200px !important;">
+                                                <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                            </div>
+                                            <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid imgLiquidFill pointer-event cat-image"
+                                                 style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                            </div>
+                                        </div>
+                                        <div ng-if="!a.HasFile" style="        height: 200px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                            <span class="fa fa-image fa-3x my-auto mt-5 text-center"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-7 mb-2" style=" cursor: pointer !important;transition: background .2s linear,box-shadow .2s linear,opacity .8s linear .3s;">
+                                        <div class="card-header p-1" ng-show="a.Id!=-1">
+                                            <h3 style="text-transform: capitalize;" class="card-title  ml-1 mt-1 overflow-ellipsis">
+                                                <div ng-click="$event.stopPropagation()" contenteditable class="font-15 can_be_edited overflow-ellipsis d-block" ng-model="a.Name" ng-change="UpdateTalent(a)" title="{{a.Name}}" data-toggle="tooltip" data-placement="top" tooltip>{{a.Agency.Name}}</div>
+
+                                            </h3>
+                                            <div class="card-options">
+                                                <div class="item-action dropdown ml-2">
+
+                                                    <button class=" cursor-pointer btn-sm btn btn-transparent  bg-light-gray" ng-click="ShowDropDown(a.Id,'t');$event.stopPropagation()" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></button>
+                                                    <div class="dropdown-menu show" ng-show="dropdown==a.Id+'t'">
+
+                                                        <a class="dropdown-item cursor-pointer" ng-click="ShowDel(a.Id,'t');$event.stopPropagation()">Delete</a>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-12 thumbnail h-100 text-center rounded visible cursor-pointer" ng-if="tlcharCheck" ng-click="tltoggleCharCheck(a)">
+                                    <span class="fa fa-check fa-4x text-success my-5" ng-if="a.check"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @* Agencies *@
+            <div class="tab-pane show fade" id="agencies">
+
+                <div class="row">
+                    <div class=" d-flex col-md-12 col-sm-12 col-12 justify-content-between align-items-center" ng-hide="agency1.length==0">
+                        <ul class="nav nav-tabs page-header-tab">
+                            <li class="nav-item"><a class="btn btn-sm btn-dark bg-black  mt-3 active" id="general-tab" data-toggle="tab" data-target="#crew-list" href="javascript:void(0)" ng-click="create_agency()">Create agency<i class="fa fa-plus-circle"></i></a></li>
+                            <li class="nav-item"><a class="btn btn-sm btn-dark bg-black  mt-3 active" id="company-tab" data-toggle="tab" data-target="#access-rights">Import agency <i class="fa fa-upload"></i></a></li>
+                        </ul>
+
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-12 text-md-left text-sm-left text-left mt-3  " ng-hide="agency1.length==0">
+
+                        <div class="d-inline-flex">
+
+                            <a class="btn btn-sm bg-light-gray  mt-3" ng-show="agDelAll" href="javascript:void(0)" data-toggle="modal" data-dismiss="modal" data-target="#agDelAll">Delete selected entries <i class="fa fa-trash"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-12 col-12 text-md-right text-sm-left text-left mt-3  " ng-hide="agency1.length==0">
+
+                        <div class="d-inline-flex">
+
+                            <span class="avatar cursor-pointer  {{agchecksearch()}}  {{(agcharCheck==true?'d-none':'')}} fa-2x bg-light-gray  mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Search" ng-click="agshow_search()"></span>
+                            <span class="avatar cursor-pointer fa  fa-check-square-o fa-2x bg-light-gray  {{(agsrchbtn||agcharCheck==true?'d-none':'')}}" mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Select multiple" ng-click="agtoggleMulti()"></span>
+                            <span class="avatar cursor-pointer fa  fa-sort-alpha-asc fa-2x bg-light-gray  {{(agsrchbtn||agcharCheck==true?'d-none':'')}}" mr-1" ng-click="ShowDropDown(1,'age');$event.stopPropagation()" tooltip data-toggle="tooltip" data-placeement="top" title="Sort"></span>
+
+                            <div class="dropdown-menu dropdown-menu-right show " ng-show="dropdown==1+'age'">
+                                <h6 class="dropdown-item bg-transparent font-weight-bold ignore-click">Sort</h6>
+                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="agsortByid();$event.stopPropagation()"><i class="dropdown-icon {{ag_sort==1?'fa fa-check':''}}"></i>  by ID </a>
+                                <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="agsortByname();$event.stopPropagation()"><i class="dropdown-icon  {{ag_sort==2?'fa fa-check':''}}"></i> by Name</a>
+
+                            </div>
+                            <span class="avatar cursor-pointer  fa fa-check-circle-o fa-2x bg-light-gray mr-1 {{(agsrchbtn||agcharCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Select all" ng-click="agselectAll()"></span>
+                            <span class="avatar cursor-pointer  fa fa-circle-o fa-2x bg-light-gray mr-1 {{(agsrchbtn||agcharCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Deselect all" ng-click="agdeselectAll()"></span>
+                            <span class="avatar cursor-pointer  fa fa-times fa-2x bg-red mr-1 {{(agsrchbtn||agcharCheck==false?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="Close" ng-click="agtoggleMulti()"></span>
+
+                            <span class="avatar cursor-pointer  fa fa-list fa-2x bg-light-gray mr-1 {{(agsrchbtn||aglistview==false||agcharCheck==true?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" title="List view" ng-click="agtoggleListView()"></span>
+                            <span class="avatar cursor-pointer  fa fa-th fa-2x bg-light-gray mr-1 {{(agsrchbtn||aglistview==true||agcharCheck==true?'d-none':'')}}" tooltip data-toggle="tooltip" data-placement="top" tiage="Tile view" ng-click="agtoggleListView()"></span>
+
+                            <input type="text" class="form-control " ng-show="agsrchbtn" ng-model="ag_search" ng-keyup="agsearch(ag_search)" />
+                        </div>
+                    </div>
+
+                    <div class=" col-md-12 col-sm-12 col-12 justify-content-center d-flex align-items-center border-dashed text-center h-200px" ng-show="agency.length==0">
+
+                        <button class="btn btn-sm btn-dark bg-black  mt-3 mx-1" id="general-tab" data-toggle="tab" data-target="#crew-list" ng-click="create_agency()">Create agency <i class="fa fa-plus-circle"></i></button>
+                        <button class="btn btn-sm btn-dark bg-black  mt-3 mx-1" id="company-tab" data-toggle="tab" data-target="#access-rights">Import agency <i class="fa fa-upload"></i></button>
+
+
+                    </div>
+                    <div class="col-12 mt-2">
+                        <div class="row mb-2" ng-hide="aglistview">
+
+                            <div class="mt-1 col-12 " ng-repeat="a in agency ">
+                                <div class=" py-1 p-2 rounded bg-black" ng-show="a.Agency.Id+'ag'==charIndex">
+                                    <div class="row">
+                                        <div class="col-12 pl-4">
+                                            <p class="text-white font-12">
+                                                Do you really want to delete this Agency '{{a.Agency.Name}}'?
+                                            </p>
+                                        </div>
+                                        <div class="col-12 pl-4">
+                                            <button class="btn btn-sm btn-primary" ng-click="DeleteAgency(a)">Yes</button>
+                                            <button class="btn btn-sm btn-primary" ng-click="hideDel();$event.stopPropagation();">No</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row  py-1 rounded bg-white" ng-show="a.Agency.Id+'ag'!=charIndex ">
+                                    <div class="col-1 col-md-1 col-sm-1 d-none d-md-block d-sm-block bg-light p-0 border-right">
+                                        <div ng-if="a.HasFile" class="imgLiquidFill" style="        height: 100px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.file.FileId}}') no-repeat;
+        background-size: 100% 100%;
+">
+                                            <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 100px !important;">
+                                                <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                            </div>
+                                            <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid imgLiquidFill pointer-event cat-image"
+                                                 style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}') no-repeat 100% 100%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                            </div>
+                                        </div>
+                                        <div ng-if="!a.HasFile" style="        height: 100px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                            <span class="fa fa-image fa-3x my-auto mt-5 text-center"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-11 col-md-10 col-sm-10 cursor-pointer m-0 p-0" ui-sref="cast.agency_details({charId: '{{a.Agency.Id}}'})">
+                                        <div class="row m-0 p-0 ">
+                                            <div class="col-md-5 col-sm-12 m-0 p-0 ">
+                                                <div class="col-12 text-wrap d-lg-inline-flex text-truncate">
+                                                    <span><a class="  btn-sm btn-transparent font-weight-bold" ng-model="a.Agency.Name" ng-change="UpdateAgency(a)" ng-click="$event.stopPropagation()">{{a.Agency.Name}}</a></span>
+
+
+                                                    @*<span><a class="text-white  btn-sm btn-transparent font-weight-bold">Day</a></span>*@
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-1 col-md-1 pull-right text-right my-auto dropleft">
+                                        <span class=" cursor-pointer btn-transparent btn-sm " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></span>
+                                        <div class="dropdown-menu">
+
+
+
+
+                                            <a class="dropdown-item cursor-pointer" ng-click="ShowDel(a.Agency.Id,'ag');$event.stopPropagation()">Delete</a>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-12 thumbnail visible h-100 cursor-pointer rounded" ng-if="agcharCheck" ng-click="agtoggleCharCheck(a)">
+                                    <span class="fa fa-check fa-3x text-success" ng-if="a.check"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row" ng-show="aglistview">
+                            <div class="col-sm-12 col-md-6 col-lg-3 col-xxl-3 col-xxxl-2 mx-1 mb-3 " ng-repeat="a in agency" ng-init="$last && callback('callback')">
+                                <div class=" col-12 h-160px rounded  bg-black" ng-show="a.Agency.Id+'ag'==charIndex">
+                                    <p class="text-white">       Do you really want to delete the agency '{{a.Name}}' ?</p>
+                                    <div class="flex-row d-flex">
+                                        <button class="btn btn-sm btn-primary m-1" ng-click="DeleteAgency(a)">Yes</button>
+                                        <button class="btn btn-sm btn-primary m-1" ng-click="hideDel()">No</button>
+                                    </div>
+
+                                </div>
+                                <div class="row " ng-show="a.Agency.Id+'ag'!=charIndex" ui-sref="cast.agency_details({charId: '{{a.Agency.Id}}'})">
+                                    <div class="card mb-2" style=" cursor: pointer !important;transition: background .2s linear,box-shadow .2s linear,opacity .8s linear .3s;">
+                                        <div class="card-header p-1" ng-show="a.Agency.Id!=-1">
+                                            <h3 style="text-transform: capitalize;" class="card-title  ml-1 mt-1 overflow-ellipsis">
+                                                <div ng-click="$event.stopPropagation()" contenteditable class="font-15 can_be_edited overflow-ellipsis d-block" ng-model="a.Agency.Name" ng-change="UpdateAgency(a)" title="{{a.Agency.Name}}" data-toggle="tooltip" data-placement="top" tooltip>{{a.Agency.Name}}</div>
+
+                                            </h3>
+                                            <div class="card-options">
+                                                <div class="item-action dropdown ml-2">
+                                                    <button class=" cursor-pointer btn-sm btn btn-transparent  bg-light-gray" ng-click="ShowDropDown(a.Agency.Id,'ag');$event.stopPropagation()" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></button>
+                                                    <div class="dropdown-menu show" ng-show="dropdown==a.Agency.Id+'ag'">
+
+                                                        <a class="dropdown-item cursor-pointer" ng-click="ShowDel(a.Agency.Id,'ag');$event.stopPropagation()">Delete</a>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body bg-light card-body p-0">
+                                            <div ng-if="a.HasFile" class="imgLiquidFill" style="        height: 200px !important;
+        background: url('/api/UserProfiles/GetFileThumbnail/{{a.file.FileId}}') no-repeat;
+        background-size: 100% 100%;
+">
+                                                <div ng-if="a.file.Type!='image'" class="preview filetype filetype_json ng-scope" style="pointer-events: all;height: 200px !important;">
+                                                    <span class="extention ng-binding" style="pointer-events: all;"> <i class="fa fa-file"></i>{{a.file.Extension}}</span>
+                                                </div>
+                                                <div id="img{{a.file.Id}}" ng-if="a.FileType=='image'" class="img-fluid imgLiquidFill pointer-event cat-image"
+                                                     style="        height: 200px;
+        background: url('/api/DocumentCategories/GetFileThumbnail/{{a.FileId}}/200/200') no-repeat 50% 50%;
+        -webkit-transition: background-image 1s ease-in-out;
+        transition: background-image 1s ease-in-out;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;">
+                                                </div>
+                                            </div>
+                                            <div ng-if="!a.HasFile" style="        height: 200px !important" class="text-center d-flex flex-column justify-content-center align-item-center">
+                                                <span class="fa fa-image fa-5x my-auto mt-5 text-center"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 thumbnail h-100 text-center rounded visible cursor-pointer" ng-if="agcharCheck" ng-click="agtoggleCharCheck(a)">
+                                    <span class="fa fa-check fa-4x text-success my-5" ng-if="a.check"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header border-0">
+
+                <h4 class="modal-title">Merge characters</h4>
+            </div>
+            <div class="modal-body  border-0">
+                <p>In case you want to combine two characters you are able to merge them together into one character. Please select the character you want to merge with '{{char.Name}}' in the list below. During merging the character you selected in the list will be updated with information it misses from '{{char.Name}}' . Afterwards the character '{{char.Name}}' will be deleted.</p>
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label>
+                            Character
+                        </label>
+
+                        <ui-select class="form-control" ng-model="Character.char" theme="selectize" sortable="true" close-on-select="true">
+
+                            <ui-select-match>{{Character.char.Index}}  {{Character.char.Name}}</ui-select-match>
+                            <ui-select-choices repeat="visible as visible in filtered_char">
+                                <div class="row p-10 clearfix">
+
+                                    <div class="col-sm-12">
+                                        <div ng-bind-html="visible.Index +' ' + visible.Name  | highlight: $select.search">
+                                        </div>
+                                    </div>
+                                </div>
+                            </ui-select-choices>
+                        </ui-select>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#ConfrmModal" ng-disabled="!Character.char">Merge character</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="ConfrmModal" class="modal fade" role="dialog">
+
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header border-0">
+
+                <h4 class="modal-title">Merge characters</h4>
+            </div>
+
+            <div class="modal-body  border-0">
+                <p>  Are you sure you want to merge the character  '{{Character.char.Name}}' with '{{char.Name}}' will be deleted.</p>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="MergeChar(Character.char.Id,char.Id,Character.type)">Yes</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="charDelAll" class="modal fade" role="dialog">
+
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header border-0">
+
+                <h4 class="modal-title">Delete characters</h4>
+            </div>
+
+            <div class="modal-body  border-0">
+                <p>
+                    Do you really want to delete all selected objects?
+                </p>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteSelected();">Yes</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="exDelAll" class="modal fade" role="dialog">
+
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header border-0">
+
+                <h4 class="modal-title">Delete characters</h4>
+            </div>
+
+            <div class="modal-body  border-0">
+                <p>
+                    Do you really want to delete all selected objects?
+                </p>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="exdeleteSelected();">Yes</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="acDelAll" class="modal fade" role="dialog">
+
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header border-0">
+
+                <h4 class="modal-title">Delete actors</h4>
+            </div>
+
+            <div class="modal-body  border-0">
+                <p>
+                    Do you really want to delete all selected objects?
+                </p>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="acdeleteSelected();">Yes</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="tlDelAll" class="modal fade" role="dialog">
+
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header border-0">
+
+                <h4 class="modal-title">Delete talents</h4>
+            </div>
+
+            <div class="modal-body  border-0">
+                <p>
+                    Do you really want to delete all selected objects?
+                </p>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="tldeleteSelected();">Yes</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="agDelAll" class="modal fade" role="dialog">
+
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header border-0">
+
+                <h4 class="modal-title">Delete talents</h4>
+            </div>
+
+            <div class="modal-body  border-0">
+                <p>
+                    Do you really want to delete all selected objects?
+                </p>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="agdeleteSelected();">Yes</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            if ($('body').hasClass("dark-mode")) {
+                $('.bg-white').addClass('bg-dark');
+                $('.bg-white').removeClass('bg-white');
+
+
+
+            } else {
+                $('.bg-dark').addClass('bg-white');
+                $('.bg-dark').removeClass('bg-dark');
+
+            }
+        }, 400);
+        $('body').change(function () {
+
+
+            if ($('body').hasClass("dark-mode")) {
+                $('.bg-white').addClass('bg-dark');
+                $('.bg-white').removeClass('bg-white');
+
+
+
+            } else {
+                $('.bg-dark').addClass('bg-white');
+                $('.bg-dark').removeClass('bg-dark');
+
+            }
+        });
+    });
+</script>

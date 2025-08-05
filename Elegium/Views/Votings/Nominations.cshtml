@@ -1,0 +1,278 @@
+﻿
+<style>
+    /*********************** Demo - 16 *******************/
+    .box16 {
+        text-align: center;
+        color: #fff;
+        position: relative
+    }
+
+        .box16 .box-content, .box16:after {
+            width: 100%;
+            position: absolute;
+            left: 0
+        }
+
+        .box16:after {
+            content: "";
+            height: 100%;
+            background: linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,.08) 69%,rgba(0,0,0,.76) 100%);
+            top: 0;
+            transition: all .5s ease 0s
+        }
+
+        .box16 .post, .box16 .title {
+            transform: translateY(145px);
+            transition: all .4s cubic-bezier(.13,.62,.81,.91) 0s
+        }
+
+        .box16:hover:after {
+            background: linear-gradient(to bottom,rgba(0,0,0,.01) 0,rgba(0,0,0,.09) 11%,rgba(0,0,0,.12) 13%,rgba(0,0,0,.19) 20%,rgba(0,0,0,.29) 28%,rgba(0,0,0,.29) 29%,rgba(0,0,0,.42) 38%,rgba(0,0,0,.46) 43%,rgba(0,0,0,.53) 47%,rgba(0,0,0,.75) 69%,rgba(0,0,0,.87) 84%,rgba(0,0,0,.98) 99%,rgba(0,0,0,.94) 100%)
+        }
+
+        .box16 img {
+            width: 100%;
+            height: auto
+        }
+
+        .box16 .box-content {
+            padding: 20px;
+            margin-bottom: 20px;
+            bottom: 0;
+            z-index: 1
+        }
+
+        .box16 .title {
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin: 0 0 10px
+        }
+
+        .box16 .post {
+            display: block;
+            padding: 8px 0;
+            font-size: 15px
+        }
+
+        .box16 .social li a, .box17 .icon li a {
+            border-radius: 100px;
+            font-size: 15px;
+            color: #fff
+        }
+
+        .box16:hover .post, .box16:hover .title {
+            transform: translateY(50px)
+        }
+
+        .box16 .social {
+            list-style: none;
+            padding: 0 0 5px;
+            margin: 40px 0 25px;
+            opacity: 0;
+            position: relative;
+            transform: perspective(500px) rotateX(-90deg) rotateY(0) rotateZ(0);
+            transition: all .6s cubic-bezier(0,0,.58,1) 0s
+        }
+
+        .box16:hover .social {
+            opacity: 1;
+            transform: perspective(500px) rotateX(0) rotateY(0) rotateZ(0)
+        }
+
+        .box16 .social:before {
+            content: "";
+            width: 50px;
+            /*height: 2px;*/
+            background: #fff;
+            margin: 0 auto;
+            position: absolute;
+            top: -23px;
+            left: 0;
+            right: 0
+        }
+
+        .box16 .social li {
+            display: inline-block
+        }
+
+            .box16 .social li a {
+                display: block;
+                /*width: 40px;*/
+                padding: 10px;
+                /*height: 40px;*/
+                /*line-height: 40px;*/
+                background: #6d3795;
+                margin-right: 10px;
+                transition: all .3s ease 0s
+            }
+
+    .box17 .icon li, .box17 .icon li a {
+        display: inline-block
+    }
+
+    .box16 .social li a:hover {
+        background: #bea041
+    }
+
+    .box16 .social li:last-child a {
+        margin-right: 0;
+        margin-top: 10px;
+    }
+
+    @@media only screen and (max-width:990px) {
+        .box16 {
+            margin-bottom: 30px
+        }
+    }
+</style>
+
+<div class="section-body" style="max-width:1300px" ui-view=""
+     ng-controller="NominationsCtrl">
+    <div class="container-fluid">
+        
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <i class="fa fa-filter fa-2x py-2 pr-3 border-right"></i>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown border-right">
+                        <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-times-circle pr-1 text-red"
+                               ng-click="$event.stopPropagation();searchQuery.ProductionTypeId = null;getNominationApplications()"
+                               ng-if="searchQuery.ProductionTypeId"></i>
+                            Production type
+                        </a>
+                        <div class="dropdown-menu" style="min-width: 70vw" aria-labelledby="navbarDropdown">
+                            <div class="selectgroup selectgroup-pills p-2">
+                                <label class="selectgroup-item" ng-repeat="item in productionTypes">
+                                    <input type="radio" name="production-filter" value="item.Id"
+                                           class="selectgroup-input" ng-click="productionClicked(item.Id)"
+                                           ng-checked="searchQuery.ProductionTypeId == item.Id">
+                                    <span class="selectgroup-button selectgroup-button-icon">{{item.Name}}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown border-right">
+                        <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-times-circle pr-1 text-red"
+                               ng-click="$event.stopPropagation();searchQuery.CountryId = null;getNominationApplications()"
+                               ng-if="searchQuery.CountryId"></i>
+                            Country
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <div class="selectgroup selectgroup-pills p-2">
+                                <label class="selectgroup-item" ng-repeat="item in countries">
+                                    <input type="radio" name="country-filter" value="item.Id"
+                                           class="selectgroup-input" ng-click="countryClicked(item.Id)"
+                                           ng-checked="searchQuery.CountryId == item.Id">
+                                    <span class="selectgroup-button selectgroup-button-icon">{{item.Name}}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown border-right">
+                        <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-times-circle pr-1 text-red"
+                               ng-click="$event.stopPropagation();searchQuery.LanguageId = null;getNominationApplications()"
+                               ng-if="searchQuery.LanguageId"></i>
+                            Language
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <div class="selectgroup selectgroup-pills p-2">
+                                <label class="selectgroup-item" ng-repeat="item in languages">
+                                    <input type="radio" name="language-filter" value="item.Id"
+                                           class="selectgroup-input" ng-click="languageClicked(item.Id)"
+                                           ng-checked="searchQuery.LanguageId == item.Id">
+                                    <span class="selectgroup-button selectgroup-button-icon">{{item.Name}}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <button class="btn btn-outline-secondary my-2 my-sm-0" type="button" ng-click="clearFilters()"><i class="fa fa-undo"></i> Clear Filters</button>
+                </form>
+            </div>
+        </nav>
+
+        <div class="row mt-3" ng-if="!isLoading"
+             ng-repeat="(nomination, applications) in nominationApplications | groupBy: 'NominationName'">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-status bg-primary"></div>
+                    <div class="card-body">
+                        <h4>{{nomination}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3"
+                 ng-repeat="application in applications">
+                <div class="box16">
+                    <img src="/api/Projects/GetProjectCover/{{application.ProjectId}}/500/300">
+                    <div class="box-content">
+                        @*<h3 class="title">{{application.ProjectName}}</h3>
+                        <span class="post">
+
+                        </span>*@
+                        <ul class="social m-0">
+                            <li><a href="javascript:void(0)" ng-click="openFaceBookSharer(application.Id)" style="width:40px"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="javascript:void(0)" ng-click="openTwitterSharer(application.Id)" style="width:40px"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="javascript:void(0)" ng-click="openPinterestSharer(application.Id)" style="width:40px"><i class="fa fa-pinterest"></i></a></li>
+                            <li><a href="javascript:void(0)" ng-click="openLinkedinSharer(application.Id)" style="width:40px"><i class="fa fa-linkedin"></i></a></li>
+                        </ul>
+                        <ul class="social m-0 mt-3">
+                            <li>
+                                <a ui-sref="nominations.nominationdetail({nominationId:'{{application.Id}}'})">Vote Now</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card" style="border-top-left-radius:0; border-top-right-radius:0">
+                    <div class="card-body cursor-pointer" ui-sref="publicprojectdetail({projectId:'{{application.ProjectId}}'})">
+                        <h6>
+                            {{application.ProjectName}}
+                        </h6>
+                        <div class="row">
+                            <div class="col-6 font-12">
+                                From {{application.Location}}
+                            </div>
+                            <div class="col-6 font-12 text-right">
+                                {{application.AppliedDateTime | date:'dd-MMM-yyyy'}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <img class="rounded-circle" src="/api/UserProfiles/GetUserPhoto/{{application.UserId}}/100/100" style="width:10%" />
+                        By
+                        <b>
+                            {{application.UserName}}
+                        </b>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-if="nominationsNotFound">
+            <div class="col-12 text-center">
+                <img class="icon-svg mb-3" style="width:50px;" src="/menu-icons/VOTEFUNDING.svg">
+                <h4>There are no nominations right now</h4>
+            </div>
+        </div>
+        <div class="row mt-5" ng-if="isLoading">
+            <div class="col-12 text-center">
+                <i class="fa fa-circle-o-notch fa-2x fa-spin"></i>
+                <p>Loading...Please wait</p>
+            </div>
+        </div>
+
+    </div>
+</div>

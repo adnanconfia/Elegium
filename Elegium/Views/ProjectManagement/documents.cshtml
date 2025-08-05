@@ -1,0 +1,137 @@
+﻿
+@{
+    ViewData["Title"] = "Documents and Files";
+}
+<div class="section-body">
+    <div class="container-fluid main1" ui-view="">
+        <div class="row">
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-success d-flex" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    <i class="mr-2"> Create room </i><i class="material-icons p-0">add_circle_outline</i>
+                </button>
+            </div>
+            <div class="col-sm-10" ng-if="false">
+                <div class="row  float-right">
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success d-flex">
+                            <i class="material-icons p-0">search</i>
+                        </button>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success d-flex">
+                            <span class="material-icons">
+                                sort_by_alpha
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="collapse" id="collapseExample">
+            <hr />
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h5>
+                                    <span class="col-form-label">Create room</span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-12">
+                                <h6>
+                                    <small>Enter the name and description of the new room to create it.</small>
+                                </h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Name</label>
+                                    <input maxlength="200" type="text" class="form-control"
+                                           placeholder="Name" ng-model="data.Name" />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Description</label>
+                                    <input maxlength="200" type="text" class="form-control"
+                                           placeholder="Name" ng-model="data.Description" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                            </div>
+                            <div class="col-md-6 col-sm-12 text-right">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <button type="button" class="btn btn-primary d-flex float-right" ng-click="createRoom()" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Create</button>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button type="button" class="btn btn-default d-flex" ng-click="cancelRoomCreation()" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 col-xxxl-2 mb-3" ng-repeat="doc in documents">
+                <div class="card" ng-click="goToDocument(doc, $event)" style=" cursor: pointer !important;transition: background .2s linear,box-shadow .2s linear,opacity .8s linear .3s; min-height:160px !important">
+                    <div class="card-header p-1" ng-show="doc.Id!=-1">
+                        <div class="card-options">
+                            <div class="item-action dropdown ml-2">
+                                <a href="javascript:void(0)" data-toggle="dropdown" class="ignore-click">
+                                    <i class="fe fe-more-vertical ignore-click"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="changeIcon(doc)"><i class="dropdown-icon fa fa-eye"></i> Change Icon </a>
+                                    <a href="javascript:void(0)" class="dropdown-item ignore-click" ng-click="deleteDoc(doc)"><i class="dropdown-icon fa fa-trash"></i> Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="row">
+                            <div class="col-9 small no-overflow">
+                                <div style="        font: inherit !important;        word-break: break-all;" contenteditable class="position-absolute ml-1 can_be_edited text-wrap" ng-click="$event.stopPropagation()" ng-change="updateRoom(doc)" ng-model="doc.Description"  data-toggle="tooltip" data-placement="top" tooltip></div>
+                            </div>
+                            <div class="col-3">
+                                <span class="material-icons" style="font-size:80px !important">{{doc.Icon}}</span>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-12">
+                                <div ng-click="$event.stopPropagation()" id="{{doc.Id}}" contenteditable class="font-17 ml-3 can_be_edited overflow-ellipsis d-block" ng-model="doc.Name" ng-change="updateRoom(doc)"  data-toggle="tooltip" data-placement="top" tooltip>{{doc.Name}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="card-footer border-0 p-0 no-overflow">
+                            <div ng-click="$event.stopPropagation()" id="{{doc.Id}}" contenteditable class="position-absolute font-17 ml-3 can_be_edited overflow-ellipsis" style="bottom:20px !important" ng-model="doc.Name" ng-change="updateRoom(doc)">{{doc.Name}}</div>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    main1.ng-enter {
+        /* transition on enter for .5s */
+        transition: .5s;
+        /* start with opacity 0 (invisible) */
+        opacity: 0;
+    }
+
+    /* end 'enter' transition on main view */
+    main1.ng-enter-active {
+        /* end with opacity 1 (fade in) */
+        opacity: 1;
+    }
+</style>
+

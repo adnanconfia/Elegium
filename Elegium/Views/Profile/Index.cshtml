@@ -1,0 +1,1893 @@
+﻿
+@{ ViewData["Title"] = "Profile";
+                Layout = null; }
+
+<link href="~/css/step-wizard.css" rel="stylesheet" />
+
+<div class="section-body" ng-controller="ProfileController" style="max-width:1300px">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <ul class="nav nav-tabs page-header-tab">
+                <li class="nav-item"><a class="nav-link active" id="general-tab" data-toggle="tab" data-target="#general-info" ng-click="setClass()">General Info</a></li>
+                <li class="nav-item"><a class="nav-link" id="company-tab" data-toggle="tab" data-target="#company-info" ng-click="setClass()">Company Info</a></li>
+                <li class="nav-item"><a class="nav-link" id="portfolio-tab" data-toggle="tab" data-target="#portfolio-info" ng-click="setClass()">Portfolio</a></li>
+                <li class="nav-item"><a class="nav-link" id="selfPromotion-tab" data-toggle="tab" data-target="#self-promotion" ng-click="setClass()">Self Promotion</a></li>
+                @*<li class="nav-item"><a class="nav-link" id="equipments-tab" data-toggle="tab" href="#equipments">Equipments</a></li>*@
+                <li class="nav-item"><a class="nav-link" id="weblinks-tab" data-toggle="tab" data-target="#web-links" ng-click="setClass()">Web & Links</a></li>
+                <li class="nav-item"><a class="nav-link" id="public-preview-tab" data-toggle="tab" data-target="#public-preview" ng-click="setClass('PP')">Public Preview</a></li>
+                <li class="nav-item" ng-if="false"><a class="nav-link" id="bg-image-tab" data-toggle="tab" data-target="#bg-image" ng-click="setClass('PP')">Background Image</a></li>
+            </ul>
+            <div class="header-action d-md-flex">
+                <button type="button" class="btn btn-primary" ng-click="saveUserProfile()"><i class="fe fe-save mr-2"></i>Save</button>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="general-info">
+                                <div class="row clearfix">
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <button class="btn btn-success" ng-click="openCroppie()">Upload profile Photo</button>
+                                            </div>
+                                            <div class="col-sm-6 text-right">
+                                                <img style="border-radius:100%" ng-src="{{UserPhoto}}" width="100" />
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">First Name</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.FirstName" placeholder="First Name">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Middle Name</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.MiddleName" placeholder="Middle Name">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Last Name</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.LastName" placeholder="Last Name">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Street Address</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.StreetAddress" placeholder="Street Address">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Street Address 2</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.StreetAddress2" placeholder="Flat, suite, unit, building, floor, etc." value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Country/Region</label>
+                                                    <ui-select class="form-control" ng-model="userProfile.CountryId" theme="selectize" sortable="true" close-on-select="true">
+                                                        <ui-select-match placeholder="Select Country...">{{$select.selected.Name}}</ui-select-match>
+                                                        <ui-select-choices repeat="item.Id as item in countries | filter: $select.search">
+                                                            <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                    <!--<select class="form-control custom-select" ng-options="x.Id as x.Name for x in countries"
+                                                            ng-model="userProfile.CountryId">-->
+                                                        @*ng-change="getCitiesOfCountry(userProfile.CountryId, 'personal')">*@
+                                                    <!--</select>-->
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">City</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CityName" placeholder="City" value="">
+                                                    @*<select class="form-control custom-select" ng-options="x.Id as x.Name for x in cities" ng-model="userProfile.CityId">
+                                                    </select>*@
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">State/Province/Region</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.State" placeholder="State/Province/Region" value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Postal Code</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.PostCode" placeholder="ZIP Code">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Age</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.Age" placeholder="Age">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Height</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.Height" placeholder="Height">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Weight</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.Weight" placeholder="Weight">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Eye Color</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.EyeColor" placeholder="Eye Color">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Gender</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.HairColor" placeholder="Hair Color">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Hair Color</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.HairColor" placeholder="Hair Color">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Build</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.Build" placeholder="Build">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Skin Color</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.SkinColor" placeholder="Skin Color">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Intro Summary / Professional Overview</label>
+                                                    <textarea rows="6" class="form-control" ng-model="userProfile.IntroText" placeholder="Keep it short and snappy - a couple of lines is perfect" value=""></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Your email</label>
+                                                    <input type="email" class="form-control" ng-model="userProfile.Email" placeholder="Your email">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Skype</label>
+                                                    <input type="email" class="form-control" ng-model="userProfile.Skype" placeholder="Skype">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">What is your English Proficiency?</label>
+                                                    <ui-select class="form-control" ng-model="userProfile.EnglishLevelId" theme="selectize" sortable="true" close-on-select="true">
+                                                        <ui-select-match placeholder="Select English level...">{{$select.selected.Name}}</ui-select-match>
+                                                        <ui-select-choices repeat="item.Id as item in languageLevels | filter: $select.search">
+                                                            <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                    @*<select class="form-control custom-select" ng-options="item.Id as item.Name for item in languageLevels" ng-model="userProfile.EnglishLevelId">
+                                                    </select>*@
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">What other lanuages do you speak?</label>
+                                                    <ui-select multiple class="form-control" ng-model="userOtherLanguages.langs" theme="selectize" sortable="true" close-on-select="false">
+                                                        <ui-select-match placeholder="Select Languages...">{{$item.Name}}</ui-select-match>
+                                                        <ui-select-choices repeat="lang.Id as lang in languages">
+                                                            <div ng-bind-html="lang.Name | highlight: $select.search"></div>
+                                                            @*{{lang.Name}}*@
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="company-info" role="tabpanel">
+                                <div class="row clearfix">
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <button class="btn btn-success" ng-click="openCroppieCompany()">Upload Company Logo</button>
+                                            </div>
+                                            <div class="col-sm-6 text-right">
+                                                <img style="border-radius:100%" ng-src="{{CompanyPhoto}}" width="100" />
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Company Name</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyName" placeholder="Company Name">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Company Type</label>
+                                                    <ui-select class="form-control" ng-model="userProfile.CompanyTypeId" theme="selectize" sortable="true" close-on-select="true">
+                                                        <ui-select-match placeholder="Select working position...">{{$select.selected.Name}}</ui-select-match>
+                                                        <ui-select-choices repeat="item.Id as item in companyTypes | filter: $select.search">
+                                                            <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">What is your working position?</label>
+                                                    <ui-select class="form-control" ng-model="userProfile.CompanyPositionId" theme="selectize" sortable="true" close-on-select="true">
+                                                        <ui-select-match placeholder="Select working position...">{{$select.selected.Name}}</ui-select-match>
+                                                        <ui-select-choices repeat="item.Id as item in workingPositions | filter: $select.search">
+                                                            <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <div class="form-label">Are you a legal representant of the company?</div>
+                                                    <label class="custom-switch">
+                                                        <input type="checkbox" ng-model="userProfile.CompanyLegalRepresent" name="custom-switch-checkbox" class="custom-switch-input">
+                                                        <span class="custom-switch-indicator"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Company Office Street Address</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyStreetAddress" placeholder="Street Address">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Street Address 2</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyStreetAddress2" placeholder="Flat, suite, unit, building, floor, etc." value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Country/Region</label>
+                                                    <ui-select class="form-control" ng-model="userProfile.CompanyCountryId" theme="selectize" sortable="true" close-on-select="true">
+                                                        <ui-select-match placeholder="Select Country...">{{$select.selected.Name}}</ui-select-match>
+                                                        <ui-select-choices repeat="item.Id as item in countries | filter: $select.search">
+                                                            <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                    <!--<select class="form-control custom-select" ng-options="x.Id as x.Name for x in countries"
+                                                            ng-model="userProfile.CompanyCountryId">-->
+                                                        @*ng-change="getCitiesOfCountry(userProfile.CompanyCountryId, 'company')">*@
+                                                    <!--</select>-->
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">City</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyCityName" placeholder="City" value="">
+                                                    @*<select class="form-control custom-select" ng-options="x.Id as x.Name for x in companyCities" ng-model="userProfile.CompanyCityId">
+                                                        </select>*@
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">State/Province/Region</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyState" placeholder="State/Province/Region" value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Postal Code</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyPostCode" placeholder="ZIP Code">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Company's official email</label>
+                                                    <input type="email" class="form-control" ng-model="userProfile.CompanyEmail" placeholder="Studio's official email">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Company's official web</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyWeb" placeholder="Studio's official web">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Company number</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyPhone" placeholder="Company number">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <b><u>Studio or Production Premises address if different:</u></b>
+                                        <br />
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Company Studio Street Address</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyStudioAddress" placeholder="Street Address">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Street Address 2</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyStudioAddress2" placeholder="Flat, suite, unit, building, floor, etc.">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Country/Region</label>
+                                                    <ui-select class="form-control" ng-model="userProfile.CompanyStudioCountryId" theme="selectize" sortable="true" close-on-select="true">
+                                                        <ui-select-match placeholder="Select Country...">{{$select.selected.Name}}</ui-select-match>
+                                                        <ui-select-choices repeat="item.Id as item in countries | filter: $select.search">
+                                                            <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                    <!--<select class="form-control custom-select" ng-options="x.Id as x.Name for x in countries"
+                                                            ng-model="userProfile.CompanyStudioCountryId">-->
+                                                        @*ng-change="getCitiesOfCountry(userProfile.CompanyStudioCountryId, 'studio')">*@
+                                                    <!--</select>-->
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">City</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyStudioCityName" placeholder="City" value="">
+
+                                                    @*<select class="form-control custom-select" ng-options="x.Id as x.Name for x in studioCities" ng-model="userProfile.CompanyStudioCityId">
+                                                        </select>*@
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">State/Province/Region</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyStudioState" placeholder="State/Province/Region">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Postal Code</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyStudioPostCode" placeholder="ZIP Code">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Studio's official email</label>
+                                                    <input type="email" class="form-control" ng-model="userProfile.CompanyStudioEmail" placeholder="Studio's official email">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">Studio's official web</label>
+                                                    <input type="text" class="form-control" ng-model="userProfile.CompanyStudioWeb" placeholder="Studio's official web">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="portfolio-info" role="tabpanel">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <ul class="nav nav-tabs page-header-tab">
+                                        <li class="nav-item"><a class="nav-link active" id="photos-tab" data-toggle="tab" data-target="#photos">Add Photos</a></li>
+                                        <li class="nav-item"><a class="nav-link" id="videos-tab" data-toggle="tab" data-target="#videos">Add Videos</a></li>
+                                        <li class="nav-item"><a class="nav-link" id="audios-tab" data-toggle="tab" data-target="#audios">Add Audios</a></li>
+                                    </ul>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-sm-12">
+                                        <div class="card bg-trans">
+                                            <div class="tab-content">
+                                                <div id="photos" class="tab-pane fade active show">
+                                                    <div class="row clearfix">
+                                                        <div class="col-sm-12">
+                                                            <div class="row mb-2">
+                                                                <div class="col-sm-12">
+                                                                    <label class="col-form-label">
+                                                                        <i class="fa fa-play m-sm-1"></i>
+                                                                        Add only a photos showing and representing your own work and experience.
+                                                                    </label><br />
+                                                                    Photos can get you hired.
+                                                                </div>
+                                                            </div>
+                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                <div class="col-6 col-md-4 col-xl-2 m-sm-2">
+                                                                    <div class="card">
+                                                                        <div class="card-title text-center border-bottom">
+                                                                            <span class="small">{{totalUserPhotos}} Photos</span>
+                                                                        </div>
+                                                                        <div class="card-body">
+                                                                            <a href="javascript:void(0)" ng-click="openFileSelector('P')" class="my_sort_cut text-muted">
+                                                                                <i class="icon-plus"></i>
+                                                                                <span>Add Photos</span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <input type="file" accept=".jpg,.jpeg,.png,.gif,.bmp" name="fileUpload" id="fileUpload" multiple hidden />
+                                                                <div class="col-6 col-md-4 col-xl-2 m-sm-2">
+                                                                    <div class="card">
+                                                                        <div class="card-title text-center border-bottom">
+                                                                            <span class="small">{{totalUserAlbums}} Albums</span>
+                                                                        </div>
+                                                                        <div class="card-body">
+                                                                            <a href="javascript:void(0)" ng-click="openFileSelector('A')" class="my_sort_cut text-muted">
+                                                                                <i class="icon-plus"></i>
+                                                                                <span>Create album</span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                <div class="col-sm-12">
+                                                                    <label class="col-form-label">Albums</label>
+                                                                    <div class="row row-cards">
+                                                                        <div class="col-sm-6 col-lg-4" callback-fn="refreshAlbums(arg1)" obj="p" drop-on-me ng-repeat="p in userAlbums">
+                                                                            <div class="card p-3">
+                                                                                <a href="javascript:void(0)" id="navigateToAlbumResult" ng-click="getAlbumPhotos(p)" class="mb-3 text-center">
+                                                                                    @*<img class="rounded" aria-label="{{p.Name}}" alt="{{p.Name}}" ng-src="api/UserProfiles/GetFirstFileInAlbum/{{p.Id}}" />*@
+                                                                                </a>
+                                                                                <div class="text-center">
+                                                                                    <ul class="list-unstyled team-info sm margin-0">
+                                                                                        <li ng-repeat="t in p.FileIds">
+                                                                                            <img style="width:100% !important" class="border-radius-10" ng-src="api/UserProfiles/GetFileThumbnail/{{t}}/70/50" alt="Avatar">
+                                                                                        </li>
+                                                                                        <li class="ml-2" ng-if="p.FilesCount>5"><span>{{p.FilesCount}}+</span></li>
+                                                                                    </ul>
+                                                                                </div>
+                                                                                <hr />
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12 col-md-6">
+                                                                                        <div tooltip-placement="right" uib-tooltip="{{p.Name}}" style="white-space: nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;">{{p.Name}}</div>
+                                                                                        <small class="d-block text-muted">{{p.RelativeTime}}</small>
+                                                                                    </div>
+                                                                                    <div class="col-sm-12 col-md-6 text-right">
+                                                                                        <a href="javascript:void(0)" class="icon" ng-click="changeAlbumPrivacy(p, $index)"><i class="fe mr-1 {{p.AccessRight?'fe-eye':'fe-eye-off'}}"></i></a>
+                                                                                        <a href="javascript:void(0)" ng-click="makeAlbumFavorite(p, $index)" class="icon ml-3"><i class="{{p.Favorite?'fa fa-heart text-danger':'fe fe-heart'}} mr-1" style="{{p.Favorite?'color:#dc3545 !important':''}}"></i></a>
+                                                                                        <a href="javascript:void(0)" ng-click="deleteAlbum(p)" class="icon d-md-inline-block ml-3 text-danger"><i class="fe fe-trash mr-1"></i></a>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                <div class="col-sm-12">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-8">
+                                                                            <label ng-if="albumId==''" class="col-form-label">All Photos</label>
+                                                                            <label ng-if="albumId!=''" class="col-form-label">{{albumName}}</label>
+                                                                        </div>
+                                                                        <div class="col-sm-2" ng-if="albumId!=''">
+                                                                            <a href="javascript:void(0)" ng-click="addNewPhotosToAlbum('A')"><label class="col-form-label pull-right">Add photos to album</label></a>
+                                                                        </div>
+                                                                        <div class="col-sm-2" ng-if="albumId!=''">
+                                                                            <a href="javascript:void(0)" ng-click="getAllUserPhotos();"><label class="col-form-label pull-right">See All Photos</label></a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row row-cards">
+                                                                        <div class="col-sm-6 col-lg-4" drag-me ng-repeat="p in userPhotos">
+                                                                            <div class="card p-3">
+                                                                                <a href="javascript:void(0)" class="mb-3 text-center" ng-click="openPhoto(p)">  <img class="rounded" ng-src="api/UserProfiles/GetFile/{{p.FileId}}/348/218" /></a>
+                                                                                <hr />
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12 col-md-6">
+                                                                                        <div tooltip-placement="right" uib-tooltip="{{p.Name}}" style="white-space: nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;">{{p.Name}}</div>
+                                                                                        <small class="d-block text-muted">{{p.RelativeTime}}</small>
+                                                                                    </div>
+                                                                                    <div class="col-sm-12 col-md-6 text-right">
+                                                                                        <a href="javascript:void(0)" class="icon" ng-click="changeMediaPrivacy(p, $index)"><i class="fe mr-1 {{p.AccessRight?'fe-eye':'fe-eye-off'}}"></i></a>
+                                                                                        <a href="javascript:void(0)" ng-click="makeMediaFavorite(p, $index)" class="icon ml-3"><i class="{{p.Favorite?'fa fa-heart text-danger':'fe fe-heart'}} mr-1" style="{{p.Favorite?'color:#dc3545 !important':''}}"></i></a>
+                                                                                        <a href="javascript:void(0)" ng-click="deleteFile(p)" class="icon d-md-inline-block ml-3 text-danger"><i class="fe fe-trash mr-1"></i></a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="videos" class="tab-pane fade">
+                                                    <div class="row clearfix">
+                                                        <div class="col-sm-12">
+                                                            <div class="row  mb-2" ">
+                                                                <div class="col-sm-12">
+                                                                    <label class="col-form-label">
+                                                                        <i class="fa fa-play m-sm-1"></i>Add only a videos showing and representing your own work and experience.
+                                                                    </label><br />
+                                                                    Videos can get you hired.
+                                                                </div>
+                                                            </div>
+                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                <div class="col-6 col-md-4 col-xl-2 m-sm-2">
+                                                                    <div class="card">
+                                                                        <div class="card-title border-bottom text-center">
+                                                                            <span class="small">{{totalUserVideos}} Videos</span>
+                                                                        </div>
+                                                                        <div class="card-body">
+                                                                            <a href="javascript:void(0)" ng-click="openVideoFileSelector('P')" class="my_sort_cut text-muted">
+                                                                                <i class="icon-plus"></i>
+                                                                                <span>Add Videos</span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <input type="file" accept="video/*" name="videoUpload" id="videoUpload" multiple hidden />
+                                                                <div class="col-6 col-md-4 col-xl-2 m-sm-2">
+                                                                    <div class="card">
+                                                                        <div class="card-title border-bottom text-center">
+                                                                            <span class="small">{{totalUserVideoAlbums}} Albums</span>
+                                                                        </div>
+                                                                        <div class="card-body">
+                                                                            <a href="javascript:void(0)" ng-click="openVideoFileSelector('A')" class="my_sort_cut text-muted">
+                                                                                <i class="icon-plus"></i>
+                                                                                <span>Create album</span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                <div class="col-sm-12">
+                                                                    <label class="col-form-label">Albums</label>
+                                                                    <div class="row row-cards">
+                                                                        <div class="col-sm-6 col-lg-4" callback-fn="refreshAlbums(arg1)" obj="p" drop-on-me ng-repeat="p in userVideoAlbums">
+                                                                            <div class="card p-3">
+                                                                                <a href="javascript:void(0)" id="navigateToAlbumResult" ng-click="getAlbumVideos(p)" class="mb-3 text-center">
+                                                                                    <img class="rounded" width="200" height="200" ng-src="https://cdn2.iconfinder.com/data/icons/media-and-navigation-buttons-round/512/Button_3-512.png" />
+                                                                                </a>
+                                                                                <hr />
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12 col-md-6">
+                                                                                        <div tooltip-placement="right" uib-tooltip="{{p.Name}}" style="white-space: nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;">{{p.Name}}</div>
+                                                                                        <small class="d-block text-muted">{{p.RelativeTime}}</small>
+                                                                                    </div>
+                                                                                    <div class="col-sm-12 col-md-6 text-right">
+                                                                                        <a href="javascript:void(0)" class="icon" ng-click="changeAlbumPrivacy(p, $index)"><i class="fe mr-1 {{p.AccessRight?'fe-eye':'fe-eye-off'}}"></i></a>
+                                                                                        <a href="javascript:void(0)" ng-click="makeAlbumFavorite(p, $index)" class="icon ml-3"><i class="{{p.Favorite?'fa fa-heart text-danger':'fe fe-heart'}} mr-1" style="{{p.Favorite?'color:#dc3545 !important':''}}"></i></a>
+                                                                                        <a href="javascript:void(0)" ng-click="deleteAlbum(p)" class="icon d-md-inline-block ml-3 text-danger"><i class="fe fe-trash mr-1"></i></a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                <div class="col-sm-12">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-8">
+                                                                            <label ng-if="videoAlbumId==''" class="col-form-label">All Videos</label>
+                                                                            <label ng-if="videoAlbumId!=''" class="col-form-label">{{videoAlbumName}}</label>
+                                                                        </div>
+                                                                        <div class="col-sm-2" ng-if="videoAlbumId!=''">
+                                                                            <a href="javascript:void(0)" ng-click="addNewVideosToAlbum('A')">
+                                                                                <label class="col-form-label pull-right">Add videos to album</label>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="col-sm-2" ng-if="videoAlbumId!=''">
+                                                                            <a href="javascript:void(0)" ng-click="getAllUserVideos();"><label class="col-form-label pull-right">See All Videos</label></a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row row-cards">
+                                                                        <div class="col-sm-6 col-lg-4" drag-me ng-repeat="p in userVideos">
+                                                                            <div class="card p-3">
+                                                                                <a href="javascript:void(0)" class="mb-3 text-center" ng-click="openVideo(p)">
+                                                                                    <img class="rounded" width="200" height="200" ng-src="https://cdn2.iconfinder.com/data/icons/media-and-navigation-buttons-round/512/Button_3-512.png" />
+                                                                                </a>
+                                                                                <hr />
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12 col-md-6">
+                                                                                        <div tooltip-placement="right" uib-tooltip="{{p.Name}}" style="white-space: nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;">{{p.Name}}</div>
+                                                                                        <small class="d-block text-muted">{{p.RelativeTime}}</small>
+                                                                                    </div>
+                                                                                    <div class="col-sm-12 col-md-6">
+                                                                                        <a href="javascript:void(0)" class="icon" ng-click="changeMediaPrivacy(p, $index)"><i class="fe mr-1 {{p.AccessRight?'fe-eye':'fe-eye-off'}}"></i></a>
+                                                                                        <a href="javascript:void(0)" ng-click="makeMediaFavorite(p, $index)" class="icon ml-3"><i class="{{p.Favorite?'fa fa-heart text-danger':'fe fe-heart'}} mr-1" style="{{p.Favorite?'color:#dc3545 !important':''}}"></i></a>
+                                                                                        <a href="javascript:void(0)" ng-click="deleteFile(p)" class="icon d-md-inline-block ml-3 text-danger"><i class="fe fe-trash mr-1"></i></a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="audios" class="tab-pane fade">
+                                                    <div class="row clearfix">
+                                                        <div class="col-sm-12">
+                                                            <div class="row  mb-2" ">
+                                                                <div class="col-sm-12">
+                                                                    <label class="col-form-label"><i class="fa fa-play m-sm-1"></i>Add an audio track such as music or voice over work.</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                <div class="col-6 col-md-4 col-xl-2 m-sm-2">
+                                                                    <div class="card">
+                                                                        <div class="card-title border-bottom text-center">
+                                                                            <span class="small">{{totalUserAudios}} Audios</span>
+                                                                        </div>
+                                                                        <div class="card-body">
+                                                                            <a href="javascript:void(0)" ng-click="openAudioFileSelector('P')" class="my_sort_cut text-muted">
+                                                                                <i class="icon-plus"></i>
+                                                                                <span>Add Audio</span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <input type="file" accept="audio/*" name="audioUpload" id="audioUpload" multiple hidden />
+                                                                <div class="col-6 col-md-4 col-xl-2 m-sm-2">
+                                                                    <div class="card">
+                                                                        <div class="card-title border-bottom text-center">
+                                                                            <span class="small">{{totalUserAudioAlbums}} Albums</span>
+                                                                        </div>
+                                                                        <div class="card-body">
+                                                                            <a href="javascript:void(0)" ng-click="openAudioFileSelector('A')" class="my_sort_cut text-muted">
+                                                                                <i class="icon-plus"></i>
+                                                                                <span>Create album</span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                <div class="col-sm-12">
+                                                                    <label class="col-form-label">Albums</label>
+                                                                    <div class="row row-cards">
+                                                                        <div class="col-sm-6 col-lg-4" callback-fn="refreshAlbums(arg1)" obj="p" drop-on-me ng-repeat="p in userAudioAlbums">
+                                                                            <div class="card p-3">
+                                                                                <a href="javascript:void(0)" id="navigateToAlbumResult" ng-click="getAlbumAudios(p)" class="mb-3 text-center">
+                                                                                    <img class="rounded" width="200" height="200" src="~/assets/images/index.png" />
+                                                                                </a>
+                                                                                <hr />
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12 col-md-6">
+                                                                                        <div tooltip-placement="right" uib-tooltip="{{p.Name}}" style="white-space: nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;">{{p.Name}}</div>
+                                                                                        <small class="d-block text-muted">{{p.RelativeTime}}</small>
+                                                                                    </div>
+                                                                                    <div class="col-sm-12 col-md-6 text-right">
+                                                                                        <a href="javascript:void(0)" class="icon" ng-click="changeAlbumPrivacy(p, $index)"><i class="fe mr-1 {{p.AccessRight?'fe-eye':'fe-eye-off'}}"></i></a>
+                                                                                        <a href="javascript:void(0)" ng-click="makeAlbumFavorite(p, $index)" class="icon ml-3"><i class="{{p.Favorite?'fa fa-heart text-danger':'fe fe-heart'}} mr-1" style="{{p.Favorite?'color:#dc3545 !important':''}}"></i></a>
+                                                                                        <a href="javascript:void(0)" ng-click="deleteAlbum(p)" class="icon d-md-inline-block ml-3 text-danger"><i class="fe fe-trash mr-1"></i></a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                <div class="col-sm-12">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-8">
+                                                                            <label ng-if="audioAlbumId==''" class="col-form-label">All Audios</label>
+                                                                            <label ng-if="audioAlbumId!=''" class="col-form-label">{{audioAlbumName}}</label>
+                                                                        </div>
+                                                                        <div class="col-sm-2" ng-if="audioAlbumId!=''">
+                                                                            <a href="javascript:void(0)" ng-click="addNewAudiosToAlbum('A')">
+                                                                                <label class="col-form-label pull-right">Add audios to album</label>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="col-sm-2" ng-if="audioAlbumId!=''">
+                                                                            <a href="javascript:void(0)" ng-click="getAllUserAudios();"><label class="col-form-label pull-right">See All Audios</label></a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row row-cards">
+                                                                        <div class="col-sm-6 col-lg-4" drag-me ng-repeat="p in userAudios">
+                                                                            <div class="card p-3">
+                                                                                <a href="javascript:void(0)" class="mb-3 text-center" ng-click="openAudio(p)">
+                                                                                    <img class="rounded" width="200" height="200" src="~/assets/images/index.png" />
+                                                                                </a>
+                                                                                <hr />
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12 col-md-6">
+                                                                                        <div tooltip-placement="right" uib-tooltip="{{p.Name}}" style="white-space: nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;">{{p.Name}}</div>
+                                                                                        <small class="d-block text-muted">{{p.RelativeTime}}</small>
+                                                                                    </div>
+                                                                                    <div class="col-sm-12 col-md-6 text-right">
+                                                                                        <a href="javascript:void(0)" class="icon" ng-click="changeMediaPrivacy(p, $index)"><i class="fe mr-1 {{p.AccessRight?'fe-eye':'fe-eye-off'}}"></i></a>
+                                                                                        <a href="javascript:void(0)" ng-click="makeMediaFavorite(p, $index)" class="icon ml-3"><i class="{{p.Favorite?'fa fa-heart text-danger':'fe fe-heart'}} mr-1" style="{{p.Favorite?'color:#dc3545 !important':''}}"></i></a>
+                                                                                        <a href="javascript:void(0)" ng-click="deleteFile(p)" class="icon d-md-inline-block ml-3 text-danger"><i class="fe fe-trash mr-1"></i></a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="self-promotion" class="tab-pane fade">
+                                <div class="container">
+                                    <div class="stepwizard">
+                                        <div class="stepwizard-row setup-panel">
+                                            <div class="stepwizard-step col-xs-3">
+                                                <a href="#step-1" type="button" class="btn btn-default btn-circle btn-success">1</a>
+                                                <p><small>Category</small></p>
+                                            </div>
+                                            <div class="stepwizard-step col-xs-3">
+                                                <a href="#step-2" role="button" class="btn btn-default btn-circle">2</a>
+                                                <p><small>Your Details</small></p>
+                                            </div>
+                                            <div class="stepwizard-step col-xs-3">
+                                                <a href="#step-3" role="button" class="btn btn-default btn-circle">3</a>
+                                                <p><small>Credits & Experience</small></p>
+                                            </div>
+                                            <div class="stepwizard-step col-xs-3">
+                                                <a href="#step-4" role="button" class="btn btn-default btn-circle">4</a>
+                                                <p><small>Skills</small></p>
+                                            </div>
+                                            <div class="stepwizard-step col-xs-3">
+                                                <a href="#step-5" role="button" class="btn btn-default btn-circle">5</a>
+                                                <p><small>Equipment</small></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <form role="form">
+                                        <div class="panel panel-primary setup-content" id="step-1">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">Please select categories you are interested in to promote yourself</h4>
+                                            </div>
+                                            <hr />
+                                            <div class="panel-body">
+                                                <div class="selectgroup selectgroup-pills">
+                                                    <label class="selectgroup-item" ng-repeat="item in promotionCategories">
+                                                        <input type="checkbox" name="value" value="HTML"
+                                                               class="selectgroup-input" checked=""
+                                                               ng-checked="userPromotionCategory.indexOf(item.Id) > -1"
+                                                               ng-click="toggleSelection(item.Id)">
+                                                        <span class="selectgroup-button">{{item.Name}}</span>
+                                                    </label>
+                                                </div>
+                                                <button class="btn btn-primary nextBtn btn-lg pull-right" type="button">Next</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="panel panel-primary setup-content" id="step-2">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">Your Details</h4>
+                                            </div>
+                                            <hr />
+                                            <div class="panel-body">
+                                                <div class="row clearfix">
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Please tell us what is your service you offer?</label>
+                                                                    <ui-select class="form-control" ng-model="userProfile.SkillId" theme="selectize" sortable="true" close-on-select="true">
+                                                                        <ui-select-match placeholder="Select Service...">{{$select.selected.Name}}</ui-select-match>
+                                                                        <ui-select-choices repeat="item.Id as item in skills | filter: $select.search">
+                                                                            <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                                        </ui-select-choices>
+                                                                    </ui-select>
+                                                                    @*<select class="form-control custom-select" ng-options="item.Id as item.Name for item in skills" ng-model="userProfile.SkillId">
+                                                                    </select>*@
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">What is your level of experience in this field?</label>
+                                                                    <ui-select class="form-control" ng-model="userProfile.SkillLevelId" theme="selectize" sortable="true" close-on-select="true">
+                                                                        <ui-select-match placeholder="Select Skill level...">{{$select.selected.Name}}</ui-select-match>
+                                                                        <ui-select-choices repeat="item.Id as item in skillLevels | filter: $select.search">
+                                                                            <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                                        </ui-select-choices>
+                                                                    </ui-select>
+                                                                    @*<select class="form-control custom-select" ng-options="item.Id as item.Name for item in skillLevels" ng-model="userProfile.SkillLevelId">
+                                                                    </select>*@
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr />
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <h5>Do you own or represent Production company?</h5>
+                                                            </div>
+                                                        </div>
+                                                        <hr />
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Type of the Company</label>
+                                                                    <ui-select class="form-control" ng-model="userProfile.OwnCompanyTypeId" theme="selectize" sortable="true" close-on-select="true">
+                                                                        <ui-select-match placeholder="Select Company type...">{{$select.selected.Name}}</ui-select-match>
+                                                                        <ui-select-choices repeat="item.Id as item in companyTypes | filter: $select.search">
+                                                                            <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                                                        </ui-select-choices>
+                                                                    </ui-select>
+                                                                    @*<select class="form-control custom-select" ng-options="item.Id as item.Name for item in companyTypes" ng-model="userProfile.OwnCompanyTypeId">
+                                                                    </select>*@
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Name of the Company</label>
+                                                                    <input maxlength="200" type="text" required="required" class="form-control" placeholder="Name of the Company" ng-model="userProfile.OwnCompanyName" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-primary nextBtn btn-lg pull-right" type="button">Next</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="panel panel-primary setup-content" id="step-3">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">Credits & Experience</h4>
+                                            </div>
+                                            <hr />
+                                            <div class="panel-body">
+                                                <div class="row clearfix">
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <button class="btn btn-success" type="button" ng-click="addCredit()"><i class="fa fa-plus"></i> Add Credit & Experience</button>
+                                                            </div>
+                                                        </div>
+                                                        <br />
+                                                        <div class="row" ng-repeat="item in userCredits track by $index">
+                                                            <div class="col-sm-12">
+                                                                <button type="button" class="btn btn-secondary" style="width:100%" data-toggle="collapse" data-target="#card{{$index}}">
+                                                                    {{item.Year}}
+                                                                </button>
+                                                                <div id="card{{$index}}" class="collapse show">
+                                                                    <br />
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12 col-md-11">
+                                                                            <div class="form-group">
+                                                                                @*<label class="control-label">Year</label>*@
+                                                                                <input maxlength="200" type="text" required="required" ng-model="item.Year" class="form-control" placeholder="Year" />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                @*<label class="control-label">Production, Workplace or School</label>*@
+                                                                                <input maxlength="200" type="text" required="required" ng-model="item.Workplace" class="form-control" placeholder="Production, Workplace or School" />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                @*<label class="control-label">Role, Job, Eduction or Course</label>*@
+                                                                                <input maxlength="200" type="text" required="required" ng-model="item.Job" class="form-control" placeholder="Role, Job, Eduction or Course" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-sm-12 col-md-1 text-right">
+                                                                            <button class="btn btn-danger" role="button" ng-click="deleteCredit(item)"><i class="fa fa-trash"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <hr />
+                                                            </div>
+                                                        </div>
+                                                        <button class="btn btn-primary nextBtn btn-lg pull-right" type="button">Next</button>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="panel panel-primary setup-content" id="step-4">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">Skills</h4>
+                                            </div>
+                                            <hr />
+                                            <div class="panel-body">
+                                                <div class="row clearfix">
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <button class="btn btn-success" type="button" ng-click="addSkill()"><i class="fa fa-plus"></i> Add Skill</button>
+                                                            </div>
+                                                        </div>
+                                                        <br />
+                                                        <div class="row" ng-repeat="item in userSkills track by $index">
+                                                            <div class="col-sm-12">
+                                                                <button type="button" class="btn btn-secondary" style="width:100%" data-toggle="collapse" data-target="#cardSkill{{$index}}">
+                                                                    {{item.Name}}
+                                                                </button>
+                                                                <div id="cardSkill{{$index}}" class="collapse show">
+                                                                    <br />
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12 col-md-11">
+                                                                            <div class="form-group">
+                                                                                <input maxlength="200" type="text" required="required" ng-model="item.Name" class="form-control" placeholder="Skill Name" />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <textarea required="required" ng-model="item.Description" class="form-control" placeholder="Short description of the Skill you possess"></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-sm-12 col-md-1 text-right">
+                                                                            <button class="btn btn-danger" role="button" ng-click="deleteSkill(item)"><i class="fa fa-trash"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <hr />
+                                                            </div>
+                                                        </div>
+                                                        <button class="btn btn-primary nextBtn btn-lg pull-right" type="button">Next</button>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="panel panel-primary setup-content" id="step-5">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">Equipment</h4>
+                                                <div class="row" ng-show="resourcesList.length>0">
+                                                    <div class="col-md-4 col-sm-12 offset-md-8">
+                                                        <input type="text" class="form-control" placeholder="Search equipement..." ng-model="resourceQuery">
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            <div class="panel-body">
+                                                <div class="row clearfix">
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class="card">
+                                                                    <div class="card-header">
+                                                                        <div class="container-fluid">
+                                                                            <div class="row">
+                                                                                <div class="col-sm-6">
+
+                                                                                </div>
+                                                                                <div class="col-sm-6 text-right">
+                                                                                    <button type="button" class="btn btn-secondary" ng-click="addResource()">
+                                                                                        <i class="fa fa-plus mr-2"></i> Add Equipment
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <br />
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-6 col-lg-4 mb-3" ng-repeat="resource in resourcesList | filter:resourceQuery">
+                                                                <div class="card box-shadow border" style="height: 100% !important">
+                                                                    <div class="card-header border-bottom">
+                                                                        <div class="card-title" style="text-transform:none">
+                                                                            <div class="row">
+                                                                                <div class="col-sm-12 text-info font-weight-bold">
+                                                                                    {{resource.Name}}
+                                                                                </div>
+                                                                                @*<div class="col-sm-4 text-right">
+                                                                                        <p class="font-9">
+                                                                                            <i class="fa fa-calendar"></i> {{resource.ModifiedDateTime | date:"MMM dd, yyyy"}}
+                                                                                        </p>
+                                                                                    </div>*@
+                                                                                <div class="col-sm-12 text-yellow">
+                                                                                    <small> {{resource.HireOrSale == 'H'?'For Hire':'For Sale'}}</small>
+                                                                                </div>
+                                                                                @*<div class="col-sm-5 text-right">
+                                                                                        <p class="font-11">
+                                                                                            Offline
+                                                                                        </p>
+                                                                                    </div>*@
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="card-options">
+                                                                            <div class="item-action dropdown ml-2">
+                                                                                <a href="javascript:void(0)" data-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-vertical"></i></a>
+                                                                                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(18px, 24px, 0px);">
+                                                                                    @*<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-eye"></i> View Detail </a>
+                                                                                        <div class="dropdown-divider"></div>*@
+                                                                                    <a href="javascript:void(0)" class="dropdown-item" ng-click="editResource(resource)">
+                                                                                        <i class="dropdown-icon fa fa-edit"></i> Edit
+                                                                                    </a>
+                                                                                    <a href="javascript:void(0)" class="dropdown-item" ng-click="deleteResource(resource.Id)">
+                                                                                        <i class="dropdown-icon fa fa-trash"></i> Delete
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="card-body">
+                                                                        <div class="row p-1 mb-2 ">
+                                                                            <div class="col-sm-12 text-center">
+                                                                                <ul class="list-unstyled team-info sm margin-0">
+                                                                                    <li ng-repeat="t in resource.MediaFileIds">
+                                                                                        <img style="width:100% !important;" class="border-radius-10" ng-src="/api/UserProfiles/GetFileThumbnail/{{t}}/70/50" alt="Avatar">
+                                                                                    </li>
+                                                                                </ul>
+                                                                            </div>
+                                                                            <div class="col-sm-6 text-center">
+                                                                                <p class="font-11 mt-3">
+                                                                                    {{resource.Description | limitTo:100}}{{ resource.Description.length > 100 ? '...' : ''}}
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="col-sm-6">
+                                                                                <div class="row border-left mt-3">
+                                                                                    <div class="col-sm-12 pt-1 font-10" ng-if="resource.HireOrSale == 'H'">
+                                                                                        <i class="fa fa-money mr-1"></i>
+                                                                                        <span>Rent per day:</span>
+                                                                                        <span class="pull-right font-weight-bold">{{resource.RentalPrice}}{{resource.Currency.Symbol}}</span>
+                                                                                    </div>
+                                                                                    <div class="col-sm-12 pt-1 font-10" ng-if="resource.HireOrSale == 'H'">
+                                                                                        <i class="fa fa-minus-circle mr-1"></i>
+                                                                                        <span>Min rent days:</span>
+                                                                                        <span class="pull-right font-weight-bold">{{resource.MinRentalPeriod}}</span>
+                                                                                    </div>
+                                                                                    <div class="col-sm-12 pt-1 font-10" ng-if="resource.HireOrSale == 'H'">
+                                                                                        <i class="fa fa-plus-circle mr-1"></i>
+                                                                                        <span>Max rent days:</span>
+                                                                                        <span class="pull-right font-weight-bold">{{resource.MaxRentalPeriod}}</span>
+                                                                                    </div>
+                                                                                    <div class="col-sm-12 pt-1 font-10" ng-if="resource.HireOrSale == 'S'">
+                                                                                        <i class="fa fa-money mr-1"></i>
+                                                                                        <span>Selling price:</span>
+                                                                                        <span class="pull-right font-weight-bold">{{resource.SalePrice}}{{resource.Currency.Symbol}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="web-links" role="tabpanel">
+                                <div class="row clearfix">
+                                    <div class="col-sm-12">
+                                        <b>Make sure each profile is set to public so it can be viewed</b>
+                                        <br />
+                                        <br />
+                                        @* facebook *@
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-3">
+                                                <h5><i class="fe fe-facebook text-blue"></i> facebook</h5>
+                                            </div>
+                                            <div class="col-sm-8 col-md-5">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" ng-model="userProfile.FacebookLink" placeholder="https://facebook.com/profile-or-page-url">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="userProfile.FacebookLinkIsPublic" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">view in Public</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @* instagram *@
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-3">
+                                                <h5><i class="fe fe-instagram text-purple"></i> instagram</h5>
+                                            </div>
+                                            <div class="col-sm-8 col-md-5">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" ng-model="userProfile.InstagramLink" placeholder="https://instagram.com/username">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="userProfile.InstagramLinkIsPublic" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">view in Public</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @* linkedin *@
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-3">
+                                                <h5><i class="fe fe-linkedin text-blue"></i> linkedin</h5>
+                                            </div>
+                                            <div class="col-sm-8 col-md-5">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" ng-model="userProfile.LinkedinLink" placeholder="https://linkedin.com/profile-or-company-url">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="userProfile.LinkedinLinkIsPublic" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">view in Public</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @* pinterest *@
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-3">
+                                                <h5><i class="fa fa-pinterest text-pink"></i> pinterest</h5>
+                                            </div>
+                                            <div class="col-sm-8 col-md-5">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" ng-model="userProfile.PinterestLink" placeholder="https://pinterest.com/profile">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="userProfile.PinterestLinkIsPublic" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">view in Public</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @*twitter*@
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-3">
+                                                <h5><i class="fe fe-twitter text-blue"></i> twitter</h5>
+                                            </div>
+                                            <div class="col-sm-8 col-md-5">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" ng-model="userProfile.TwitterLink" placeholder="https://twitter.com/username">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="userProfile.TwitterLinkIsPublic" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">view in Public</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @* youtube *@
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-3">
+                                                <h5><i class="fa fa-youtube text-red"></i> youtube</h5>
+                                            </div>
+                                            <div class="col-sm-8 col-md-5">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" ng-model="userProfile.YoutubeLink" placeholder="https://youtube.com/channel-or-user-url">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="userProfile.YoutubeLinkIsPublic" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">view in Public</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @*imdb*@
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-3">
+                                                <h5><i class="fa fa-imdb text-yellow"></i> imdb</h5>
+                                            </div>
+                                            <div class="col-sm-8 col-md-5">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" ng-model="userProfile.ImdbLink" placeholder="IMDB">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="userProfile.ImdbLinkIsPublic" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">view in Public</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @*vimeo*@
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-3">
+                                                <h5><i class="fa fa-vimeo text-blue"></i> vimeo</h5>
+                                            </div>
+                                            <div class="col-sm-8 col-md-5">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" ng-model="userProfile.VimeoLink" placeholder="vimeo">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="userProfile.VimeoLinkIsPublic" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">view in Public</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="public-preview" role="tabpanel" ng-click="setClass('PP')">
+                                <div class="section-body">
+                                    <div class="container-fluid">
+                                        <div class="row clearfix">
+                                            <div class="col-md-12">
+                                                <div class="card card-profile bg-trans">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 text-center">
+                                                                <img class="card-profile-img" ng-src="data:image/jpg;base64,{{userProfile.Photo}}" alt="{{userProfile.FirstName}} {{userProfile.LastName}}">
+                                                                <h4>
+                                                                    {{userProfile.FirstName}} {{userProfile.LastName}}
+                                                                </h4>
+                                                                <h6>
+                                                                    @*{{userProfile.CompanyPosition.Name}}*@
+                                                                    {{(workingPositions | filter:userProfile.CompanyPositionId)[0].Name}}
+                                                                </h6>
+                                                                <p>
+                                                                    <i ng-if="userProfile.CountryId || userProfile.CityName" class="fa fa-map-marker text-gray"></i>
+                                                                    <span>{{(countries | filter:userProfile.CountryId)[0].Name}}</span>
+                                                                    <span ng-if="userProfile.CountryId && userProfile.CityName">,</span>
+                                                                    <span>{{userProfile.CityName}}</span>
+                                                                </p>
+                                                                <ul class="social-links list-inline mb-3 mt-2">
+                                                                    <li class="list-inline-item" ng-if="userProfile.FacebookLinkIsPublic"><a href="{{userProfile.FacebookLink}}" target="_blank" title="Facebook" data-toggle="tooltip"><i class="fa fa-facebook"></i></a></li>
+                                                                    <li class="list-inline-item" ng-if="userProfile.TwitterLinkIsPublic"><a href="{{userProfile.TwitterLink}}" target="_blank" title="Twitter" data-toggle="tooltip"><i class="fa fa-twitter"></i></a></li>
+                                                                    <li class="list-inline-item" ng-if="userProfile.ImdbLinkIsPublic"><a href="{{userProfile.ImdbLink}}" target="_blank" title="IMDB" data-toggle="tooltip"><i class="fa fa-imdb"></i></a></li>
+                                                                </ul>
+                                                                <button class="btn btn-outline-primary btn-sm" ng-click="contactUser()"><span class="fa fa-envelope"></span> Message</button>
+                                                                <button class="btn btn-outline-primary btn-sm ml-2" ng-if="false" ng-click="print()"><span class="fa fa-print"></span> Print</button>
+                                                                <button class="btn btn-outline-primary btn-sm ml-2" ng-click="forwardUser()"><span class="fa fa-forward"></span> Forward</button>
+                                                                <a class="btn btn-outline-primary btn-sm ml-2" data-toggle="collapse" data-target="#social" aria-expanded="false" aria-controls="collapseExample">
+                                                                    <span class="fa fa-share"></span> Share
+                                                                </a>
+                                                                <div id="social" class="collapse">
+                                                                    <div class="">
+                                                                        <ul class="sticky">
+                                                                            <li class="twitter">
+                                                                                <a href="https://twitter.com/intent/tweet?url={{url}}" target="_blank">
+                                                                                    <i class="fa fa-twitter fa-2x" aria-hidden="true"></i>
+                                                                                </a>
+                                                                            </li>
+                                                                            <li class="facebook">
+                                                                                <a href="https://www.facebook.com/sharer/sharer.php?u={{url}}" target="_blank">
+                                                                                    <i class="fa fa-facebook  fa-2x" aria-hidden="true"></i>
+                                                                                </a>
+                                                                            </li>
+                                                                            <li class="pinterest">
+                                                                                <a href="https://pinterest.com/pin/create/button/?url={{url}}" target="_blank">
+                                                                                    <i class="fa fa-pinterest  fa-2x" aria-hidden="true"></i>
+                                                                                </a>
+                                                                            </li>
+                                                                            <li class="linkedin">
+                                                                                <a href="https://www.linkedin.com/shareArticle?mini=true&url={{url}}" target="_blank">
+                                                                                    <i class="fa fa-linkedin  fa-2x" aria-hidden="true"></i>
+                                                                                </a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                                <hr />
+                                                                <label class="col-form-label">{{userProfile.IntroText}}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="section-body">
+                                    <div class="container-fluid">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <ul class="nav nav-tabs page-header-tab">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" id="about-me-tab" data-toggle="tab" data-target="#my-info">
+                                                        About me
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="portfolio-tab" data-toggle="tab" data-target="#portfolio-public-preview-info">
+                                                        Portfolio
+                                                        <span class="badge badge-primary nav-unread-custom"></span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-12">
+                                                <div class="card bg-trans">
+                                                    <div class="card-body">
+                                                        <div class="tab-content">
+                                                            <div class="tab-pane fade show active" id="my-info" role="tabpanel">
+                                                                <div class="row clearfix">
+                                                                    <div class="col-sm-4">
+                                                                        <div class="card">
+                                                                            <div class="card-header custom-title">
+                                                                                <h4 class="card-title">Interests</h4>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <table class="table card-table">
+                                                                                    <tbody>
+                                                                                        <tr ng-repeat="cat in userPromotionCategory">
+                                                                                            <td>{{(promotionCategories | filter:cat)[0].Name}}</td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-4">
+                                                                        <div class="card">
+                                                                            <div class="card-header custom-title">
+                                                                                <h4 class="card-title">Skills</h4>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <table class="table card-table">
+                                                                                    <tbody>
+                                                                                        <tr ng-repeat="skill in userSkills">
+                                                                                            <td>{{skill.Name}}</td>
+                                                                                            <td>{{skill.Description}}</td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-4">
+                                                                        <div class="card">
+                                                                            <div class="card-header custom-title">
+                                                                                <h4 class="card-title">Attributes</h4>
+                                                                            </div>
+                                                                            <div class="card-body text-muted">
+                                                                                <ul class="list-unstyled feeds_widget">
+                                                                                    <li>
+                                                                                        <div class="feeds-left"><i class="fa fa-eye"></i></div>
+                                                                                        <div class="feeds-body">
+                                                                                            <h4 class="title">Eye Color<small class="float-right text-muted">{{userProfile.EyeColor}}</small></h4>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="feeds-left"><i class="fa fa-paint-brush"></i></div>
+                                                                                        <div class="feeds-body">
+                                                                                            <h4 class="title">Hair Color<small class="float-right text-muted">{{userProfile.HairColor}}</small></h4>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="feeds-left"><i class="fa fa-smile-o"></i></div>
+                                                                                        <div class="feeds-body">
+                                                                                            <h4 class="title">Skin Color<small class="float-right text-muted">{{userProfile.SkinColor}}</small></h4>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="feeds-left"><i class="fa fa-won"></i></div>
+                                                                                        <div class="feeds-body">
+                                                                                            <h4 class="title">Weight<small class="float-right text-muted">{{userProfile.Weight}}</small></h4>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="feeds-left"><i class="fa fa-bars"></i></div>
+                                                                                        <div class="feeds-body">
+                                                                                            <h4 class="title">Height<small class="float-right text-muted">{{userProfile.Height}}</small></h4>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="feeds-left"><i class="fa fa-sort-numeric-desc"></i></div>
+                                                                                        <div class="feeds-body">
+                                                                                            <h4 class="title">Age<small class="float-right text-muted">{{userProfile.Age}}</small></h4>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="feeds-left"><i class="fa fa-user"></i></div>
+                                                                                        <div class="feeds-body">
+                                                                                            <h4 class="title">Build<small class="float-right text-muted">{{userProfile.Build}}</small></h4>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row clearfix">
+                                                                    <div class="col-md-8 col-sm-12">
+                                                                        <div class="card">
+                                                                            <div class="card-header custom-title">
+                                                                                <h4 class="card-title">Credits and Experience</h4>
+                                                                            </div>
+
+                                                                            <div class="table-responsive">
+                                                                                <table class="table table-hover mb-0">
+                                                                                    <thead>
+                                                                                        <tr class="font-weight-bold fa-3x">
+                                                                                            <td>
+                                                                                                Year
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                Production, Workplace or School
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                Role, Job, Eduction or Course
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        <tr ng-repeat="item in userCredits">
+                                                                                            <td>
+                                                                                                {{item.Year}}
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                {{item.Workplace}}
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                {{item.Job}}
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <div class="card">
+                                                                            <div class="card-header custom-title">
+                                                                                <h4 class="card-title">Languages</h4>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <table class="table card-table">
+                                                                                    <tbody>
+                                                                                        <tr ng-repeat="language in userOtherLanguages.langs">
+                                                                                            <td>{{(languages | filter:language)[0].Name}}</td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row clearfix">
+                                                                    <div class="col-sm-4">
+                                                                        <div class="card">
+                                                                            <div class="card-header custom-title">
+                                                                                <h3 class="card-title">Company Information</h3>
+                                                                            </div>
+                                                                            <div class="card-body">
+                                                                                <div class="media mb-3">
+                                                                                    <img class="card-profile-img" ng-src="data:image/jpg;base64,{{userProfile.CompanyLogo}}" alt="Generic placeholder image">
+                                                                                    <div class="media-body text-right">
+                                                                                        <h5>{{userProfile.CompanyName}}</h5>
+                                                                                        <address class="text-muted small">
+                                                                                            {{userProfile.CompanyStreetAddress}} {{userProfile.CompanyStreetAddress2}}<br>
+                                                                                            {{(countries | filter:userProfile.CompanyCountryId)[0].Name}}, {{userProfile.CompanyCityName}} {{userProfile.CompanyPostCode}}
+                                                                                        </address>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-6">
+                                                                                        <div class="h6">Position</div>
+                                                                                        <p>{{(workingPositions | filter: userProfile.CompanyPositionId)[0].Name}}</p>
+                                                                                    </div>
+                                                                                    <div class="col-6 text-right">
+                                                                                        <div class="h6">Company Type</div>
+                                                                                        <p>{{(companyTypes | filter: userProfile.CompanyTypeId)[0].Name}}</p>
+                                                                                    </div>
+                                                                                    <div class="col-6">
+                                                                                        <div class="h6">Website</div>
+                                                                                        <p><a href="{{userProfile.CompanyWeb}}">{{userProfile.CompanyWeb}}</a></p>
+                                                                                    </div>
+                                                                                    <div class="col-6  text-right">
+                                                                                        <div class="h6">Company Phone</div>
+                                                                                        <p>{{userProfile.CompanyPhone}}</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="h6">Legal Representative</div>
+                                                                                <p>{{userProfile.CompanyLegalRepresent?'Yes':'No'}}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-4">
+                                                                        <div class="card">
+                                                                            <div class="card">
+                                                                                <div class="card-header custom-title">
+                                                                                    <h4 class="card-title">Studio</h4>
+                                                                                </div>
+                                                                                <div class="card-body">
+                                                                                    <p class="card-text">
+                                                                                        <i class="fa fa-map-marker fa-1x mr-2"></i>
+                                                                                        {{userProfile.CompanyStudioAddress}} {{userProfile.CompanyStudioAddress2}},
+                                                                                        {{(countries | filter:userProfile.CompanyStudioCountryId)[0].Name}}, {{userProfile.CompanyStudioCityName}} {{userProfile.CompanyStudioPostCode}}
+                                                                                    </p>
+                                                                                </div>
+                                                                                <table class="table card-table">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td class="width45"><i class="fa fa-envelope fa-2x"></i></td>
+
+                                                                                            <td><a href="mailto:{{userProfile.CompanyStudioEmail}}">{{userProfile.CompanyStudioEmail}}</a></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td class="width45"><i class="fa fa-globe fa-2x"></i></td>
+                                                                                            <td><a href="{{userProfile.CompanyStudioWeb}}">{{userProfile.CompanyStudioWeb}}</a></td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-4">
+                                                                        <div class="card">
+                                                                            <div class="card-header custom-title">
+                                                                                <h4 class="card-title">Links</h4>
+                                                                            </div>
+                                                                            <table class="table card-table">
+                                                                                <tbody>
+                                                                                    <tr ng-if="userProfile.FacebookLinkIsPublic">
+                                                                                        <td class="width45"><i class="fa fa-facebook fa-2x"></i></td>
+                                                                                        <td><a href="{{userProfile.FacebookLink}}">{{userProfile.FacebookLink}}</a></td>
+                                                                                    </tr>
+                                                                                    <tr ng-if="userProfile.TwitterLinkIsPublic">
+                                                                                        <td class="width45"><i class="fa fa-twitter fa-2x"></i></td>
+                                                                                        <td><a href="{{userProfile.TwitterLink}}">{{userProfile.TwitterLink}}</a></td>
+                                                                                    </tr>
+                                                                                    <tr ng-if="userProfile.VimeoLinkIsPublic">
+                                                                                        <td class="width45"><i class="fa fa-vimeo fa-2x"></i></td>
+                                                                                        <td><a href="{{userProfile.VimeoLink}}">{{userProfile.VimeoLink}}</a></td>
+                                                                                    </tr>
+                                                                                    <tr ng-if="userProfile.ImdbLinkIsPublic">
+                                                                                        <td class="width45"><i class="fa fa-imdb fa-2x"></i></td>
+                                                                                        <td><a href="{{userProfile.ImdbLink}}">{{userProfile.ImdbLink}}</a></td>
+                                                                                    </tr>
+                                                                                    <tr ng-if="userProfile.InstagramLinkIsPublic">
+                                                                                        <td class="width45"><i class="fa fa-instagram fa-2x"></i></td>
+                                                                                        <td><a href="{{userProfile.InstagramLink}}">{{userProfile.InstagramLink}}</a></td>
+                                                                                    </tr>
+                                                                                    <tr ng-if="userProfile.YoutubeLinkIsPublic">
+                                                                                        <td class="width45"><i class="fa fa-youtube fa-2x"></i></td>
+                                                                                        <td><a href="{{userProfile.YoutubeLink}}">{{userProfile.YoutubeLink}}</a></td>
+                                                                                    </tr>
+                                                                                    <tr ng-if="userProfile.LinkedinLinkIsPublic">
+                                                                                        <td class="width45"><i class="fa fa-linkedin fa-2x"></i></td>
+                                                                                        <td><a href="{{userProfile.LinkedinLink}}">{{userProfile.LinkedinLink}}</a></td>
+                                                                                    </tr>
+                                                                                    <tr ng-if="userProfile.PinterestLinkIsPublic">
+                                                                                        <td class="width45"><i class="fa fa-pinterest fa-2x"></i></td>
+                                                                                        <td><a href="{{userProfile.PinterestLink}}">{{userProfile.PinterestLink}}</a></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row clearfix">
+                                                                    <div class="col-sm-4">
+                                                                        <div class="card">
+                                                                            <div class="card-header custom-title">
+                                                                                <h4 class="card-title">Services</h4>
+                                                                            </div>
+                                                                            <div class="table-responsive">
+                                                                                <table class="table table-hover mb-0">
+                                                                                    <thead>
+                                                                                        <tr class="font-weight-bold fa-3x">
+                                                                                            <td>Service</td>
+                                                                                            <td>Level of experience</td>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td>{{(skills | filter:userProfile.SkillId)[0].Name}}</td>
+                                                                                            <td>{{(skillLevels | filter:userProfile.SkillLevelId)[0].Name}}</td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-8">
+                                                                        <div class="card">
+                                                                            <div class="card-header custom-title">
+                                                                                <h4 class="card-title">Equipments</h4>
+                                                                            </div>
+                                                                            <div class="table-responsive">
+                                                                                <div class="row m-2 font-weight-bold">
+                                                                                    <div class="col-sm-4">Name</div>
+                                                                                    <div class="col-sm-4">Category</div>
+                                                                                    <div class="col-sm-4">Lending Type</div>
+                                                                                </div>
+                                                                                <a ui-sref="resourcedetail({resourceId:'{{resource.Id}}'})" ng-repeat="resource in resourcesList">
+                                                                                    <div class="row m-2 pt-1 border-top">
+                                                                                        <div class="col-sm-4">{{resource.Name}}</div>
+                                                                                        <div class="col-sm-4">{{resource.EquipmentCategory.Name}}</div>
+                                                                                        <div class="col-sm-4">{{resource.LendingType=='R'?'Available for rent':'Hire with operator'}}</div>
+                                                                                    </div>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="portfolio-public-preview-info" role="tabpanel">
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <ul class="nav nav-tabs page-header-tab">
+                                                                        <li class="nav-item"><a class="nav-link active" id="photos-tab" data-toggle="tab" data-target="#public-preview-photos">Photos</a></li>
+                                                                        <li class="nav-item"><a class="nav-link" id="videos-tab" data-toggle="tab" data-target="#public-preview-videos">Videos</a></li>
+                                                                        <li class="nav-item"><a class="nav-link" id="audios-tab" data-toggle="tab" data-target="#public-preview-audios">Audios</a></li>
+                                                                    </ul>
+                                                                </div>
+                                                                <div class="row clearfix">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="card bg-trans">
+                                                                            <div class="tab-content">
+                                                                                <div id="public-preview-photos" class="tab-pane fade active show">
+                                                                                    <div class="row clearfix">
+                                                                                        <div class="col-sm-12">
+                                                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                                                <div class="col-sm-12">
+                                                                                                    <label class="col-form-label">Albums</label>
+                                                                                                    <div class="row row-cards">
+                                                                                                        <div class="col-sm-6 col-lg-4" ng-repeat="p in userAlbums | filter:{AccessRight: true}">
+                                                                                                            <div class="card p-3">
+                                                                                                                <a href="javascript:void(0)" id="navigateToAlbumResult" ng-click="getAlbumPhotos(p)" class="mb-3 text-center">
+                                                                                                                    @*<img class="rounded" aria-label="{{p.Name}}" alt="{{p.Name}}" ng-src="/api/UserProfiles/GetFirstFileInAlbum/{{p.Id}}" /></a>*@
+                                                                                                                    <div>
+                                                                                                                        <ul class="list-unstyled team-info sm margin-0">
+                                                                                                                            <li ng-repeat="t in p.FileIds">
+                                                                                                                                <img style="width:100% !important" class="border-radius-10" ng-src="/api/UserProfiles/GetFileThumbnail/{{t}}/70/50" alt="Avatar">
+                                                                                                                            </li>
+                                                                                                                            <li class="ml-2" ng-if="p.FilesCount>5"><span>{{p.FilesCount}}+</span></li>
+                                                                                                                        </ul>
+                                                                                                                    </div>
+                                                                                                                    <div class="d-flex align-items-center px-2">
+                                                                                                                        <div>
+                                                                                                                            <div tooltip-placement="right" uib-tooltip="{{p.Name}}" style="white-space: nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;">{{p.Name}}</div>
+                                                                                                                            <small class="d-block text-muted">{{p.RelativeTime}}</small>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <hr />
+                                                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                                                <div class="col-sm-12">
+                                                                                                    <div class="row">
+                                                                                                        <div class="col-sm-10">
+                                                                                                            <label ng-if="albumId==''" class="col-form-label">All Photos</label>
+                                                                                                            <label ng-if="albumId!=''" class="col-form-label">{{albumName}}</label>
+                                                                                                        </div>
+                                                                                                        <div class="col-sm-2 text-right" ng-if="albumId!=''">
+                                                                                                            <a href="javascript:void(0)" ng-click="getAllUserPhotos();"><label class="col-form-label pull-right">See All Photos</label></a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="row row-cards">
+                                                                                                        <div class="col-sm-6 col-lg-4" ng-repeat="p in userPhotos | filter:{AccessRight: true}">
+                                                                                                            <div class="card p-3">
+                                                                                                                <a href="javascript:void(0)" class="mb-3 text-center" ng-click="openPhoto(p)">  <img class="rounded" ng-src="/api/UserProfiles/GetFile/{{p.FileId}}/348/218" /></a>
+                                                                                                                <div class="d-flex align-items-center px-2">
+                                                                                                                    <img class="avatar displaynone avatar-md mr-3" src="..\assets\images\xs\avatar1.jpg" style="display:none" alt="">
+                                                                                                                    <div>
+                                                                                                                        <div tooltip-placement="right" uib-tooltip="{{p.Name}}" style="white-space: nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;">{{p.Name}}</div>
+                                                                                                                        <small class="d-block text-muted">{{p.RelativeTime}}</small>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div id="public-preview-videos" class="tab-pane fade">
+                                                                                    <div class="row clearfix">
+                                                                                        <div class="col-sm-12">
+                                                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                                                <div class="col-sm-12">
+                                                                                                    <label class="col-form-label">Albums</label>
+                                                                                                    <div class="row row-cards">
+                                                                                                        <div class="col-sm-6 col-lg-4" ng-repeat="p in userVideoAlbums | filter:{AccessRight: true}">
+                                                                                                            <div class="card p-3">
+                                                                                                                <a href="javascript:void(0)" id="navigateToAlbumResult" ng-click="getAlbumVideos(p)" class="mb-3 text-center">
+                                                                                                                    <img class="rounded" width="200" height="200" ng-src="https://cdn2.iconfinder.com/data/icons/media-and-navigation-buttons-round/512/Button_3-512.png" />
+                                                                                                                </a>
+                                                                                                                <div class="d-flex align-items-center px-2">
+                                                                                                                    <img class="avatar avatar-md mr-3" src="..\assets\images\xs\avatar1.jpg" style="display:none" alt="">
+                                                                                                                    <div>
+                                                                                                                        <div tooltip-placement="right" uib-tooltip="{{p.Name}}" style="white-space: nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;">{{p.Name}}</div>
+                                                                                                                        <small class="d-block text-muted">{{p.RelativeTime}}</small>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <hr />
+                                                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                                                <div class="col-sm-12">
+                                                                                                    <div class="row">
+                                                                                                        <div class="col-sm-8">
+                                                                                                            <label ng-if="videoAlbumId==''" class="col-form-label">All Videos</label>
+                                                                                                            <label ng-if="videoAlbumId!=''" class="col-form-label">{{videoAlbumName}}</label>
+                                                                                                        </div>
+                                                                                                        <div class="col-sm-4 text-right" ng-if="videoAlbumId!=''">
+                                                                                                            <a href="javascript:void(0)" ng-click="getAllUserVideos();"><label class="col-form-label pull-right">See All Videos</label></a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="row row-cards">
+                                                                                                        <div class="col-sm-6 col-lg-4" ng-repeat="p in userVideos | filter:{AccessRight: true}">
+                                                                                                            <div class="card p-3">
+                                                                                                                <a href="javascript:void(0)" class="mb-3 text-center" ng-click="openVideo(p)">
+                                                                                                                    <img class="rounded" width="200" height="200" ng-src="https://cdn2.iconfinder.com/data/icons/media-and-navigation-buttons-round/512/Button_3-512.png" />
+                                                                                                                </a>
+                                                                                                                <div class="d-flex align-items-center px-2">
+                                                                                                                    <div>
+                                                                                                                        <div tooltip-placement="right" uib-tooltip="{{p.Name}}" style="white-space: nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;">{{p.Name}}</div>
+                                                                                                                        <small class="d-block text-muted">{{p.RelativeTime}}</small>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div id="public-preview-audios" class="tab-pane fade">
+                                                                                    <div class="row clearfix">
+                                                                                        <div class="col-sm-12">
+                                                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                                                <div class="col-sm-12">
+                                                                                                    <label class="col-form-label">Albums</label>
+                                                                                                    <div class="row row-cards">
+                                                                                                        <div class="col-sm-6 col-lg-4" callback-fn="refreshAlbums(arg1)" obj="p" ng-repeat="p in userAudioAlbums | filter:{AccessRight: true}">
+                                                                                                            <div class="card p-3">
+                                                                                                                <a href="javascript:void(0)" id="navigateToAlbumResult" ng-click="getAlbumAudios(p)" class="mb-3 text-center">
+                                                                                                                    <img class="rounded" width="200" height="200" src="~/assets/images/index.png" />
+                                                                                                                </a>
+                                                                                                                <div class="d-flex align-items-center px-2">
+                                                                                                                    <img class="avatar avatar-md mr-3" src="..\assets\images\xs\avatar1.jpg" style="display:none" alt="">
+                                                                                                                    <div>
+                                                                                                                        <div tooltip-placement="right" uib-tooltip="{{p.Name}}" style="white-space: nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;">{{p.Name}}</div>
+                                                                                                                        <small class="d-block text-muted">{{p.RelativeTime}}</small>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <hr />
+                                                                                            <div class="row bg-trans" style="background: #f1f1f1;">
+                                                                                                <div class="col-sm-12">
+                                                                                                    <div class="row">
+                                                                                                        <div class="col-sm-8">
+                                                                                                            <label ng-if="audioAlbumId==''" class="col-form-label">All Audios</label>
+                                                                                                            <label ng-if="audioAlbumId!=''" class="col-form-label">{{audioAlbumName}}</label>
+                                                                                                        </div>
+                                                                                                        <div class="col-sm-4 text-right" ng-if="audioAlbumId!=''">
+                                                                                                            <a href="javascript:void(0)" ng-click="getAllUserAudios();"><label class="col-form-label pull-right">See All Audios</label></a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="row row-cards">
+                                                                                                        <div class="col-sm-6 col-lg-4" ng-repeat="p in userAudios | filter:{AccessRight: true}">
+                                                                                                            <div class="card p-3">
+                                                                                                                <a href="javascript:void(0)" class="mb-3 text-center" ng-click="openAudio(p)">
+                                                                                                                    <img class="rounded" width="200" height="200" src="~/assets/images/index.png" />
+                                                                                                                </a>
+                                                                                                                <div class="d-flex align-items-center px-2">
+                                                                                                                    <img class="avatar displaynone avatar-md mr-3" src="..\assets\images\xs\avatar1.jpg" style="display:none" alt="">
+                                                                                                                    <div>
+                                                                                                                        <div tooltip-placement="right" uib-tooltip="{{p.Name}}" style="white-space: nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;">{{p.Name}}</div>
+                                                                                                                        <small class="d-block text-muted">{{p.RelativeTime}}</small>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="bg-image" role="tabpanel" ng-click="setClass()">
+                                <div class="row clearfix pb-1">
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Select Overlay Color</label>
+                                            <color-picker ng-model="userProfile.BgColor" options="options" class="form-control"></color-picker>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Select Overlay Opacity</label>
+                                            <select ng-model="userProfile.BgOpacity" class="form-control dropdown" ng-options="x for x in opacity">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 p-4">
+                                        <input type="file" id="bgSelector" hidden accept="image/*" onchange="angular.element(this).scope().uploadBgImage(event)" />
+                                        <button type="button" ng-click="openBgFileSelector()" class="btn btn-success">Select Background Image</button>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-md-12" style="background-image: url('api/UserProfiles/GetBGImage/U/1');
+                                         background-repeat: no-repeat;
+                                         background-size: cover;
+                                         background-attachment: fixed;
+                                         background-position: center top;
+                                         background-blend-mode: overlay;
+                                         height:100vh;
+                                         box-shadow: inset 0 0 0 2000px {{hexToRgbA(userProfile.BgColor, userProfile.BgOpacity)}};">
+                                        @*<img id="bgImage" class="img-fluid" src="/api/UserProfiles/GetBGImage/U/0" />*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+

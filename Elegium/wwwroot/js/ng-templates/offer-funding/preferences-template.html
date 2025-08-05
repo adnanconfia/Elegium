@@ -1,0 +1,175 @@
+﻿
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">
+        {{title}}
+    </h3>
+    <div class="pull-right">
+        <button class="btn btn-secondary" ng-disabled="preferencesForm.$invalid" ng-click="save()">
+            <i class="fa fa-save"></i> Save
+        </button>
+        <button class="btn btn-danger" ng-click="cancel()">
+            <i class="fa fa-times"></i> Close
+        </button>
+    </div>
+</div>
+
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="container">
+            <form role="form" name="preferencesForm">
+                <h6>Are you offering Funding or Financial Participation service?</h6>
+                <div class="row clearfix">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <div class="form-label">Your point of interest</div>
+                            <label class="custom-switch">
+                                <span class="custom-switch-description mr-1">Funding</span>
+                                <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                       ng-model="preferences.Type">
+                                <span class="custom-switch-indicator" style="background: #5a5278;"></span>
+                                <span class="custom-switch-description">Financial Participation</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 m-2" style="height:1px; width: 90%; background-color:#e8ebee;"></div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Production type</label>
+                            <ui-select class="form-control" ng-model="preferences.ProductionTypeId" theme="selectize" sortable="true" close-on-select="true">
+                                <ui-select-match placeholder="Select Production type...">{{$select.selected.Name}}</ui-select-match>
+                                <ui-select-choices repeat="item.Id as item in productionTypes | filter: $select.search">
+                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                </ui-select-choices>
+                            </ui-select>
+                            <!--<select name="currencyId" ng-options="item.Id as item.Name for item in productionTypes"
+                                    class="form-control custom-select"
+                                    ng-model="preferences.ProductionTypeId">
+                                <option value="">Select Production type</option>
+                            </select>-->
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Project with budget upto</label>
+                            <input maxlength="200" type="number" name="budgetUpto" ng-pattern-restrict="^[0-9]*$"
+                                   class="form-control"
+                                   placeholder="Please put budget..." ng-model="preferences.BudgetUpto" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Currency</label>
+                            <ui-select class="form-control" ng-model="preferences.CurrencyId" theme="selectize" sortable="true" close-on-select="true">
+                                <ui-select-match placeholder="Select Currency...">{{$select.selected.Name}}</ui-select-match>
+                                <ui-select-choices repeat="item.Id as item in currencies | filter: $select.search">
+                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                </ui-select-choices>
+                            </ui-select>
+                            <!--<select name="currencyId" ng-options="item.Id as item.Name for item in currencies"
+                                    class="form-control custom-select"
+                                    ng-model="preferences.CurrencyId">
+                                <option value="">Select Currency</option>
+                            </select>-->
+                        </div>
+                    </div>
+                    <!--<div class="col-md-4 col-sm-12">
+        <div class="form-group">
+            <label class="form-label">Project based only</label>
+            <select name="countryId" ng-options="item.Id as item.Name for item in countries"
+                    class="form-control custom-select"
+                    ng-model="preferences.CountryId">
+                <option value="">Select Location</option>
+            </select>
+        </div>
+    </div>-->
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Project based only</label>
+                            <ui-select class="form-control" ng-model="preferences.CountryId" theme="selectize" sortable="true" close-on-select="true">
+                                <ui-select-match placeholder="Select Country...">{{$select.selected.Name}}</ui-select-match>
+                                <ui-select-choices repeat="item.Id as item in countries | filter: $select.search">
+                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                </ui-select-choices>
+                            </ui-select>
+                            <!--<select name="countryId" ng-options="item.Id as item.Name group by item.Country.Name for item in cities"
+                                    class="form-control custom-select"
+                                    ng-model="preferences.CityId">
+                                <option value="">Select Location</option>
+                            </select>-->
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12" ng-if="!preferences.Type">
+                        <div class="form-group">
+                            <label class="form-label">My financial offer</label>
+                            <input maxlength="200" type="number" required name="offer" ng-pattern-restrict="^[0-9]*$"
+                                   class="form-control {{preferencesForm.offer.$valid?'is-valid':'is-invalid'}}"
+                                   placeholder="Please put amount..." ng-model="preferences.Offer" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12" ng-if="preferences.Type">
+                        <div class="form-group">
+                            <label class="form-label">My financial share offer</label>
+                            <div class="row">
+                                <div class="col-sm-11">
+                                    <input maxlength="200" type="text" required name="offerShare" ng-pattern-restrict="^[0-9][0-9]?$|^100$"
+                                           class="form-control {{preferencesForm.offerShare.$valid?'is-valid':'is-invalid'}}"
+                                           placeholder="Please put your share..." ng-model="preferences.OfferShare" />
+                                </div>
+                                <div class="col-sm-1 form-control border-0">
+                                    %
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Only specific phase</label>
+                            <ui-select class="form-control" ng-model="preferences.ProjectPhaseId" theme="selectize" sortable="true" close-on-select="true">
+                                <ui-select-match placeholder="Select Phase...">{{$select.selected.Name}}</ui-select-match>
+                                <ui-select-choices repeat="item.Id as item in ProjectManagementPhaseList | filter: $select.search">
+                                    <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                </ui-select-choices>
+                            </ui-select>
+                            <!--<select name="projectPhaseId" ng-options="item.Id as item.Name for item in ProjectManagementPhaseList"
+                                    class="form-control custom-select"
+                                    ng-model="preferences.ProjectPhaseId">
+                                <option value="">Select project phase</option>
+                            </select>-->
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">I would like to support only</label>
+                            <textarea name="supportDetail" rows="3" class="form-control"
+                                      placeholder="Please specify what exactly is your funding for..."
+                                      ng-model="preferences.SupportDetail"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Other Requirements</label>
+                            <textarea name="otherRequirements" rows="3" class="form-control"
+                                      placeholder="Please tell us about your other requirements..."
+                                      ng-model="preferences.OtherRequirements"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-secondary pull-right" ng-disabled="preferencesForm.$invalid" ng-click="save()">
+        <i class="fa fa-save"></i> Save
+    </button>
+    <button class="btn btn-danger" ng-click="cancel()">
+        <i class="fa fa-times"></i> Close
+    </button>
+</div>

@@ -1,0 +1,110 @@
+﻿@page
+@model ExternalLoginModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="auth_left auth_left_register">
+    <div class="card">
+        <div class="text-center mb-5">
+            <a class="header-brand" href="#">
+                @*<i class="fe fe-command brand-logo"></i>*@
+                <img src="~/theme/assets/images/elegiumLogoLarge.png" width="150" />
+            </a>
+        </div>
+        <div class="card-body">
+            @*<div class="card-title">Forgot password</div>*@
+            <h1 class="h3 mb-3">You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.</h1>
+            <p class="text-muted">
+                Please enter the information for this site below and click the Register button to finish
+                logging in.
+            </p>
+            <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Input.FirstName" class="form-label"></label>
+                            <input asp-for="Input.FirstName" class="form-control" placeholder="First name" />
+                            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Input.LastName" class="form-label"></label>
+                            <input asp-for="Input.LastName" class="form-control" placeholder="Last name" />
+                            <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Input.Company" class="form-label"></label>
+                            <input asp-for="Input.Company" class="form-control" placeholder="Company name" />
+                            <span asp-validation-for="Input.Company" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Input.Industry" class="form-label"></label>
+                            <select asp-for="Input.Industry" class="custom-select">
+                                <option value="" selected=""></option>
+                                <option value="1">Film</option>
+                                <option value="2">TV</option>
+                                <option value="3">Theatre & Art</option>
+                                <option value="4">Music</option>
+                                <option value="5">Video & Animation</option>
+                                <option value="6">Streaming Media</option>
+                                <option value="7">Social Media</option>
+                                <option value="8">Interactive Media</option>
+                                <option value="9">Video Games</option>
+                                <option value="10">Events</option>
+                                <option value="11">Performance Art</option>
+                                <option value="12">Other</option>
+                            </select>
+                            <span asp-validation-for="Input.Industry" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Email" class="form-label"></label>
+                    <input asp-for="Input.Email" class="form-control" placeholder="Business email" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="auth_right">
+    <div class="carousel slide" data-ride="carousel" data-interval="3000">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="~/theme/assets/images/slider1.svg" class="img-fluid" alt="login page">
+                <div class="px-4 mt-4">
+                    <h4>Fully Responsive</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="~/theme/assets/images/slider2.svg" class="img-fluid" alt="login page">
+                <div class="px-4 mt-4">
+                    <h4>Quality Code and Easy Customizability</h4>
+                    <p>There are many variations of passages of Lorem Ipsum available.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="~/theme/assets/images/slider3.svg" class="img-fluid" alt="login page">
+                <div class="px-4 mt-4">
+                    <h4>Powerful Production Management Software</h4>
+                    <p>Elegium is designed for every type of audio visual production</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

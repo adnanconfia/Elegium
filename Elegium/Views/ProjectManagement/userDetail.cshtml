@@ -1,0 +1,986 @@
+﻿
+
+
+<style>
+    .thumbnail_overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        text-align: center;
+        background-color: rgba(0,0,0,.6);
+        color: #fff;
+        transition: opacity linear .5s;
+        opacity: 0;
+        font-size: 15px;
+        font-family: 'Work Sans',sans-serif;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        line-height: 220px;
+        display: block;
+    }
+
+    .cat-image:hover .thumbnail_overlay {
+        opacity: 1;
+    }
+
+
+
+    textarea:focus .comment_info {
+        display: block !important;
+    }
+
+    textarea:focus {
+        border: 1px #0d96ce solid !important;
+    }
+
+
+
+    textarea {
+        height: 160px !important;
+        background: none;
+        border: 0;
+        border: 1px #888 solid;
+        color: #363636;
+        padding: 5px 10px;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -moz-transition: border .3s linear;
+        -o-transition: border .3s linear;
+        -webkit-transition: border .3s linear;
+        transition: border .3s linear;
+        font-size: 12px;
+        font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+        border-radius: 5px;
+    }
+
+    .mentions-input-box {
+        font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+        color: #000;
+        margin-bottom: 16px;
+        font-size: 12px;
+    }
+
+        .mentions-input-box textarea {
+            color: #000;
+            font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+            font-size: 12px;
+        }
+
+    .mentions > div > strong {
+        border-bottom: 2px solid #0d96ce;
+        background: none !important;
+    }
+
+    .mentions-input-box .mentions-autocomplete-list {
+        display: none;
+        background: #d6d9db;
+        position: absolute;
+        left: 0;
+        right: 0;
+        z-index: 10000;
+        margin-top: -5px;
+    }
+
+        .mentions-input-box .mentions-autocomplete-list ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        .mentions-input-box .mentions-autocomplete-list li {
+            padding: 0 5px 0 0;
+            margin: 0 0 1px;
+            width: auto;
+            height: 30px;
+            line-height: 30px;
+            overflow: hidden;
+            cursor: pointer;
+            list-style: none;
+            white-space: nowrap;
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 400;
+            transition: background linear .5s;
+        }
+
+            .mentions-input-box .mentions-autocomplete-list li > img,
+            .mentions-input-box .mentions-autocomplete-list li > div.icon {
+                width: 24px;
+                height: 24px;
+                float: left;
+                margin: 3px 10px 3px 3px;
+                border-radius: 3px;
+                -moz-background-origin: 3px;
+            }
+
+            .mentions-input-box .mentions-autocomplete-list li em {
+                font-weight: bold;
+                font-style: none;
+            }
+
+            .mentions-input-box .mentions-autocomplete-list li b {
+                font-weight: normal;
+            }
+
+            .mentions-input-box .mentions-autocomplete-list li:hover,
+            .mentions-input-box .mentions-autocomplete-list li.active {
+                background-color: #0d96ce;
+                color: #fff;
+            }
+
+
+    .option.ui-select-choices-row-inner {
+        transition: background linear .3s;
+        background: #f2f2f2 !important;
+        margin-top: 5px !important;
+        border-radius: 10px !important;
+    }
+
+        .option.ui-select-choices-row-inner:hover {
+            background: #0d96ce !important;
+            color: #fff !important;
+        }
+
+    a.mention {
+        font-weight: bold;
+        color: #363636;
+    }
+
+    .ui-select-choices-group-label {
+        font-size: 20px !important;
+    }
+
+    [data-selectable] {
+        margin-left: 10px !important;
+    }
+
+    .task.overdue {
+        border-left: 10px solid #c91212 !important;
+        border-right: 10px solid #c91212 !important;
+    }
+
+    .task.completed {
+        border-left: 10px solid #02cc54 !important;
+        border-right: 10px solid #02cc54 !important;
+    }
+
+    .task.pending {
+        border-left: 10px solid #ffcd01 !important;
+        border-right: 10px solid #ffcd01 !important;
+    }
+
+        .task.pending .tasks_status_symbol .symbol, .task.pending .row.clearfix .tasks_status_symbol.symbol_without_hover {
+            color: #ffcd01;
+            opacity: 1 !important;
+        }
+
+    .task.conflicted .tasks_status_symbol .symbol, .task.overdue .row.clearfix .tasks_status_symbol .symbol, .task.conflicted .tasks_status_symbol.symbol_without_hover, .task.overdue .tasks_status_symbol.symbol_without_hover {
+        color: #c91212;
+        opacity: 1 !important;
+    }
+
+    .task.completed .tasks_status_symbol .symbol, .task.completed .row.clearfix .tasks_status_symbol.symbol_without_hover {
+        color: #02cc54;
+        opacity: 1 !important;
+    }
+
+    .tasks_status_symbol a {
+        font-size: 25px !important;
+    }
+
+    .project-hover-files {
+        visibility: hidden;
+        display: flex;
+    }
+
+        .project-hover-files::before {
+            visibility: visible;
+            font-size: 20px;
+            position: absolute !important;
+            opacity: 1 !important;
+            border: 3px dashed #0c0;
+            height: 100%;
+            width: 100%;
+            display: inline-block;
+            content: "";
+        }
+
+        .project-hover-files::after {
+            content: "Drop your files here!";
+            position: absolute !important;
+            height: 20px;
+            visibility: visible;
+            top: 70%;
+            margin-left: 42%;
+        }
+
+    .filetype {
+        pointer-events: none;
+        width: 100% !important;
+        height: 130px;
+        display: block;
+        /* position: absolute; */
+        top: 0;
+        left: 0;
+        background: #272727;
+        color: #fff;
+        text-align: center;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+        .filetype.preview .extention {
+            font-size: 35px;
+            line-height: 130px;
+        }
+
+        .filetype .extention {
+            pointer-events: all;
+            font-family: 'Work Sans',sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 90%;
+            display: inline-block;
+            line-height: 55px;
+            font-size: 15px;
+        }
+
+    .uppy-uploader {
+        font-size: 12px;
+        display: none;
+        width: 300px !important;
+        right: 60px;
+        bottom: 20px;
+        border-radius: 10px;
+        padding: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,.5);
+        background: #272727 !important;
+        z-index: 1;
+        display: block;
+        position: fixed;
+    }
+
+    .pagination > li {
+        margin: 0 0 3px 15px !important;
+    }
+
+        .pagination > li.active {
+            font-weight: bold !important;
+        }
+</style>
+
+<div class="section-body" style="max-width:1300px" ui-view="">
+
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-xl-2 col-lg-3 col-md-5">
+                <div class="row clearfix">
+                    <div class="col-sm-12 p-0">
+                        <div class="img-fluid pointer-event cat-image border-radius-10"
+                             style="height: 225px;
+                                    background-image: url(/api/UserProfiles/GetUserPhoto/{{crewUser.Crew.UserId}}/300/300);
+                                    background-size: cover;
+                                    background-repeat: no-repeat;">
+                            @*<div class="thumbnail_overlay">
+                            <input type="file" accept="image/*" hidden id="idDocCatThumbnailFile" />
+                            <i class="fa fa-edit fa-2x">
+                            </i>
+                            Select thumbnail
+                        </div>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2 clearfix">
+                    <div class="col-sm-12 text-break">
+                        <label class="h5">
+                            {{crewUser.Name}}
+                        </label>
+                    </div>
+                    <div class="col-12 mt-2">
+                        <small ng-repeat="position in crewUser.CrewPostions">{{position}}&nbsp;&nbsp;</small>
+                        <small ng-show="!isPositionEditMode">
+                            <button class="btn btn-primary btn-sm" ng-click="editModePosition()">
+                                <span class="fa fa-pencil-square-o"></span> Change Position
+                            </button>
+                        </small>
+                        <div ng-show="isPositionEditMode">
+
+                            <ui-select multiple class="form-control" ng-model="data.crewPositions" theme="selectize" sortable="true" close-on-select="false">
+                                <ui-select-match placeholder="Select Position...">{{$item.Name}}</ui-select-match>
+                                <ui-select-choices repeat="lang.Id as lang in workingPositions">
+                                    <div ng-bind-html="lang.Name | highlight: $select.search"></div>
+
+                                </ui-select-choices>
+                            </ui-select>
+                            <button class="btn btn-danger btn-sm float-right ml-2" ng-click="cancelModePosition()">
+                                <span class="fa fa-close"></span> Cancel
+                            </button>
+                            <button class="btn btn-success btn-sm float-right" ng-click="updateCrewPosition(crewUser.Crew)">
+                                <span class="fa fa-floppy-o"></span> Save
+                            </button>
+
+
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2">
+                        <div class="flex mt-2">
+                            <h5>Access rights</h5>
+                        </div>
+                        <div class="flex mt-1">
+                            <span class="btn-rights  {{userRightsCls(crewUser.Crew.CrewRights)}}" data-toggle="tooltip" data-placement="right" title="Crew">
+                                <div class="icon">
+                                    <i class="fa fa-users"></i>
+                                </div>
+                                <div class="btn-icon" ng-click="updateRights('CrewRights',crewUser.Crew)">
+                                    <i ng-class="classRights(crewUser.Crew.CrewRights)"></i>
+                                </div>
+                            </span>
+
+                            <span class="btn-rights  {{userRightsCls(crewUser.Crew.AnnouncementRights)}}" data-toggle="tooltip" data-placement="right" title="Announcement">
+                                <div class="icon">
+                                    <i class="fa fa-bullhorn"></i>
+                                </div>
+                                <div class="btn-icon" ng-click="updateRights('AnnouncementRights',crewUser.Crew)">
+                                    <i ng-class="classRights(crewUser.Crew.AnnouncementRights)"></i>
+                                </div>
+                            </span>
+
+                            <span class="btn-rights  {{userRightsCls(crewUser.Crew.AddressBookRights)}}" data-toggle="tooltip" data-placement="right" title="Address Book">
+                                <div class="icon">
+                                    <i class="fa fa-address-book-o"></i>
+                                </div>
+                                <div class="btn-icon" ng-click="updateRights('AddressBookRights',crewUser.Crew)">
+                                    <i ng-class="classRights(crewUser.Crew.AddressBookRights)"></i>
+                                </div>
+                            </span>
+
+                            <span class="btn-rights  {{userRightsCls(crewUser.Crew.CompanyCalendarRights)}}" data-toggle="tooltip" data-placement="right" title="Company Calendar">
+                                <div class="icon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <div class="btn-icon" ng-click="updateRights('CompanyCalendarRights',crewUser.Crew)">
+                                    <i ng-class="classRights(crewUser.Crew.CompanyCalendarRights)"></i>
+                                </div>
+                            </span>
+
+                            
+                        </div>
+                        <div class="flex mt-3">
+                            <span class="btn-rights  {{userRightsCls(crewUser.Crew.ProductionCalendarRights)}}" data-toggle="tooltip" data-placement="right" title="Production Calendar">
+                                <div class="icon">
+                                    <i class="fa fa-film"></i>
+                                </div>
+                                <div class="btn-icon" ng-click="updateRights('ProductionCalendarRights',crewUser.Crew)">
+                                    <i ng-class="classRights(crewUser.Crew.ProductionCalendarRights)"></i>
+                                </div>
+                            </span>
+
+                            <span class="btn-rights  {{userRightsCls(crewUser.Crew.ActorDatabaseRights)}}" data-toggle="tooltip" data-placement="right" title="Actor Database">
+                                <div class="icon">
+                                    <i class="fa fa-street-view"></i>
+                                </div>
+                                <div class="btn-icon" ng-click="updateRights('ActorDatabaseRights',crewUser.Crew)">
+                                    <i ng-class="classRights(crewUser.Crew.ActorDatabaseRights)"></i>
+                                </div>
+                            </span>
+
+                            <span class="btn-rights  {{userRightsCls(crewUser.Crew.LocationDatabaseRights)}}" data-toggle="tooltip" data-placement="right" title="Location Database">
+                                <div class="icon">
+                                    <i class="fa fa-map-marker"></i>
+                                </div>
+                                <div class="btn-icon" ng-click="updateRights('LocationDatabaseRights',crewUser.Crew)">
+                                    <i ng-class="classRights(crewUser.Crew.LocationDatabaseRights)"></i>
+                                </div>
+                            </span>
+
+                            <span class="btn-rights  {{userRightsCls(crewUser.Crew.CostumeDatabaseRights)}}" data-toggle="tooltip" data-placement="right" title="Costume Database Rights">
+                                <div class="icon">
+                                    <i class="fa fa-user-secret"></i>
+                                </div>
+                                <div class="btn-icon" ng-click="updateRights('CostumeDatabaseRights',crewUser.Crew)">
+                                    <i ng-class="classRights(crewUser.Crew.CostumeDatabaseRights)"></i>
+                                </div>
+                            </span>
+                            
+                        </div>
+                        <div class="flex mt-3">
+
+
+                            <span class="btn-rights  {{userRightsCls(crewUser.Crew.ProbItemDatabaseRights)}}" data-toggle="tooltip" data-placement="right" title="Prob Item Database">
+                                <div class="icon">
+                                    <i class="fa fa-ticket"></i>
+                                </div>
+                                <div class="btn-icon" ng-click="updateRights('ProbItemDatabaseRights',crewUser.Crew)">
+                                    <i ng-class="classRights(crewUser.Crew.ProbItemDatabaseRights)"></i>
+                                </div>
+                            </span>
+
+                            <span class="btn-rights  {{userRightsCls(crewUser.Crew.CreateDeleteProjectsRights)}}" data-toggle="tooltip" data-placement="right" title="Create Delete Projects">
+                                <div class="icon">
+                                    <i class="fa fa-folder"></i>
+                                </div>
+                                <div class="btn-icon" ng-click="updateRights('CreateDeleteProjectsRights',crewUser.Crew)">
+                                    <i ng-class="classRights(crewUser.Crew.CreateDeleteProjectsRights)"></i>
+                                </div>
+                            </span>
+
+                            <span class="btn-rights  {{userRightsCls(crewUser.Crew.SubscriptionsRights)}}" data-toggle="tooltip" data-placement="right" title="Subscriptions">
+                                <div class="icon">
+                                    <i class="fa fa-money"></i>
+                                </div>
+                                <div class="btn-icon" ng-click="updateRights('SubscriptionsRights',crewUser.Crew)">
+                                    <i ng-class="classRights(crewUser.Crew.SubscriptionsRights)"></i>
+                                </div>
+                            </span>
+
+                            <span class="btn-rights  {{userRightsCls(crewUser.Crew.SettingsRights)}}" data-toggle="tooltip" data-placement="right" title="Settings">
+                                <div class="icon">
+                                    <i class="fa fa-cog"></i>
+                                </div>
+                                <div class="btn-icon" ng-click="updateRights('SettingsRights',crewUser.Crew)">
+                                    <i ng-class="classRights(crewUser.Crew.SettingsRights)"></i>
+                                </div>
+                            </span>
+
+                        </div>
+                      
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-10 col-lg-9 col-md-7">
+                <div class="d-flex justify-content-between align-items-center" style="width:97%; margin-left:3%;">
+                    <ul class="nav nav-tabs page-header-tab">
+                        <li class="nav-item"><a class="nav-link active" id="users-tab" data-toggle="tab" data-target="#profile" ng-click="setClass()">General Info</a></li>
+                        <li class="nav-item"><a class="nav-link" id="external-contact-tab" data-toggle="tab" data-target="#contact-info" ng-click="setClass()">Contract Info</a></li>
+                        <li class="nav-item"><a class="nav-link" id="external-contact-tab" data-toggle="tab" data-target="#draft-contracts" ng-click="setClass()">Draft contracts</a></li>
+                    </ul>
+                    <div class="header-action d-md-flex">
+                        
+                    </div>
+                </div>
+                <div class="row clearfix" style="width:97%; margin-left:3%;">
+                    <div class="col-12">
+
+                        <div class="tab-content">
+
+                            <div class="tab-pane fade show active" id="profile">
+                                <div class="row clearfix">
+
+                                    <div class="col-12">
+
+                                        <div class="card">
+
+                                            <div class="card-body">
+                                                <label class="text-center form-label" ng-if="users.length==0">No user to show!</label>
+                                                <div class="row" ng-if="editUserProfile">
+                                                    <div class="col-12">
+                                                        <a href="javascript:void(0)" ng-click="editUser(crewUser.Crew.UserId)"
+                                                           class="btn btn-danger btn-sm float-right ml-2">
+                                                            <i class="fa fa-times"></i> Close
+                                                        </a>
+                                                        <a href="javascript:void(0)" ng-click="updateUserProfile(userProfile)"
+                                                           class="btn btn-success btn-sm float-right">
+                                                            <i class=" fe fe-save"></i> Save
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <h5>Home</h5>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">First Name</label>
+                                                                    <input type="text" class="form-control" ng-model="userProfile.FirstName" placeholder="First Name">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Middle Name</label>
+                                                                    <input type="text" class="form-control" ng-model="userProfile.MiddleName" placeholder="Middle Name">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Last Name</label>
+                                                                    <input type="text" class="form-control" ng-model="userProfile.LastName" placeholder="Last Name">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Street Address</label>
+                                                                    <input type="text" class="form-control" ng-model="userProfile.StreetAddress" placeholder="Street Address">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Country/Region</label>
+                                                                    <select class="form-control custom-select" ng-options="x.Id as x.Name for x in countries"
+                                                                            ng-model="userProfile.CountryId" ng-change="getCitiesOfCountry(userProfile.CountryId, 'personal')">
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <div class="row">
+                                                                    <div class="col-7">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">City</label>
+                                                                            <select class="form-control custom-select" ng-options="x.Id as x.Name for x in cities" ng-model="userProfile.CityId">
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-5">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">Postal Code</label>
+                                                                            <input type="text" class="form-control" ng-model="userProfile.PostCode" placeholder="ZIP Code">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <h5>Company</h5>
+                                                                <div class="col-12">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label">Company Name</label>
+                                                                        <input type="text" class="form-control" ng-model="userProfile.CompanyName" placeholder="Company Name">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label">Street Address</label>
+                                                                        <input type="text" class="form-control" ng-model="userProfile.CompanyStreetAddress" placeholder="Street Address">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label">Country/Region</label>
+                                                                        <select class="form-control custom-select" ng-options="x.Id as x.Name for x in countries"
+                                                                                ng-model="userProfile.CompanyCountryId" ng-change="getCitiesOfCountry(userProfile.CompanyCountryId, 'company')">
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <div class="row">
+                                                                        <div class="col-7">
+                                                                            <div class="form-group">
+                                                                                <label class="form-label">City</label>
+                                                                                <select class="form-control custom-select" ng-options="x.Id as x.Name for x in companyCities" ng-model="userProfile.CompanyCityId">
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-5">
+                                                                            <div class="form-group">
+                                                                                <label class="form-label">Postal Code</label>
+                                                                                <input type="text" class="form-control" ng-model="userProfile.CompanyPostCode" placeholder="ZIP Code">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" ng-if="!editUserProfile">
+                                                    <div class="col-12">
+                                                        <a href="javascript:void(0)" ng-click="editUser(crewUser.Crew.UserId)" class="btn btn-primary btn-sm float-right">
+                                                            <i class=" fe fe-user"></i> Edit General Info
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6">
+                                                        {{crewUser.Crew.User.Email}} &nbsp;<small><br />
+                                                            <a class="btn btn-primary btn-sm"
+                                                               href="mailto:{{crewUser.Crew.User.Email}}">
+                                                                <span class="fa fa-paper-plane"></span> Send Email
+                                                            </a>
+                                                        </small>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6" ng-if="userProfile.StreetAddress || userProfile.Country">
+                                                        <b>Home</b>
+                                                        <p class="font-13">
+                                                            <span>{{userProfile.StreetAddress}} </span>
+                                                            <span>{{userProfile.PostCode}} </span>
+                                                            <span>{{userProfile.City.Name}} </span>
+                                                            <span>{{userProfile.Country.Name}}</span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6">
+                                                       
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6" ng-if="userProfile.CompanyStreetAddress || userProfile.CompanyCountry">
+                                                        <b>Company</b>
+                                                        <p class="font-13">
+                                                            <span>{{userProfile.CompanyStreetAddress}} </span>
+                                                            <span>{{userProfile.CompanyPostCode}} </span>
+                                                            <span>{{userProfile.CompanyCity.Name}} </span>
+                                                            <span>{{userProfile.CompanyCountry.Name}}</span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6"></div>
+                                                    <div class="col-sm-12 col-md-6"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="tab-pane fade show" id="contact-info">
+                                <div class="row clearfix">
+
+                                    <div class="col-12">
+
+                                        <div class="card">
+
+                                            <div class="card-body">
+                                                <div class="row clearfix">
+                                                    <div class="col-12">
+                                                        <a href="javascript:void(0)" ng-click="saveMe(crewUser.Crew)" class="btn btn-primary btn-sm float-right">
+                                                            <i class=" fe fe-save"></i> Save
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Contains LOI</label>
+                                                            <div class="input-group">
+                                                                @*<div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="icon-calendar"></i></span>
+                                                            </div>*@
+                                                                @*<input data-provide="datepicker" data-date-autoclose="true" ng-model="crewUser.Crew.ContainsLOI"  >*@
+                                                                <input type="date" class="form-control icon-svg" value="" ng-model="crewUser.Crew.ContainsLOI" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Contains deal memo</label>
+                                                            <div class="input-group">
+                                                                @*<div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="icon-calendar"></i></span>
+                                                            </div>
+                                                            <input data-provide="datepicker" data-date-autoclose="true" ng-model="crewUser.Crew.ContainsDealMemo" class="form-control">*@
+                                                                <input type="date" class="form-control icon-svg" value="" ng-model="crewUser.Crew.ContainsDealMemo" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Contract created</label>
+                                                            <div class="input-group">
+                                                                @*<div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="icon-calendar"></i></span>
+                                                            </div>
+                                                            <input data-provide="datepicker" data-date-autoclose="true" ng-model="crewUser.Crew.ContractCreated" class="form-control">*@
+                                                                <input type="date" class="form-control icon-svg" value="" ng-model="crewUser.Crew.ContractCreated" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Contract sent</label>
+                                                            <div class="input-group">
+                                                                @*<div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="icon-calendar"></i></span>
+                                                            </div>
+                                                            <input data-provide="datepicker" data-date-autoclose="true" ng-model="crewUser.Crew.ContractSent" class="form-control">*@
+                                                                <input type="date" class="form-control icon-svg" value="" ng-model="crewUser.Crew.ContractSent" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Contract signed</label>
+                                                            <div class="input-group">
+                                                                @*<div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="icon-calendar"></i></span>
+                                                            </div>
+                                                            <input data-provide="datepicker" data-date-autoclose="true" ng-model="crewUser.Crew.ContractSigned" class="form-control">*@
+                                                                <input type="date" class="form-control icon-svg" value="" ng-model="crewUser.Crew.ContractSigned" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Note</label>
+                                                            <div class="input-group">
+
+                                                                <textarea name="txtProjectDetail" ng-model="crewUser.Crew.Message" class="form-control " rows="4"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-12">
+
+
+                                       
+                                        <h3 class="card-title"> <div class="card-status bg-blue"></div></h3>
+                                        <h3 class="card-title">Contractual documents</h3>
+
+
+
+                                        <div class="row clearfix">
+                                            <div class="col-sm-12">
+                                                <div class="progressFiles">
+
+                                                </div>
+                                                <div id="draggableContainerContract">
+                                                    <div id="uppy-uploader-contract" class="w-100 uppy-uploader" ng-show="hasFilesinContract">
+
+                                                    </div>
+                                                    <input type="file" multiple hidden id="contractFile" />
+                                                    <div class="row clearfix mb-3" ng-if="contractFiles.length>0">
+                                                        <div class="col-sm-12">
+                                                            <button type="button" class="btn btn-success" data-toggle="collapse" ng-click="openContractFileDialog()" data-target="#createFiles" aria-expanded="false" aria-controls="collapseExample">
+                                                                Add file <i class="fa fa-plus-circle"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix" ng-if="contractFiles.length==0">
+                                                        <div class="col-sm-12">
+                                                            <div class="list-empty text-center d-block p-3" style="border: 3px dashed #ccc;">
+                                                                <div class="row clearfix">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12">
+                                                                                <span class="material-icons font-20">
+                                                                                    insert_drive_file
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12">
+                                                                                <span class="col-form-label">
+                                                                                    There are no files yet. You can drop files here.
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row clearfix">
+                                                                    <div class="col-sm-12 mt-3">
+                                                                        <button type="button" class="btn btn-success" ng-click="openContractFileDialog()">
+                                                                            Add file <i class="fa fa-plus-circle"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-sm-6 col-md-4 col-lg-3 col-xxl-2 col-xxxl-2 mb-3" ng-repeat="file in contractFiles" style="height:160px !important">
+                                                            <div class="card">
+                                                                <div class="cursor-pointer" ng-click="openFileViewer(file, contractFiles)">
+                                                                    <div ng-if="file.Type=='image'" class="img-fluid pointer-event cat-image"
+                                                                         style="height: 130px;
+                                                                                        background-image: url('/api/UserProfiles/GetFileThumbnail/{{file.FileId}}/200/200');
+                                                                                        background-size: cover;
+                                                                                        background-repeat: no-repeat;
+                                                                                        transition: background-image 1s ease-in-out;
+                                                                                        border-top-left-radius: 5px;
+                                                                                        border-top-right-radius: 5px; ">
+                                                                    </div>
+                                                                    <div ng-if="file.Type!='image'" class="preview filetype filetype_json" style="pointer-events: all;">
+                                                                        <span class="extention" style="pointer-events: all;"> <i class="fa fa-file"></i> {{file.Extension}}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body p-1">
+                                                                    <div class="row clearfix">
+                                                                        <div class="col-10 text-nowrap overflow-ellipsis" title="{{file.Name}}" data-toggle="tooltip" data-placement="top" tooltip>
+                                                                            {{file.Name}}
+                                                                        </div>
+                                                                        <div class="col-2 text-right">
+                                                                            <div class="item-action dropdown">
+                                                                                <a href="javascript:void(0)" data-toggle="dropdown" class="icon" aria-expanded="false">
+                                                                                    <i class="fe fe-more-vertical"></i>
+                                                                                </a>
+                                                                                <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                                    <a href="javascript:void(0)" ng-click="deleteContractFile($event,file)" class="dropdown-item">
+                                                                                        <i class="fa fa-trash">
+                                                                                        </i> Delete
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="tab-pane fade show" id="contractual-documents">
+                                <div class="row clearfix">
+
+                                    <div class="col-12">
+
+                                        <div class="card">
+
+                                            
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="tab-pane fade show" id="draft-contracts">
+                                <div class="row clearfix">
+
+                                    <div class="col-12">
+
+                                        
+                                                <div class="row clearfix">
+                                                    <div class="col-sm-12">
+                                                        <div class="progressFiles">
+
+                                                        </div>
+                                                        <div id="draggableContainer">
+                                                            <div id="uppy-uploader" class="w-100 uppy-uploader" ng-show="hasFilesinDraft">
+
+                                                            </div>
+                                                            <input type="file" multiple hidden id="contractDraftFile" />
+                                                            <div class="row clearfix mb-3" ng-if="files.length>0">
+                                                                <div class="col-sm-12">
+                                                                    <button type="button" class="btn btn-success" data-toggle="collapse" ng-click="openProjectFileDialog()" data-target="#createFiles" aria-expanded="false" aria-controls="collapseExample">
+                                                                        Add file <i class="fa fa-plus-circle"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix" ng-if="files.length==0">
+                                                                <div class="col-sm-12">
+                                                                    <div class="list-empty text-center d-block p-3" style="border: 3px dashed #ccc;">
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12">
+                                                                                        <span class="material-icons font-20">
+                                                                                            insert_drive_file
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12">
+                                                                                        <span class="col-form-label">
+                                                                                            There are no files yet. You can drop files here.
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-12 mt-3">
+                                                                                <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#createLink" aria-expanded="false" ng-click="openProjectFileDialog()" aria-controls="collapseExample">
+                                                                                    Add file <i class="fa fa-plus-circle"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row clearfix">
+                                                                <div class="col-sm-6 col-md-4 col-lg-3 col-xxl-2 col-xxxl-2 mb-3" ng-repeat="file in files" style="height:160px !important">
+                                                                    <div class="card ">
+                                                                        <div class="cursor-pointer" ng-click="openFileViewer(file, files)">
+                                                                            <div ng-if="file.Type=='image'" class="img-fluid pointer-event cat-image"
+                                                                                 style="height: 130px;
+                                                                                        background-image: url('/api/UserProfiles/GetFileThumbnail/{{file.FileId}}/200/200');
+                                                                                        background-size: cover;
+                                                                                        background-repeat: no-repeat;
+                                                                                        transition: background-image 1s ease-in-out;
+                                                                                        border-top-left-radius: 5px;
+                                                                                        border-top-right-radius: 5px; ">
+                                                                            </div>
+                                                                            <div ng-if="file.Type!='image'" class="preview filetype filetype_json" style="pointer-events: all;">
+                                                                                <span class="extention" style="pointer-events: all;"> <i class="fa fa-file"></i> {{file.Extension}}</span>
+                                                                            </div>
+                                                                            <div ng-if="file.LatestVersion" class="tags hide_in_colorlist" style=" position: absolute; right: 10px; top: 10px; color: #fff; font-size: 10px;">
+                                                                                <span class="bg-dark text-white" style="padding: 2px 4px; border-radius: 5px;">{{file.LatestVersion}}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="card-body p-1">
+                                                                            <div class="row clearfix">
+                                                                                <div class="col-10 text-nowrap overflow-ellipsis" title="{{file.Name}}" data-toggle="tooltip" data-placement="top" tooltip>
+                                                                                    {{file.Name}}
+                                                                                </div>
+                                                                                <div class="col-2 text-right">
+                                                                                    <div class="item-action dropdown">
+                                                                                        <a href="javascript:void(0)" data-toggle="dropdown" class="icon" aria-expanded="false">
+                                                                                            <i class="fe fe-more-vertical"></i>
+                                                                                        </a>
+                                                                                        <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                                            <a href="javascript:void(0)" ng-click="deleteDraftContractFile($event,file)" class="dropdown-item">
+                                                                                                <i class="fa fa-trash">
+                                                                                                </i> Delete
+                                                                                            </a>
+                                                                                            <a href="javascript:void(0)" ng-if="false" ng-click="makeDefault($event,file)" class="dropdown-item">
+                                                                                                <i class="fa fa-file-picture-o">
+                                                                                                </i> Select Thumbnail
+                                                                                            </a>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    @*<script src="~/js/ng-controllers/crew-ctrl.js"></script>*@
+
+    <script>
+        $(document).ready(function () {
+
+
+        });
+    </script>
+}
+
+
+

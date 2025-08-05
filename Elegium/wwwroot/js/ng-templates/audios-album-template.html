@@ -1,0 +1,28 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">Create audio album</h3>
+    <span class="pull-right label label-primary"></span>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label class="form-label">Album Name</label>
+                <span ng-model="data.albumId" class="displaynone"></span>
+                <input type="text" class="form-control" ng-model="data.albumName" name="example-text-input">
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="DashboardContainer"></div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer" data-exclude="true">
+    <button class="btn btn-primary" ng-click="save()">Save</button>
+    <br />
+    <button class="btn btn-danger" ng-click="Cancel()">Cancel</button>
+</div>
+<style type="text/css">
+    .uppy-StatusBar-actionBtn--upload {
+        display: none !important;
+    }
+</style>

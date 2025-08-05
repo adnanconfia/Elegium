@@ -1,0 +1,937 @@
+﻿@{
+    ViewData["Title"] = "Scenes & Script";
+}
+
+<link href="~/css/step-wizard.css" rel="stylesheet" />
+<style>
+    .selectize-control.single .selectize-input {
+        background: none !important;
+        box-shadow: none !important;
+    }
+
+    .dark-mode .selectize-input {
+        border-color: #343a40 !important;
+        color: white !important;
+    }
+
+    .selectize-input:after {
+        background: none !important;
+    }
+
+    .dropdown-menu.show {
+        display: block;
+    }
+
+    .dropdown-menu {
+        width: 300px !important;
+    }
+    .select2-dropdown-open .select2-choice {
+        box-shadow: none !important;
+    }
+
+    .select2-container .select2-choice {
+        display: block;
+        height: 26px;
+        padding: 0 0 0 8px;
+        overflow: hidden;
+        position: relative;
+        border: none !important;
+        white-space: nowrap;
+        line-height: 26px;
+        color: #444;
+        text-decoration: none;
+        border-radius: 4px;
+        background-clip: padding-box;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-color: transparent !important;
+        background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eee), color-stop(0.5, #fff));
+        background-image: -webkit-linear-gradient(center bottom, #eee 0%, #fff 50%);
+        background-image: -moz-linear-gradient(center bottom, #eee 0%, #fff 50%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffffff', endColorstr = '#eeeeee', GradientType = 0);
+        background-image: none !important;
+    }
+
+        .dropdown-menu.dropdown-menu-arrow:after {
+            display: inline-block;
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid #000 !important;
+            border-left: 10px solid transparent;
+        }
+</style>
+
+<div class="section-body mb-4" style="max-width:1300px" ui-view="">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <ul class="nav nav-tabs page-header-tab">
+                <li class="nav-item"><a class="nav-link h3 active" data-toggle="tab" data-target="#scenes" href="javascript:void(0)">Scenes</a></li>
+                <li class="nav-item"><a class="nav-link h3" data-toggle="tab" data-target="#settings" href="javascript:void(0)">Settings</a></li>
+            </ul>
+
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane show fade active" id="scenes">
+                <div class="row mb-4">
+                    <div class=" d-flex col-md-6 col-sm-12 col-12 justify-content-between align-items-center">
+                        <ul class="nav nav-tabs page-header-tab">
+                            <li class="nav-item"><a class="btn btn-sm btn-dark  mt-3" id="general-tab" data-toggle="tab" data-target="#crew-list" href="javascript:void(0)" ng-click="createscene()">Create Scene <i class="fa fa-plus-circle"></i></a></li>
+                            <li class="nav-item"><a class="btn btn-sm btn-dark  mt-3" id="company-tab" data-toggle="tab" data-target="#access-rights">Import screenplay <i class="fa fa-upload"></i></a></li>
+                        </ul>
+
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-12 text-md-right text-sm-left text-left mt-3  ">
+
+                        <div class="d-inline-flex">
+                            <span class="avatar cursor-pointer  {{checksearch()}}   fa-2x bg-light-gray  mr-1" tooltip data-toggle="tooltip" data-placement="top" title="Search" ng-click="show_search()"></span>
+                            <span class="avatar cursor-pointer  fa fa-file-pdf-o  fa-2x bg-light-gray mr-1" ng-hide="srchbtn" tooltip data-toggle="tooltip" data-placement="top" title="Export Pdf" ng-click="downloadPdf()"></span>
+                            <input type="text" class="form-control" ng-show="srchbtn" ng-model="_search" ng-keyup="search(_search)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-1 " ng-repeat="scene in scenes | orderBy:'scene.scene.Index'">
+
+                    <div class="row py-1 rounded bg-dark" ng-show="sceneIndex==scene.Id+'split'">
+                        <div class="col-12 py-3 text-wrap">
+                            <span class="text-white">
+                                Do you really want to split the scene {{scene.scene.Index}} to two scenes?
+                            </span>
+                            <button class="btn btn-sm btn-primary" ng-click="Split(scene.Id)">Yes</button>
+                            <button class="btn btn-sm btn-primary" ng-click="hideSplit()">No</button>
+                        </div>
+                    </div>
+                    <div class="row py-1 rounded bg-dark" ng-show="sceneIndex==scene.Id+'dup'">
+                        <div class="col-12 py-3 text-wrap">
+                            <span class="text-white">
+                                Do you really want to duplicate the scene {{scene.scene.Index}}?
+                            </span>
+                            <button class="btn btn-sm btn-primary" ng-click="duplicate(scene.Id)">Yes</button>
+                            <button class="btn btn-sm btn-primary" ng-click="hideSplit()">No</button>
+                        </div>
+                    </div>
+                    <div class="row py-1 rounded bg-dark" ng-show="sceneIndex==scene.Id+'del'">
+                        <div class="col-12 py-3 text-wrap">
+                            <span class="text-white">
+                                Do you really want to delete the scene {{scene.scene.Index}} ?
+                            </span>
+                            <button class="btn btn-sm btn-primary" ng-click="deleteScene(scene.Id)">Yes</button>
+                            <button class="btn btn-sm btn-primary" ng-click="hideSplit()">No</button>
+                        </div>
+                    </div>
+                    <del ng-show="scene.scene.IsOmitted">
+                        <div class="row  py-1 rounded {{className(scene.scene.environment_id)}}" ng-show="sceneIndex!=scene.Id+'dup' && sceneIndex!=scene.Id+'del' && sceneIndex!=scene.Id+'split'">
+                            <div class="col-2 col-md-1 text-wrap cursor-pointer" ui-sref="scenesandscripts.scene_details({sceneId: '{{scene.Id}}'})">
+                                <p class=" btn-sm btn-outline-transparent cursor-pointer font-weight-bold"
+                                   ng-click="$event.stopPropagation();" ng-model="scene.scene.Index" contenteditable="true"
+                                   ng-change="createScene(scene.scene);$event.stopPropagation();">
+                                    <b>{{scene.scene.Index}}</b>
+                                </p>
+                            </div>
+                            <div class="col-8 col-md-10 cursor-pointer m-0 p-0" ui-sref="scenesandscripts.scene_details({sceneId: '{{scene.Id}}'})">
+                                <div class="row m-0 p-0 ">
+                                    <div class="col-md-5 col-sm-12 m-0 p-0 ">
+                                        <div class="col-12 text-wrap d-lg-inline-flex text-truncate">
+                                            <span ng-click="show_Es_dropdown(scene.scene,'env',$index);$event.stopPropagation();">
+                                                <a class="btn-sm btn-transparent font-weight-bold p-0">{{scene.Env_name}}</a>
+                                            </span>
+                                            <span>-</span>
+                                            <span ng-click="show_Es_dropdown(scene.scene,'set',$index);$event.stopPropagation();">
+                                                <a class="btn-sm btn-transparent font-weight-bold p-0">{{scene.Set_name}}</a>
+                                            </span>
+
+                                            @*<span><a class="text-white  btn-sm btn-transparent font-weight-bold">Day</a></span>*@
+                                        </div>
+                                        <div class="dropdown-menu dropdown-menu-arrow bg-black p-3 text-center text-white show" ng-click="$event.stopPropagation();" ng-show="scene.Id+'env'==EsId">
+                                            <div class="col-md-12 col-sm-12">
+                                                <button class="btn btn-sm btn-transparent text-white fa fa-times text-right pull-right" ng-click="show_Es_dropdown(scene.scene);$event.stopPropagation();"></button>
+
+                                                <div class="form-group">
+                                                    <label class="form-label">Environment</label>
+                                                    <select name="env" class="form-control custom-select" ng-model="scene.scene.environment_id" ng-change="createScene(scene.scene);$event.stopPropagation();">
+                                                        <option ng-repeat="e in env" value="{{e.Id}}">{{e.Evironment_Name}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown-menu dropdown-menu-arrow bg-black p-3 text-center text-white show" ng-click="$event.stopPropagation();" ng-show="scene.Id+'set'==EsId">
+                                            <div class="col-md-12 col-sm-12">
+                                                <button class="btn btn-sm btn-transparent text-white fa fa-times text-right pull-right" ng-click="show_Es_dropdown(scene.scene);$event.stopPropagation();"></button>
+
+                                                <div class="form-group">
+                                                    <label class="form-label">
+                                                        Set
+                                                    </label>
+                                                    <input maxlength="200" type="text" name="set" class="form-control"
+                                                           placeholder="Set" ng-model="SetName" ng-click="toggle_set()" ng-keyup="complete_set($event,SetName)" />
+                                                    <div class="h-200px bg-dark rounded overflow-auto mt1 col-12" ng-hide="show_set_check">
+                                                        <div class="col-12 text-center text-white my-5 " ng-show="filtered_set.length<=0 && setbtn">
+                                                            <p class="fa fa-folder-o fa-3x mb-0"></p>
+                                                            <p>There are not items to select.Enter a name to create a new item</p>
+                                                        </div>
+                                                        <div class=" col-md-12  col-sm-12 col-lg-12 col-12 rounded m-0 p-0" ng-repeat=" c in filtered_set  | orderBy:'Id'">
+
+                                                            <span class="cursor-pointer align-middle col-md-12  col-sm-12 col-lg-12 col-12  text-left btn btn-dark btn-lg" href="#" ng-click="set_set(c.Id,c.Set_name,scene.scene)">
+                                                                <i class="fa fa-image bg-white circle p-3 text-dark"></i>
+
+                                                                <span class="text-white pl-1 ">
+                                                                    {{c.Set_name}}
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-md-12  col-sm-12 col-lg-12 col-12 " ng-hide="setbtn">
+
+                                                            <span class="cursor-pointer align-middle col-md-12  col-sm-12 col-lg-12 col-12   text-left btn btn-dark btn-lg" href="#" ng-click="createSet(SetName)">
+
+                                                                <span class="text-white pl-1 ">
+                                                                    "{{SetName}}"   create Set
+                                                                </span>
+                                                                <i class="fa fa-plus-circle rounded"></i>
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 text-truncate">
+                                            <span class=" small cursor-pointer"> <i class="fa fa-info-circle"> </i> Not used in the active shooting schedule | </span>
+                                            <span ng-click="$event.stopPropagation();"><a class="btn-sm btn-transparent "><small contenteditable="true" ng-model="scene.scene.Description" ng-change="createScene(scene.scene);$event.stopPropagation();">{{scene.scene.Description}}</small></a></span>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7 mx-0 p-0 d-md-block d-none d-sm-block col-sm-12">
+                                        <div class="row mx-0 p-0">
+                                            <div class="col-3 ">
+                                                <div class="col-12 text-wrap">
+                                                    <span class="text-center font-weight-bold cursor-pointer small">Characters</span>
+
+                                                </div>
+                                                <div class="col-12 mt-1 text-wrap">
+
+                                                    <span>
+                                                        <a class="text-break p-0 btn-sm btn-transparent"
+                                                           ng-click="show_Es_dropdown(scene.scene,'ch',$index);$event.stopPropagation();">
+                                                            <small ng-show="scene.CharacterId.length<=0">-</small>
+                                                            <small ng-show="scene.CharacterId.length>0"
+                                                                   ng-repeat="ch in scene.character | orderBy:'Index'">
+                                                                <span ng-if="$index>0">,</span>
+                                                                {{ch.Index}}
+                                                            </small>
+                                                        </a>
+                                                    </span>
+
+                                                    <div class="dropdown-menu  dropdown-menu-arrow bg-black  p-0 m-0  text-center text-white show" ng-click="$event.stopPropagation();" ng-show="scene.Id+'ch'==EsId">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <button class="btn btn-sm text-white btn-transparent fa fa-times text-right text-white pull-right" ng-click="show_Es_dropdown(scene.scene);$event.stopPropagation();"></button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12 p-0 m-0  col-sm-12">
+
+                                                            <div class="col-12 m-0 p-0 rounded my-1 bg-black srch">
+
+                                                                <div class="form-group col-md-12 pt-3 col-sm-12 col-12 text-break">
+                                                                    <label class="form-label text-white">Search or create</label>
+                                                                    <div class="row w-100  my-1">
+
+
+                                                                        <div class="cursor-pointer m-1 text-truncate rounded h-25 text-left  bg-gray " ng-repeat=" c in scene.character| orderBy:'Id' ">
+
+                                                                            <span class=" pl-1  ">
+                                                                                <small> {{c.Name}}</small>
+
+                                                                            </span>
+
+                                                                            <span class="fa fa-times-circle pull-right my-1 px-1 " ng-click="removeCh(c.Id,scene.Id)"></span>
+                                                                        </div>
+
+
+
+                                                                    </div>
+                                                                    <input type="text" ng-model="char_srch" required ng-keyup="complete_char($event,char_srch)" class="form-control bg-transparent border-top-0 border-right-0 border-left-0" />
+
+                                                                </div>
+
+                                                                <div class="h-200px overflow-auto  border-light mx-1 py-1 rounded  row">
+                                                                    <div class="col-12 text-center text-white my-5 " ng-show="filtered_chars.length<=0 && charbtn">
+                                                                        <p class="fa fa-folder-o fa-3x mb-0"></p>
+                                                                        <p>There are not items to select.Enter a name to create a new item</p>
+                                                                    </div>
+                                                                    <div class="col-lg-12 col-md-12 text-center my-1 col-sm-12 col-12" ng-repeat=" c in filtered_chars | orderBy:'Id' ">
+
+
+                                                                        <div class="align-middle text-truncate circle-left-border p-1 text-left bg-dark cursor-pointer rounded d-flex flex-row" ng-click="add_char(c.Id,scene.Id)">
+                                                                            <div> <i class="fa fa-image bg-white circle p-3 text-dark"></i></div>
+                                                                            <div class=" pl-1 col-8  text-truncate">
+
+                                                                                <span class="text-white text-wrap ">
+                                                                                    <small> {{c.Index}} {{c.Name}}</small>
+                                                                                </span>
+                                                                            </div>
+                                                                            <!--<span class="text-white pl-1 ">
+
+                                                                            </span>-->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-12 col-md-12 mx-auto text-center my-1 col-sm-12 col-12" ng-hide="charbtn">
+
+                                                                        <button class="cursor-pointer align-middle  text-left btn btn-dark btn-block" href="#" ng-click="createchar(char_srch,scene)">
+
+                                                                            <span class="text-white pl-1 ">
+                                                                                "{{char_srch}}"   create character
+                                                                            </span>
+                                                                            <i class="fa fa-plus-circle rounded"></i>
+                                                                        </button>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="col-12 text-wrap">
+                                                    <span class=" text-center font-weight-bold cursor-pointer small">Extras</span>
+
+                                                </div>
+                                                <div class="col-12 mt-1">
+
+
+                                                    <span ng-click="show_Es_dropdown(scene.scene,'ex',$index);$event.stopPropagation();">
+                                                        <a class=" text-break p-0 btn-sm btn-transparent ">
+                                                            <small ng-show="scene.ExtraId.length<=0">-</small>
+                                                            <small ng-show="scene.ExtraId.length>0"
+                                                                   ng-repeat="ext in scene.extra | orderBy:'Index'">
+                                                                <span ng-if="$index>0">,</span>
+                                                                {{ext.Index}}
+                                                            </small>
+                                                        </a>
+                                                    </span>
+
+                                                    <div class="dropdown-menu dropdown-menu-arrow p-0 m-0 bg-black p-3 text-center text-white show" ng-click="$event.stopPropagation();" ng-show="scene.Id+'ex'==EsId">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <button class="btn btn-sm btn-transparent fa fa-times text-right text-white pull-right" ng-click="show_Es_dropdown(scene.scene);$event.stopPropagation();"></button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12 p-0 m-0  col-sm-12">
+
+                                                            <div class="col-12 m-0 p-0 rounded my-1 bg-black srch">
+
+                                                                <div class="form-group col-md-12 pt-3 col-sm-12 col-12 text-break">
+                                                                    <label class="form-label text-white">Search or create</label>
+                                                                    <div class="row w-100 m-0 p-0 my-1">
+
+
+                                                                        <div class="cursor-pointer m-1 text-truncate rounded h-25 text-left  bg-gray " ng-repeat=" c in scene.extra| orderBy:'Id' ">
+
+                                                                            <span class=" pl-1  ">
+                                                                                <small> {{c.Name}}</small>
+
+                                                                            </span>
+
+                                                                            <span class="fa fa-times-circle pull-right my-1 px-1 " ng-click="removeExt(c.Id,scene.Id)"></span>
+                                                                        </div>
+
+
+
+                                                                    </div>
+                                                                    <input type="text" ng-model="ext_srch" required ng-keyup="complete_ext($event,ext_srch,scene.Id)" class="form-control bg-transparent border-top-0 border-right-0 border-left-0" />
+
+                                                                </div>
+
+                                                                <div class="h-200px overflow-auto  border-light mx-1 py-1 rounded  row">
+                                                                    <div class="col-12 text-center text-white my-5 " ng-show="filtered_ext.length<=0 && charbtn">
+                                                                        <p class="fa fa-folder-o fa-3x mb-0"></p>
+                                                                        <p>There are not items to select.Enter a name to create a new item</p>
+                                                                    </div>
+                                                                    <div class="col-lg-12 col-md-12 text-center my-1 col-sm-12 col-12" ng-repeat=" c in filtered_ext | orderBy:'Id' ">
+
+
+                                                                        <div class="align-middle text-truncate circle-left-border p-1 text-left bg-dark cursor-pointer rounded d-flex flex-row" ng-click="add_ext(c.Id,scene.Id)">
+                                                                            <div> <i class="fa fa-image bg-white circle p-3 text-dark"></i></div>
+                                                                            <div class=" pl-1 col-8  text-truncate">
+
+                                                                                <span class="text-white text-wrap ">
+                                                                                    <small> {{c.Index}} {{c.Name}}</small>
+                                                                                </span>
+                                                                            </div>
+                                                                            <!--<span class="text-white pl-1 ">
+
+                                                                            </span>-->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-12 col-md-12 mx-auto text-center my-1 col-sm-12 col-12" ng-hide="extbtn">
+
+                                                                        <button class="cursor-pointer align-middle  text-left btn btn-dark btn-block" href="#" ng-click="createext(ext_srch)">
+
+                                                                            <span class="text-white pl-1 ">
+                                                                                "{{ext_srch}}"   create character
+                                                                            </span>
+                                                                            <i class="fa fa-plus-circle rounded"></i>
+                                                                        </button>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="col-12 text-wrap">
+                                                    <span class=" text-center font-weight-bold cursor-pointer small">Script day</span>
+
+                                                </div>
+                                                <div class="col-12 mt-1 text-wrap">
+
+                                                    <span><a class="   btn-sm btn-transparent "><small contenteditable="true" ng-change="createScene(scene.scene);$event.stopPropagation();" ng-click="$event.stopPropagation();" ng-model="scene.scene.ScriptDay">{{scene.scene.ScriptDay}}</small></a></span>
+
+
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="col-12 text-wrap">
+                                                    <span class=" text-center font-weight-bold cursor-pointer small">Estimated time</span>
+
+                                                </div>
+                                                <div class="col-12 mt-1 text-wrap">
+
+                                                    <span ng-click="show_Es_dropdown(scene.scene,'es',$index);$event.stopPropagation();"><a class="  btn-sm btn-transparent "><small>{{("00"+scene.scene.Estime_mm).slice(-2)}}:{{("00"+scene.scene.Estime_ss).slice(-2)}}</small></a></span>
+
+                                                    <div class="dropdown-menu dropdown-menu-arrow bg-black p-3 text-center text-white show" ng-click="$event.stopPropagation();" ng-show="scene.Id+'es'==EsId">
+                                                        <div class="col-md-12 col-sm-12">
+                                                            <button class="btn btn-sm btn-transparent fa fa-times text-right pull-right" ng-click="show_Es_dropdown(scene.scene);$event.stopPropagation();"></button>
+
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Estimated time (mm:ss)
+                                                                </label>
+                                                                <div class="d-flex flex-row w-100">
+                                                                    <input type="number" min="0" max="59" value="0" required ng-model="scene.scene.Estime_mm" class="form-control" />
+                                                                    <span class="font-weight-bold"> : </span>
+                                                                    <input type="number" min="0" max="59" value="0" required ng-model="scene.scene.Estime_ss" class="form-control" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="col-12 text-wrap p-0">
+                                                    <span class=" text-center font-weight-bold cursor-pointer small">Pages</span>
+
+                                                </div>
+                                                <div class="row ml-1 mt-1 text-wrap">
+
+                                                    <span ng-click="show_Es_dropdown(scene.scene,'page',$index);$event.stopPropagation();">
+                                                        <a class="btn-sm m-0 p-0 btn-transparent ">
+                                                            <small ng-hide="scene.scene.ScriptPages">-</small>
+                                                        </a>
+                                                        <small ng-show="scene.scene.ScriptPages" ng-bind-html="scene.scene.ScriptPages"></small></a>
+                                                    </span>
+
+                                                    <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right bg-black p-3 text-center text-white show" ng-click="$event.stopPropagation();" ng-show="scene.Id+'page'==EsId">
+                                                        <div class="col-md-12 col-sm-12">
+                                                            <button class="btn btn-sm btn-transparent text-white fa fa-times text-right pull-right" ng-click="show_Es_dropdown(scene.scene);$event.stopPropagation();"></button>
+
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Number of script pages
+                                                                </label>
+
+                                                                <ui-select class="form-control" ng-model="scene.scene.ScriptPages" on-select="show_Es_dropdown(scene.scene);$event.stopPropagation();" theme="select2" sortable="true" close-on-select="true">
+                                                                    <ui-select-match>
+                                                                        <span ng-bind-html="scene.scene.ScriptPages"></span>
+                                                                    </ui-select-match>
+                                                                    <ui-select-choices group-by="groupSize" repeat="visible as visible in pages">
+                                                                        <div class="row p-10 clearfix">
+
+                                                                            <div class="col-sm-12">
+                                                                                <div ng-bind-html="visible | highlight: $select.search">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </ui-select-choices>
+                                                                </ui-select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2 col-md-1 text-right my-auto dropleft">
+                                <span class=" cursor-pointer btn-transparent btn-sm " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></span>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item cursor-pointer" ng-click="showSpilt(scene.Id,'dup')">Duplicate</a>
+                                    <a class="dropdown-item cursor-pointer" ng-click="showSpilt(scene.Id,'split')">Split Scene</a>
+                                    <a class="dropdown-item cursor-pointer" ng-click="Merge(scene.Id,scene.scene.Index)">Merge Scene</a>
+                                    <a class="dropdown-item cursor-pointer" ng-click="showSpilt(scene.Id,'del')">Delete</a>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </del>
+                    <div ng-hide="scene.scene.IsOmitted" class="row py-1 rounded bgcolor {{className(scene.scene.environment_id)}}" ng-show="sceneIndex!=scene.Id+'dup' && sceneIndex!=scene.Id+'del' && sceneIndex!=scene.Id+'split'">
+                        <div class="col-2 col-md-1 text-wrap cursor-pointer" ng-click="gotoSceneProfile(scene.Id)">
+                            <p class=" btn-sm btn-outline-transparent cursor-pointer font-weight-bold"
+                               ng-click="$event.stopPropagation();" ng-model="scene.scene.Index" contenteditable="true"
+                               ng-change="createScene(scene.scene);$event.stopPropagation();">
+                                <b>{{scene.scene.Index}}</b>
+                            </p>
+                        </div>
+                        <div class="col-8 col-md-10 m-0 p-0" ui-sref="scenesandscripts.scene_details({sceneId: '{{scene.Id}}'})">
+                            <div class="row m-0 p-0 ">
+                                <div class="col-md-5 col-sm-12 m-0 p-0 ">
+                                    <div class="col-12 text-wrap d-lg-inline-flex text-truncate">
+                                        <span ng-click="show_Es_dropdown(scene.scene,'env',$index);$event.stopPropagation();">
+                                            <a class="btn-sm btn-transparent font-weight-bold p-0">{{scene.Env_name}}</a>
+                                        </span>
+                                        <span>-</span>
+                                        <span ng-click="show_Es_dropdown(scene.scene,'set',$index);$event.stopPropagation();">
+                                            <a class="btn-sm btn-transparent font-weight-bold p-0">{{scene.Set_name}}</a>
+                                        </span>
+
+                                        @*<span><a class="text-white  btn-sm btn-transparent font-weight-bold">Day</a></span>*@
+                                    </div>
+                                    <div class="dropdown-menu dropdown-menu-arrow bg-black p-3 text-center text-white show" ng-click="$event.stopPropagation();" ng-show="scene.Id+'env'==EsId">
+                                        <div class="col-md-12 col-sm-12">
+                                            <button class="btn btn-sm btn-transparent fa fa-times text-right pull-right" ng-click="show_Es_dropdown(scene.scene);$event.stopPropagation();"></button>
+
+                                            <div class="form-group">
+                                                <label class="form-label">Environment</label>
+                                                <select name="env" class="form-control custom-select" ng-model="scene.scene.environment_id" ng-change="createScene(scene.scene);$event.stopPropagation();">
+                                                    <option ng-repeat="e in env" value="{{e.Id}}">{{e.Evironment_Name}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-menu dropdown-menu-arrow bg-black p-3 text-center text-white show" ng-click="$event.stopPropagation();" ng-show="scene.Id+'set'==EsId">
+                                        <div class="col-md-12 col-sm-12">
+                                            <button class="btn btn-sm btn-transparent fa fa-times text-right pull-right" ng-click="show_Es_dropdown(scene.scene);$event.stopPropagation();"></button>
+
+                                            <div class="form-group">
+                                                <label class="form-label">
+                                                    Set
+                                                </label>
+                                                <input maxlength="200" type="text" name="set" class="form-control"
+                                                       placeholder="Set" ng-model="SetName" ng-click="toggle_set()" ng-keyup="complete_set($event,SetName)" />
+                                                <div class="h-200px bg-dark rounded overflow-auto mt1 col-12" ng-hide="show_set_check">
+                                                    <div class="col-12 text-center text-white my-5 " ng-show="filtered_set.length<=0 && setbtn">
+                                                        <p class="fa fa-folder-o fa-3x mb-0"></p>
+                                                        <p>There are not items to select.Enter a name to create a new item</p>
+                                                    </div>
+                                                    <div class=" col-md-12  col-sm-12 col-lg-12 col-12 rounded m-0 p-0" ng-repeat=" c in filtered_set  | orderBy:'Id'">
+
+                                                        <span class="cursor-pointer align-middle col-md-12  col-sm-12 col-lg-12 col-12  text-left btn btn-dark btn-lg" href="#" ng-click="set_set(c.Id,c.Set_name,scene.scene)">
+                                                            <i class="fa fa-image bg-white circle p-3 text-dark"></i>
+
+                                                            <span class="text-white pl-1 ">
+                                                                {{c.Set_name}}
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-12  col-sm-12 col-lg-12 col-12 " ng-hide="setbtn">
+
+                                                        <span class="cursor-pointer align-middle col-md-12  col-sm-12 col-lg-12 col-12   text-left btn btn-dark btn-lg" href="#" ng-click="createSet(SetName)">
+
+                                                            <span class="text-white pl-1 ">
+                                                                "{{SetName}}"   create Set
+                                                            </span>
+                                                            <i class="fa fa-plus-circle rounded"></i>
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 text-truncate">
+                                        <span class=" small cursor-pointer"> <i class="fa fa-info-circle"> </i> Not used in the active shooting schedule | </span>
+                                        <span ng-click="$event.stopPropagation();"><a class="btn-sm btn-transparent "><small contenteditable="true" ng-model="scene.scene.Description" ng-change="createScene(scene.scene);$event.stopPropagation();">{{scene.scene.Description}}</small></a></span>
+
+
+                                    </div>
+                                </div>
+                                <div class="col-md-7 mx-0 p-0 d-md-block d-none d-sm-block col-sm-12">
+                                    <div class="row mx-0 p-0">
+                                        <div class="col-3 ">
+                                            <div class="col-12 text-wrap">
+                                                <span class="text-center font-weight-bold cursor-pointer small">Characters</span>
+
+                                            </div>
+                                            <div class="col-12 mt-1 text-wrap">
+
+                                                <span>
+                                                    <a class="text-break p-0 btn-sm btn-transparent"
+                                                       ng-click="show_Es_dropdown(scene.scene,'ch',$index);$event.stopPropagation();">
+                                                        <small ng-show="scene.CharacterId.length<=0">-</small>
+                                                        <small ng-show="scene.CharacterId.length>0"
+                                                               ng-repeat="ch in scene.character | orderBy:'Index'">
+                                                            <span ng-if="$index>0">,</span>
+                                                            {{ch.Index}}
+                                                        </small>
+                                                    </a>
+                                                </span>
+
+                                                <div class="dropdown-menu dropdown-menu-arrow  bg-black  p-0 m-0  text-center text-white show" ng-click="$event.stopPropagation();" ng-show="scene.Id+'ch'==EsId">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <button class="btn btn-sm btn-transparent fa fa-times text-right text-white pull-right" ng-click="show_Es_dropdown(scene.scene);$event.stopPropagation();"></button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 p-0 m-0  col-sm-12">
+
+                                                        <div class="col-12 m-0 p-0 rounded my-1 bg-black srch">
+
+                                                            <div class="form-group col-md-12 pt-3 col-sm-12 col-12 text-break">
+                                                                <label class="form-label text-white">Search or create</label>
+                                                                <div class="row w-100  my-1">
+
+
+                                                                    <div class="cursor-pointer m-1 text-truncate rounded h-25 text-left  bg-gray " ng-repeat=" c in scene.character| orderBy:'Id' ">
+
+                                                                        <span class=" pl-1  ">
+                                                                            <small> {{c.Name}}</small>
+
+                                                                        </span>
+
+                                                                        <span class="fa fa-times-circle pull-right my-1 px-1 " ng-click="removeCh(c.Id,scene.Id)"></span>
+                                                                    </div>
+
+
+
+                                                                </div>
+                                                                <input type="text" ng-model="char_srch" required ng-keyup="complete_char($event,char_srch)" class="form-control bg-transparent border-top-0 border-right-0 border-left-0" />
+
+                                                            </div>
+
+                                                            <div class="h-200px overflow-auto  border-light mx-1 py-1 rounded  row">
+                                                                <div class="col-12 text-center text-white my-5 " ng-show="filtered_chars.length<=0 && charbtn">
+                                                                    <p class="fa fa-folder-o fa-3x mb-0"></p>
+                                                                    <p>There are not items to select.Enter a name to create a new item</p>
+                                                                </div>
+                                                                <div class="col-lg-12 col-md-12 text-center my-1 col-sm-12 col-12" ng-repeat=" c in filtered_chars | orderBy:'Id' ">
+
+
+                                                                    <div class="align-middle text-truncate circle-left-border p-1 text-left bg-dark cursor-pointer rounded d-flex flex-row" ng-click="add_char(c.Id,scene.Id)">
+                                                                        <div> <i class="fa fa-image bg-white circle p-3 text-dark"></i></div>
+                                                                        <div class=" pl-1 col-8  text-truncate">
+
+                                                                            <span class="text-white text-wrap ">
+                                                                                <small> {{c.Index}} {{c.Name}}</small>
+                                                                            </span>
+                                                                        </div>
+                                                                        <!--<span class="text-white pl-1 ">
+
+                                                                        </span>-->
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-12 col-md-12 mx-auto text-center my-1 col-sm-12 col-12" ng-hide="charbtn">
+
+                                                                    <button class="cursor-pointer align-middle  text-left btn btn-dark btn-block" href="#" ng-click="createchar(char_srch,scene)">
+
+                                                                        <span class="text-white pl-1 ">
+                                                                            "{{char_srch}}"   create character
+                                                                        </span>
+                                                                        <i class="fa fa-plus-circle rounded"></i>
+                                                                    </button>
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="col-12 text-wrap">
+                                                <span class=" text-center font-weight-bold cursor-pointer small">Extras</span>
+
+                                            </div>
+                                            <div class="col-12 mt-1">
+
+
+                                                <span ng-click="show_Es_dropdown(scene.scene,'ex',$index);$event.stopPropagation();">
+                                                    <a class=" text-break p-0 btn-sm btn-transparent ">
+                                                        <small ng-show="scene.ExtraId.length<=0">-</small>
+                                                        <small ng-show="scene.ExtraId.length>0"
+                                                               ng-repeat="ext in scene.extra | orderBy:'Index'">
+                                                            <span ng-if="$index>0">,</span>
+                                                            {{ext.Index}}
+                                                        </small>
+                                                    </a>
+                                                </span>
+                                                <div class="dropdown-menu dropdown-menu-arrow p-0 m-0 bg-black p-3 text-center text-white show" ng-click="$event.stopPropagation();" ng-show="scene.Id+'ex'==EsId">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <button class="btn btn-sm btn-transparent fa fa-times text-right text-white pull-right" ng-click="show_Es_dropdown(scene.scene);$event.stopPropagation();"></button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 p-0 m-0  col-sm-12">
+
+                                                        <div class="col-12 m-0 p-0 rounded my-1 bg-black srch">
+
+                                                            <div class="form-group col-md-12 pt-3 col-sm-12 col-12 text-break">
+                                                                <label class="form-label text-white">Search or create</label>
+                                                                <div class="row w-100 m-0 p-0 my-1">
+
+
+                                                                    <div class="cursor-pointer m-1 text-truncate rounded h-25 text-left  bg-gray " ng-repeat=" c in scene.extra| orderBy:'Id' ">
+
+                                                                        <span class=" pl-1  ">
+                                                                            <small> {{c.Name}}</small>
+
+                                                                        </span>
+
+                                                                        <span class="fa fa-times-circle pull-right my-1 px-1 " ng-click="removeExt(c.Id,scene.Id)"></span>
+                                                                    </div>
+
+
+
+                                                                </div>
+                                                                <input type="text" ng-model="ext_srch" required ng-keyup="complete_ext($event,ext_srch,scene.Id)" class="form-control bg-transparent border-top-0 border-right-0 border-left-0" />
+
+                                                            </div>
+
+                                                            <div class="h-200px overflow-auto  border-light mx-1 py-1 rounded  row">
+                                                                <div class="col-12 text-center text-white my-5 " ng-show="filtered_ext.length<=0 && extbtn">
+                                                                    <p class="fa fa-folder-o fa-3x mb-0"></p>
+                                                                    <p>There are not items to select.Enter a name to create a new item</p>
+                                                                </div>
+                                                                <div class="col-lg-12 col-md-12 text-center my-1 col-sm-12 col-12" ng-repeat=" c in filtered_ext | orderBy:'Id' ">
+
+
+                                                                    <div class="align-middle text-truncate circle-left-border p-1 text-left bg-dark cursor-pointer rounded d-flex flex-row" ng-click="add_ext(c.Id,scene.Id)">
+                                                                        <div> <i class="fa fa-image bg-white circle p-3 text-dark"></i></div>
+                                                                        <div class=" pl-1 col-8  text-truncate">
+
+                                                                            <span class="text-white text-wrap ">
+                                                                                <small> {{c.Index}} {{c.Name}}</small>
+                                                                            </span>
+                                                                        </div>
+                                                                        <!--<span class="text-white pl-1 ">
+
+                                                                        </span>-->
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-12 col-md-12 mx-auto text-center my-1 col-sm-12 col-12" ng-hide="extbtn">
+
+                                                                    <button class="cursor-pointer align-middle  text-left btn btn-dark btn-block" href="#" ng-click="createext(ext_srch)">
+
+                                                                        <span class="text-white pl-1 ">
+                                                                            "{{ext_srch}}"   create character
+                                                                        </span>
+                                                                        <i class="fa fa-plus-circle rounded"></i>
+                                                                    </button>
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="col-12 text-wrap">
+                                                <span class=" text-center font-weight-bold cursor-pointer small">Script day</span>
+
+                                            </div>
+                                            <div class="col-12 mt-1 text-wrap">
+
+                                                <span><a class="   btn-sm btn-transparent "><small contenteditable="true" ng-change="createScene(scene.scene);$event.stopPropagation();" ng-click="$event.stopPropagation();" ng-model="scene.scene.ScriptDay">{{scene.scene.ScriptDay}}</small></a></span>
+
+
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="col-12 text-wrap">
+                                                <span class=" text-center font-weight-bold cursor-pointer small">Estimated time</span>
+
+                                            </div>
+                                            <div class="col-12 mt-1 text-wrap">
+
+                                                <span ng-click="show_Es_dropdown(scene.scene,'es',$index);$event.stopPropagation();"><a class="  btn-sm btn-transparent "><small>{{("00"+scene.scene.Estime_mm).slice(-2)}}:{{("00"+scene.scene.Estime_ss).slice(-2)}}</small></a></span>
+
+                                                <div class="dropdown-menu  dropdown-menu-arrow bg-black p-3 text-center text-white show" ng-click="$event.stopPropagation();" ng-show="scene.Id+'es'==EsId">
+                                                    <div class="col-md-12 col-sm-12">
+                                                        <button class="btn btn-sm btn-transparent fa fa-times text-right pull-right" ng-click="show_Es_dropdown(scene.scene);$event.stopPropagation();"></button>
+
+                                                        <div class="form-group">
+                                                            <label>
+                                                                Estimated time (mm:ss)
+                                                            </label>
+                                                            <div class="d-flex flex-row w-100">
+                                                                <input type="number" min="0" max="59" value="0" required ng-model="scene.scene.Estime_mm" class="form-control" />
+                                                                <span class="font-weight-bold"> : </span>
+                                                                <input type="number" min="0" max="59" value="0" required ng-model="scene.scene.Estime_ss" class="form-control" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-1">
+                                            <div class="col-12 text-wrap p-0">
+                                                <span class=" text-center font-weight-bold cursor-pointer small">Pages</span>
+
+                                            </div>
+                                            <div class="row ml-1 mt-1 text-wrap">
+
+                                                <span ng-click="show_Es_dropdown(scene.scene,'page',$index);$event.stopPropagation();"><a class="btn-sm m-0 p-0 btn-transparent "><small ng-hide="scene.scene.ScriptPages">-</small><small ng-show="scene.scene.ScriptPages" ng-bind-html="scene.scene.ScriptPages"></small></a></span>
+
+                                                <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right bg-black p-3 text-center text-white show" ng-click="$event.stopPropagation();" ng-show="scene.Id+'page'==EsId">
+                                                    <div class="col-md-12 col-sm-12">
+                                                        <button class="btn btn-sm btn-transparent text-white fa fa-times text-right pull-right" ng-click="show_Es_dropdown(scene.scene);$event.stopPropagation();"></button>
+
+                                                        <div class="form-group">
+                                                            <label>
+                                                                Number of script pages
+                                                            </label>
+                                                            <ui-select class="form-control" ng-model="scene.scene.ScriptPages" on-select="show_Es_dropdown(scene.scene);$event.stopPropagation();" theme="selectize" sortable="true" close-on-select="true">
+                                                                <ui-select-match>
+                                                                    <span ng-bind-html="scene.scene.ScriptPages"></span>
+                                                                </ui-select-match>
+                                                                <ui-select-choices group-by="groupSize" repeat="visible as visible in pages | filter:$select.search">
+                                                                    <div class="row p-10 clearfix">
+
+                                                                        <div class="col-sm-12">
+                                                                            <div ng-bind-html="visible | highlight: $select.search">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </ui-select-choices>
+                                                            </ui-select>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2 col-md-1 text-right my-auto dropleft">
+                            <span class=" cursor-pointer btn-transparent btn-sm " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></span>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item cursor-pointer" ng-click="showSpilt(scene.Id,'dup')">Duplicate</a>
+                                <a class="dropdown-item cursor-pointer" ng-click="showSpilt(scene.Id,'split')">Split Scene</a>
+                                <a class="dropdown-item cursor-pointer" ng-click="Merge(scene.Id,scene.scene.Index)">Merge Scene</a>
+                                <a class="dropdown-item cursor-pointer" ng-click="showSpilt(scene.Id,'del')">Delete</a>
+
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="tab-pane show fade" id="settings">
+                <h1>settings</h1>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header border-0">
+
+                <h4 class="modal-title">Merge Scenes</h4>
+            </div>
+            <div class="modal-body  border-0">
+                <p>In case you want to combine two scenes you are able to merge them together into one scene. Please select the scene you want to merge with '' in the list below. During merging the selected scene will be updated with information it misses from ''. Afterwards the scene '' will be deleted.</p>
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label>
+                            Scene
+                        </label>
+
+                        <ui-select class="form-control" ng-model="_MergeSceneId.scene" theme="selectize" sortable="true" close-on-select="true">
+
+                            <ui-select-match>{{_MergeSceneId.scene.scene.Index}}</ui-select-match>
+                            <ui-select-choices repeat="visible as visible in filtered_scenes">
+                                <div class="row p-10 clearfix">
+
+                                    <div class="col-sm-12">
+                                        <div ng-bind-html="visible.scene.Index | highlight: $select.search">
+                                        </div>
+                                    </div>
+                                </div>
+                            </ui-select-choices>
+                        </ui-select>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#ConfrmModal">Merge Scene</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="ConfrmModal" class="modal fade" role="dialog">
+
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header border-0">
+
+                <h4 class="modal-title">Merge Scenes</h4>
+            </div>
+
+            <div class="modal-body  border-0">
+                <p>  Are you sure you want to merge the scene {{_MergeSceneId.scene.scene.Index}} with {{MergeSceneIndex}} will be deleted.</p>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="MergeScene()">Yes</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>

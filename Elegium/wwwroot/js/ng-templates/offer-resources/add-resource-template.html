@@ -1,0 +1,230 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">
+        {{title}}
+    </h3>
+    <div class="pull-right">
+        <button class="btn btn-secondary" ng-disabled="resourceForm.$invalid" ng-click="save()">
+            <i class="fa fa-save"></i> Save
+        </button>
+        <button class="btn btn-danger" ng-click="cancel()">
+            <i class="fa fa-times"></i> Close
+        </button>
+    </div>
+</div>
+
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-8">
+                    <form role="form" name="resourceForm">
+                        <div class="row clearfix">
+                            <div class="col-sm-12" ng-hide="hideIsEquipment">
+                                <div class="form-group">
+                                    <!--<div class="form-label">Resource or equipment?</div>-->
+                                    <label class="custom-switch">
+                                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                               ng-model="resource.IsEquipment">
+                                        <span class="custom-switch-indicator"></span>
+                                        <span class="custom-switch-description">This is an equipment</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Select {{labelName}} Category</label>
+                                    <ui-select class="form-control" ng-model="resource.EquipmentCategoryId" theme="selectize" sortable="true" close-on-select="true">
+                                        <ui-select-match placeholder="Select Category...">{{$select.selected.Name}}</ui-select-match>
+                                        <ui-select-choices group-by="'EquipmentCategoryType'" repeat="item.Id as item in equipmentCategories | filter: $select.search">
+                                            <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                        </ui-select-choices>
+                                    </ui-select>
+
+                                    <!--<select name="resourceCategory" required
+                                            class="form-control custom-select {{resourceForm.resourceCategory.$valid?'is-valid':'is-invalid'}}"
+                                            ng-options="obj.Id as obj.Name group by obj.EquipmentCategoryType for obj in equipmentCategories"
+                                            ng-model="resource.EquipmentCategoryId"></select>-->
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">{{labelName}} name</label>
+                                    <input maxlength="200" type="text" name="resourceName" required
+                                           class="form-control {{resourceForm.resourceName.$valid?'is-valid':'is-invalid'}}"
+                                           placeholder="{{labelName}} name..." ng-model="resource.Name" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">{{labelName}} Description</label>
+                                    <textarea name="resourceDescription" rows="3" required
+                                              class="form-control {{resourceForm.resourceDescription.$valid?'is-valid':'is-invalid'}}"
+                                              placeholder="{{labelName}} Description..." ng-model="resource.Description">
+                            </textarea>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <div class="form-label">{{labelName}} is for hire or sale?</div>
+                                    <label class="custom-switch">
+                                        <span class="custom-switch-description mr-1">Hire</span>
+                                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                               ng-model="resource.HireOrSale">
+                                        <span class="custom-switch-indicator" style="background: #5a5278;"></span>
+                                        <span class="custom-switch-description">Sale</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-12" ng-if="!resource.HireOrSale">
+                                <div class="form-group">
+                                    <div class="form-label">Lending type?</div>
+                                    <label class="custom-switch">
+                                        <span class="custom-switch-description mr-1">Available for Rent</span>
+                                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                               ng-model="resource.LendingType"> <!--Rent or Hire with operator => R or H-->
+                                        <span class="custom-switch-indicator" style="background: #5a5278;"></span>
+                                        <span class="custom-switch-description">Hire with operator</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12" ng-if="!resource.HireOrSale">
+                                <div class="form-group">
+                                    <label class="form-label">Minimum rental days</label>
+                                    <input type="number" name="minRentalDays" required ng-pattern-restrict="^[0-9]*$"
+                                           class="form-control {{resourceForm.minRentalDays.$valid?'is-valid':'is-invalid'}}"
+                                           placeholder="Min. rental days..." ng-model="resource.MinRentalPeriod" />
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12" ng-if="!resource.HireOrSale">
+                                <div class="form-group">
+                                    <label class="form-label">Maximum rental days</label>
+                                    <input type="number" name="maxRentalDays" required ng-pattern-restrict="^[0-9]*$"
+                                           class="form-control {{resourceForm.maxRentalDays.$valid?'is-valid':'is-invalid'}}"
+                                           placeholder="Max. rental days..." ng-model="resource.MaxRentalPeriod" />
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12" ng-if="!resource.HireOrSale">
+                                <div class="form-group">
+                                    <div class="form-label">{{labelName}} is Insured?</div>
+                                    <label class="custom-switch">
+                                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                               ng-model="resource.Insured">
+                                        <span class="custom-switch-indicator"></span>
+                                        <span class="custom-switch-description">Yes, Insured</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12" ng-if="resource.HireOrSale">
+                                <div class="form-group">
+                                    <label class="form-label">{{labelName}} Condition</label>
+                                    <select name="resourceCondition" required
+                                            class="form-control custom-select {{resourceForm.resourceCondition.$valid?'is-valid':'is-invalid'}}"
+                                            ng-options="obj.Id as obj.Name for obj in resourceConditions"
+                                            ng-model="resource.ConditionId"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12" ng-if="!resource.HireOrSale">
+                                <div class="form-group">
+                                    <label class="form-label">Day Rental price</label>
+                                    <input type="number" name="rentalPrice" required ng-pattern-restrict="^[0-9]*$"
+                                           class="form-control {{resourceForm.rentalPrice.$valid?'is-valid':'is-invalid'}}"
+                                           placeholder="Day Rental price..." ng-model="resource.RentalPrice" />
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12" ng-if="resource.HireOrSale">
+                                <div class="form-group">
+                                    <label class="form-label">Selling price</label>
+                                    <input type="number" name="sellingPrice" required ng-pattern-restrict="^[0-9]*$"
+                                           class="form-control {{resourceForm.sellingPrice.$valid?'is-valid':'is-invalid'}}"
+                                           placeholder="Selling price..." ng-model="resource.SalePrice" />
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Currency</label>
+                                    <select name="currency" required
+                                            class="form-control custom-select {{resourceForm.currency.$valid?'is-valid':'is-invalid'}}"
+                                            ng-options="item.Id as item.Name for item in currencies"
+                                            ng-model="resource.CurrencyId">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <div class="form-label"><i class="fa fa-youtube-play text-red"></i> Youtube video link</div>
+                                    <input type="text" name="youtubeLink"
+                                           class="form-control"
+                                           placeholder="Youtube video link..." ng-model="resource.YoutubeVideoLink" />
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <div class="form-label"><i class="fa fa-vimeo text-gray"></i> Vimeo video link</div>
+                                    <input type="text" name="viemoLink"
+                                           class="form-control"
+                                           placeholder="Vimeo video link..." ng-model="resource.VimeoVideoLink" />
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <div class="form-label"><i class="fa fa-won"></i> Website</div>
+                                    <input type="text" name="website"
+                                           class="form-control"
+                                           placeholder="Website..." ng-model="resource.Website" />
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12" ng-if="!resource.HireOrSale">
+                                <div class="form-group">
+                                    <label class="form-label">Rental terms & conditions</label>
+                                    <textarea name="rentalTerms" rows="3"
+                                              class="form-control"
+                                              placeholder="Rental terms & conditions..." ng-model="resource.RentalTerms">
+                            </textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Other conditions</label>
+                                    <textarea name="otherConditions" rows="3"
+                                              class="form-control"
+                                              placeholder="Other conditions..." ng-model="resource.OtherTerms">
+                            </textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="DashboardContainer"></div>
+                        </div>
+                    </div>
+                    <div class="row clearfix p-3">
+                        <div class="col-sm-6 col-md-4 mt-2 border box-radius-10" ng-repeat="image in resourceImages">
+                            <div class="card">
+                                <img ng-src="../api/UserProfiles/GetFile/{{image.FileId}}/100/100" class="rounded">
+                                <div class="text-muted text-right">
+                                    <a href="javascript:void(0)" ng-click="deleteResourcePhoto(image)" class="icon"><i class="fe fe-trash text-red"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-secondary pull-right" ng-disabled="resourceForm.$invalid" ng-click="save()">
+        <i class="fa fa-save"></i> Save
+    </button>
+    <button class="btn btn-danger" ng-click="cancel()">
+        <i class="fa fa-times"></i> Close
+    </button>
+</div>

@@ -1,0 +1,30 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">
+        Apply for {{nomination.Name}}
+    </h3>
+    <span class="pull-right label label-primary">
+        <button class="btn btn-danger" ng-click="cancel()">Close</button>
+    </span>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">Select Project</label>
+                <select class="form-control custom-select"
+                        required="required" name="project"
+                        ng-options="item as item.Name for item in projectsList"
+                        ng-model="project">
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer" data-exclude="true">
+    <button class="btn btn-success" ng-if="project"
+            ng-click="applyVoteFunding()">
+        Apply
+    </button>
+    <button class="btn btn-danger" ng-click="cancel()">Close</button>
+</div>

@@ -1,0 +1,1683 @@
+﻿<link href="../../../css/step-wizard.css" rel="stylesheet" />
+<style>
+    .thumbnail_overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        text-align: center;
+        background-color: rgba(0,0,0,.6);
+        color: #fff;
+        transition: opacity linear .5s;
+        opacity: 0;
+        font-size: 15px;
+        font-family: 'Work Sans',sans-serif;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        line-height: 220px;
+        display: block;
+    }
+
+    .cat-image:hover .thumbnail_overlay {
+        opacity: 1;
+    }
+
+    .selectize-control.single .selectize-input {
+        background: none !important;
+        box-shadow: none !important;
+        color: #000 !important;
+    }
+
+    .dark-mode .selectize-input {
+        border-color: #343a40 !important;
+        color: #fff !important;
+
+    }
+    .selectize-input {
+        border-color: #343a40 !important;
+        color: #0000 !important;
+    } 
+    .dark-mode .selectize-input input {
+     
+        color: #fff !important;
+
+    }
+
+    .selectize-input:after {
+        background: none !important;
+    }
+
+    textarea:focus .comment_info {
+        display: block !important;
+    }
+
+    textarea:focus {
+        border: 1px #0d96ce solid !important;
+    }
+
+
+
+    textarea {
+        height: 160px !important;
+        background: none;
+        border: 0;
+        border: 1px #888 solid;
+        color: #363636;
+        padding: 5px 10px;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -moz-transition: border .3s linear;
+        -o-transition: border .3s linear;
+        -webkit-transition: border .3s linear;
+        transition: border .3s linear;
+        font-size: 12px;
+        font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+        border-radius: 5px;
+    }
+
+    .project-hover-files {
+        visibility: hidden;
+        display: flex;
+    }
+
+        .project-hover-files::before {
+            visibility: visible;
+            font-size: 20px;
+            position: absolute !important;
+            opacity: 1 !important;
+            border: 3px dashed #0c0;
+            height: 100%;
+            width: 100%;
+            display: inline-block;
+            content: "";
+        }
+
+        .project-hover-files::after {
+            content: "Drop your files here!";
+            position: absolute !important;
+            height: 20px;
+            visibility: visible;
+            top: 70%;
+            margin-left: 42%;
+        }
+
+    .filetype {
+        pointer-events: none;
+        width: 100% !important;
+        height: 130px;
+        display: block;
+        /* position: absolute; */
+        top: 0;
+        left: 0;
+        background: #272727;
+        color: #fff;
+        text-align: center;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+        .filetype.preview .extention {
+            font-size: 35px;
+            line-height: 130px;
+        }
+
+        .filetype .extention {
+            pointer-events: all;
+            font-family: 'Work Sans',sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 90%;
+            display: inline-block;
+            line-height: 55px;
+            font-size: 15px;
+        }
+
+    #uppy-uploader {
+        font-size: 12px;
+        display: none;
+        width: 300px !important;
+        right: 60px;
+        bottom: 20px;
+        border-radius: 10px;
+        padding: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,.5);
+        background: #272727 !important;
+        z-index: 1;
+        display: block;
+        position: fixed;
+    }
+
+    .slider {
+        position: relative;
+        text-align: left;
+        background:  gray;
+        height: 0.6em;
+    }
+
+        .slider .handle {
+            position: absolute;
+            z-index: 2;
+            width: 1.2em;
+            height: 1.2em;
+            background-color: #1893C8;
+        }
+
+    .handle {
+        top: -0.3em;
+        margin-left: -0.6em;
+    }
+
+    .slider .range {
+        position: absolute;
+        z-index: 1;
+        display: block;
+        font-size: .7em;
+        background-color: #1893C8;
+        top: 0;
+        height: 100%;
+    }
+</style>
+<div id="demo" class="carousel slide" data-interval="false" data-ride="carousel" data-pause="hover">
+
+
+    <div class="carousel-inner">
+
+
+        <div class="carousel-item active">
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+
+                    {{title}}
+
+                </h3>
+
+                <div class="pull-right">
+                    <button class="btn btn-secondary " ng-disabled="actorForm.$invalid" ng-click="save()">
+                        <i class="fa fa-save"></i> Save
+                    </button>
+                    <button class="btn btn-danger" ng-click="cancel()">
+                        <i class="fa fa-times"></i> close
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body p-0" id="modal-body">
+                <div class="container-fluid p-0">
+                    <div class="container">
+                        <p>Enter the name and the actor agency of the actor. Also you can add images, contact information, skills, sizes and a note to the actor.</p>
+                        <div class="stepwizard">
+                            <div class="stepwizard-row setup-panel">
+                                <div class="stepwizard-step col-xs-3">
+
+                                    <a href="#step-1" type="button" class="btn btn-default btn-circle btn-success"><i class="fa fa-info-circle"></i></a>
+                                    <p><small>General Information</small></p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="panel panel-primary setup-content" id="step-1">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                </h4>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="row clearfix">
+                                    <div class="col-sm-12">
+
+
+                                        <div class="card">
+                                            <div class="card-body">
+
+
+                                                <div class="row">
+                                                    <form role="form" name="actorForm" class="col-12">
+                                                        <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>Name(required)</label>
+                                                                <input type="text" ng-model="actor.Name" required class="form-control  {{AgencyForm.Name.$valid?'is-valid':'is-invalid'}}" name="Name" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12  col-sm-12 col-12 mt-3">
+                                                            <div class="form-group">
+                                                                <div class="form-group">
+
+                                                                    <div class="row mb-3">
+                                                                        <div class="col-md-12 col-sm-12">
+                                                                            <div class="form-group">
+
+                                                                                <label>Agency</label>
+
+                                                                                <input type="text" ng-model="_agency" ng-click="showAgency()" ng-keyup="complete_Agency($event,_agency)" class="form-control " />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-12">
+                                                                            <div class="row m-0 p-0" ng-show="agencyBtn">
+                                                                                <div class="col-12 border border-dark rounded mx-1 overflow-auto h-200px">
+                                                                                    <div class="col-12 text-center my-5 " ng-show="filtered_agency.length==0 && CreatAgencyBtn">
+                                                                                        <p class="fa fa-folder-o fa-3x mb-0"></p>
+                                                                                        <p>There are not items to select.Enter a name to create a new item</p>
+                                                                                    </div>
+                                                                                    <div class="row">
+                                                                                        <div class="col-lg-12 col-md-6 text-center my-1 col-sm-12 col-12" ng-repeat=" c in filtered_agency | orderBy:'Id' ">
+
+
+                                                                                            <div class="align-middle text-truncate p-2 text-left bg-light-gray cursor-pointer rounded d-flex flex-row" ng-click="add_agency(c)">
+                                                                                                <div> <i class="fa fa-image bg-white p-3 text-dark"></i></div>
+                                                                                                <div class=" pl-1 text-truncate">
+
+                                                                                                    <span class=" text-wrap ">
+                                                                                                        {{c.Name}}
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                                <!--<span class="text-white pl-1 ">
+
+                                            </span>-->
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="mx-auto text-center my-1 " ng-hide="CreatAgencyBtn">
+
+                                                                                            <button class="cursor-pointer align-middle  text-left btn btn-dark btn-block" href="#" ng-click="create_agency(_agency)">
+
+                                                                                                <span class="text-white pl-1 ">
+                                                                                                    <i class="fa fa-plus-circle rounded"></i>  Add  "{{_agency}}"
+                                                                                                </span>
+
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                </div>
+
+                                                                                <div class="col-12 m-0 p-0 text-right mt-1 ">
+
+                                                                                    <button type="button" class="btn btn-danger " ng-click="hideAgency()">Close</button>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                               
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Link to the show reel of the actor
+                                                                </label>
+                                                                <input type="text" ng-model="actor.Reel" class="form-control" name="Name" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12 col-sm-12">
+                                                            <div class="row clearfix">
+                                                                <div class="col-sm-12">
+                                                                    <div class="progressFiles">
+
+                                                                    </div>
+                                                                    <div id="draggableContainer">
+                                                                        <div id="uppy-uploader" class="w-100" ng-show="hasFilesinUppy">
+
+                                                                        </div>
+                                                                        <input type="file" multiple hidden id="projectFile" />
+                                                                        <div class="row clearfix mb-3" ng-if="files.length>0">
+                                                                            <div class="col-sm-12">
+                                                                                <button type="button" class="btn btn-success" data-toggle="collapse" ng-click="openProjectFileDialog()" data-target="#createFiles" aria-expanded="false" aria-controls="collapseExample">
+                                                                                    Add file <i class="fa fa-plus-circle"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix" ng-if="files.length==0">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="list-empty text-center d-block p-3 border-dashed">
+                                                                                    <div class="row clearfix">
+                                                                                        <div class="col-sm-12">
+                                                                                            <div class="row">
+                                                                                                <div class="col-sm-12">
+                                                                                                    <span class="material-icons font-20">
+                                                                                                        insert_drive_file
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="row">
+                                                                                                <div class="col-sm-12">
+                                                                                                    <span class="col-form-label">
+                                                                                                        There are no files yet. You can drop files here.
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="row clearfix">
+                                                                                        <div class="col-sm-12 mt-3">
+                                                                                            <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#createLink" aria-expanded="false" ng-click="openProjectFileDialog()" aria-controls="collapseExample">Add file</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-6 col-md-4 col-lg-3 col-xxl-4 col-xxxl-2 mb-3" ng-repeat="file in files" style="height:160px !important">
+                                                                                <div class="card box-shadow">
+                                                                                    <div class="cursor-pointer" ng-click="openFileViewer(file,files)">
+                                                                                        <div ng-if="file.Type=='image'" class="img-fluid pointer-event cat-image"
+                                                                                             style="height: 130px;
+                                                                                background-image: url('/api/UserProfiles/GetFileThumbnail/{{file.FileId}}/200/200');
+                                                                                background-size: cover;
+                                                                                background-repeat: no-repeat;
+                                                                                -webkit-transition: background-image 1s ease-in-out;
+                                                                                transition: background-image 1s ease-in-out;
+                                                                                border-top-left-radius: 5px;
+                                                                                border-top-right-radius: 5px; ">
+                                                                                        </div>
+                                                                                        <div ng-if="file.Type!='image'" class="preview filetype filetype_json" style="pointer-events: all;">
+                                                                                            <span class="extention" style="pointer-events: all;"> <i class="fa fa-file"></i> {{file.Extension}}</span>
+                                                                                        </div>
+                                                                                        <div ng-if="file.LatestVersion" class="tags hide_in_colorlist" style=" position: absolute; right: 10px; top: 10px; color: #fff; font-size: 10px;">
+                                                                                            <span class="bg-dark text-white" style="padding: 2px 4px; border-radius: 5px;">{{file.LatestVersion}}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="card-body p-1">
+                                                                                        <div class="row clearfix">
+                                                                                            <div class="col-10 text-nowrap overflow-ellipsis" title="{{file.Name}}">
+                                                                                                {{file.Name}}
+                                                                                            </div>
+                                                                                            <div class="col-2 text-right">
+                                                                                                <div class="item-action dropdown">
+                                                                                                    <a href="javascript:void(0)" data-toggle="dropdown" class="icon" aria-expanded="false">
+                                                                                                        <i class="fe fe-more-vertical"></i>
+                                                                                                    </a>
+                                                                                                    <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                                                        <a href="javascript:void(0)" confirmed-click="deleteFile($event,file)" class="dropdown-item" ng-confirm-title="Delete file?" ng-confirm-click="Do you really want to delete the file?">
+                                                                                                            <i class="fa fa-trash">
+                                                                                                            </i> Delete
+                                                                                                        </a>
+                                                                                                        <a href="javascript:void(0)" ng-if="false" ng-click="makeDefault($event,file)" class="dropdown-item">
+                                                                                                            <i class="fa fa-file-picture-o">
+                                                                                                            </i> Select Thumbnail
+                                                                                                        </a>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-12" ng-show="files.length>0">
+                                                                                <i class="fa fa-info-circle"> You can drop files into the folder.</i>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix" ng-if="files.length>0">
+                                                                            <div class="col-sm-12">
+                                                                                <ul uib-pagination
+                                                                                    total-items="tabContentLength.filesCount"
+                                                                                    ng-model="filesPaging.page"
+                                                                                    items-per-page="12"
+                                                                                    previous-text="&lsaquo;"
+                                                                                    next-text="&rsaquo;"
+                                                                                    class="pull-right font-15"
+                                                                                    ng-change="getDocumentCatFiles()"
+                                                                                    boundary-link-numbers="true"
+                                                                                    rotate="false">
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    <div class="col-md-12 col-sm-12 mt-3">
+                                                        <label class="form-label">Do you want to add more?</label>
+                                                        <div class="row">
+                                                            <div class="col-lg-6 col-md-6 my-2 col-sm-6 col-12">
+                                                                <button class="text-center cursor-pointer  btn btn-dark btn-lg py-5 h-100 w-100" data-target="#demo" data-slide-to="1">
+                                                                    <i class="fa fa-address-card text-white fa-3x"></i>
+                                                                    <i class="fa fa-check text-success fa-2x" ng-hide="ContactForm.$invalid"></i>
+                                                                    <p>Add contact information</p>
+                                                                </button>
+                                                            </div>
+
+                                                            <div class="col-lg-6 col-md-6 my-2 col-sm-6  col-12">
+                                                                <button class="text-center cursor-pointer btn btn-dark btn-lg py-5 h-100 w-100" data-target="#demo" data-slide-to="2">
+
+                                                                    <i class="fa fa-user text-white fa-3x"></i>
+                                                                    <i class="fa fa-check text-success fa-2x " ng-show="SkillsForm.$dirty"></i>
+                                                                    <p>Add appearances & skills</p>
+                                                                </button>
+                                                            </div>
+                                                            <div class="col-lg-6 col-md-6 my-2 col-sm-6  col-12">
+                                                                <button class="text-center cursor-pointer  btn btn-dark btn-lg py-5 h-100 w-100" data-target="#demo" data-slide-to="3">
+
+                                                                    <i class="fa fa-shirtsinbulk text-white fa-3x"></i>
+                                                                    <i class="fa fa-check text-success fa-2x " ng-show="SizeForm.$dirty"></i>
+                                                                    <p>Add sizes</p>
+                                                                </button>
+                                                            </div>
+                                                            <div class="col-lg-6 col-md-6 my-2 col-sm-6  col-12">
+                                                                <button class="text-center cursor-pointer btn btn-dark btn-lg py-5 h-100 w-100" data-target="#demo" data-slide-to="4">
+
+                                                                    <i class="fa fa-coffee text-white fa-3x"></i>
+                                                                    <i class="fa fa-check text-success fa-2x " ng-show="CateringInfo.$dirty"></i>
+                                                                    <p>Add catering information</p>
+                                                                </button>
+                                                            </div>
+                                                            <div class="col-lg-6 col-md-6 my-2 col-sm-6  col-12">
+                                                                <button class="text-center cursor-pointer  btn btn-dark btn-lg py-5 h-100 w-100" data-target="#demo" data-slide-to="5">
+                                                                    <i class="fa fa-file-o text-white fa-3x"></i>
+                                                                    <i class="fa fa-check text-success fa-2x " ng-hide="!NoteForm.$dirty"></i>
+                                                                    <p>Add note</p>
+                                                                </button>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!--<div class="card comments" style="height:90% !important">
+                                                <div class="card-body">
+                                                    <i class="fa fa-info-circle"></i>
+                                                    View and manage the employees / staff members of your company. You can choose which global rights they receive and which sections in the company area they can access
+                                                </div>
+                                            </div>-->
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary pull-right" ng-disabled="actorForm.$invalid" ng-click="save()">
+                    <i class="fa fa-save"></i> Save
+                </button>
+                <button class="btn btn-danger" ng-click="cancel()">
+                    <i class="fa fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+        <div class="carousel-item">
+
+
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+                    <button class="btn btn-sm btn-dark btn-back "><i class="fa fa-arrow-left"></i></button>
+                    Contact
+
+                </h3>
+
+            </div>
+            <div class="modal-body " id="modal-body">
+
+                <div class="container-fluid">
+                    <h6>Here you can add contact information like email address or phone numbers.</h6>
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form name="ContactForm" id="ContactForm">
+
+                                            <div class="row">
+                                                <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Email</label>
+                                                        <input type="text" required ng-model="actor.Email" class="form-control" name="email" />
+                                                    </div>
+                                                </div>
+                                                <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Phone (home)</label>
+                                                        <input type="tel" ng-model="actor.PhoneHome" class="form-control" name="PhoneHome" />
+                                                    </div>
+                                                </div>
+
+                                                <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Phone (mobile)</label>
+                                                        <input type="tel" ng-model="actor.PhoneMobile" class="form-control" name="PhoneMobile" />
+                                                    </div>
+                                                </div>
+                                                <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Fax</label>
+                                                        <input type="tel" ng-model="actor.Fax" class="form-control" name="Fax" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <h6>First home</h6>
+                                                    <div class="row">
+
+                                                        <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>Street</label>
+                                                                <input type="text" ng-model="actor.FirstStreet" class="form-control" name="street" />
+                                                            </div>
+                                                        </div>
+                                                        <div class=" col-lg-6 col-md-6 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    City and State/Prov
+                                                                </label>
+                                                                <input type="text" ng-model="actor.FirstCity" class="form-control" name="City" />
+                                                            </div>
+                                                        </div>
+                                                        <div class=" col-lg-6 col-md-6 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Postal code
+                                                                </label>
+                                                                <input type="text" ng-model="actor.FirstPostalCode" class="form-control" name="PostalCode" />
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Country
+                                                                </label>
+                                                                <ui-select ng-model="actor.FirstCountry" theme="selectize" class="form-control" ng-disabled="disabled">
+                                                                    <ui-select-match><span>{{$select.selected.name}}</span></ui-select-match>
+                                                                    <ui-select-choices repeat="country in countries | filter: $select.search">
+                                                                        <span ng-bind-html="country.name | highlight: $select.search"></span>
+
+                                                                    </ui-select-choices>
+                                                                </ui-select>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <h6>Second home</h6>
+                                                    <div class="row">
+
+                                                        <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>Street</label>
+                                                                <input type="text" ng-model="actor.SecondStreet" class="form-control" name="street" />
+                                                            </div>
+                                                        </div>
+                                                        <div class=" col-lg-6 col-md-6 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    City and State/Prov
+                                                                </label>
+                                                                <input type="text" ng-model="actor.SecondCity" class="form-control" name="City" />
+                                                            </div>
+                                                        </div>
+                                                        <div class=" col-lg-6 col-md-6 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Postal code
+                                                                </label>
+                                                                <input type="text" ng-model="actor.SecondPostalCode" class="form-control" name="PostalCode" />
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Country
+                                                                </label>
+                                                                <ui-select ng-model="actor.SecondCountry" theme="selectize" class="form-control" ng-disabled="disabled">
+                                                                    <ui-select-match><span>{{$select.selected.name}}</span></ui-select-match>
+                                                                    <ui-select-choices repeat="country in countries | filter: $select.search">
+                                                                        <span ng-bind-html="country.name | highlight: $select.search"></span>
+
+                                                                    </ui-select-choices>
+                                                                </ui-select>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <h6>Home during production</h6>
+                                                    <div class="row">
+
+                                                        <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>Street</label>
+                                                                <input type="text" ng-model="actor.ProdStreet" class="form-control" name="street" />
+                                                            </div>
+                                                        </div>
+                                                        <div class=" col-lg-6 col-md-6 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    City and State/Prov
+                                                                </label>
+                                                                <input type="text" ng-model="actor.ProdCity" class="form-control" name="City" />
+                                                            </div>
+                                                        </div>
+                                                        <div class=" col-lg-6 col-md-6 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Postal code
+                                                                </label>
+                                                                <input type="text" ng-model="actor.ProdPostalCode" class="form-control" name="PostalCode" />
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Country
+                                                                </label>
+                                                                <ui-select ng-model="actor.ProdCountry" theme="selectize" class="form-control" ng-disabled="disabled">
+                                                                    <ui-select-match><span>{{$select.selected.name}}</span></ui-select-match>
+                                                                    <ui-select-choices repeat="country in countries | filter: $select.search">
+                                                                        <span ng-bind-html="country.name | highlight: $select.search"></span>
+
+                                                                    </ui-select-choices>
+                                                                </ui-select>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </form>
+                                        <div class="col-12 py-5 text-right">
+
+                                            <button class="btn btn-primary btn-sm text-right btn-back">Done</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+
+
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+                    <button class="btn btn-sm btn-dark btn-back "><i class="fa fa-arrow-left"></i></button>
+                    Appearances & Skills
+
+                </h3>
+
+            </div>
+            <div class="modal-body " id="modal-body">
+
+                <div class="container-fluid">
+                    <h6>Enter here the appearances and skills of the actor.</h6>
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form name="SkillsForm">
+                                            <div class="row">
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Gender
+                                                        </label>
+
+                                                        <div class="form-inline">
+                                                            <div class="radio mx-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="optradio" value="Male" ng-model="actor.Gender"> Male </label>
+                                                            </div>
+                                                            <div class="radio mx-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="optradio" value="Female" ng-model="actor.Gender"> Female </label>
+                                                            </div>
+                                                            <div class="radio mx-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="optradio" value="Other" ng-model="actor.Gender"> Other </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>      <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Age
+                                                        </label>
+                                                        <p class="text-center">{{ actor.AgeMin}} to {{actor.AgeMax}}</p>
+                                                        <slider-range min="0" max="110" step="2" value-min="actor.AgeMin" value-max="actor.AgeMax"></slider-range>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Languages
+                                                        </label>
+                                                        <input type="text" class="form-control" ng-model="actor.Languages" required />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Actors
+                                                        </label>
+                                                        <input type="text" class="form-control" ng-model="actor.actor" required />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Vocal range
+                                                        </label>
+                                                        <input type="text" class="form-control" ng-model="actor.VocalRange" required />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Instruments
+                                                        </label>
+                                                        <input type="text" class="form-control" ng-model="actor.Instruments" required />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Ethnicity
+                                                        </label>
+
+                                                        <div class="form-inline">
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="Ethnicity" value="African American" ng-model="actor.Ethnicity"> African American </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="Ethnicity" value="African Descent " ng-model="actor.Ethnicity"> African Descent </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="Ethnicity" value="Afro Caribbean" ng-model="actor.Ethnicity"> Afro Caribbean  </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="Ethnicity" value="Australasia" ng-model="actor.Ethnicity"> Australasia  </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="Ethnicity" value="Caucasian" ng-model="actor.Ethnicity"> Caucasian  </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="Ethnicity" value="Central Asian" ng-model="actor.Ethnicity"> Central Asian  </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="Ethnicity" value="East Asian" ng-model="actor.Ethnicity"> East Asian  </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="Ethnicity" value="Ethnically ambiguous / Mixed race" ng-model="actor.Ethnicity"> Ethnically ambiguous / Mixed race  </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="Ethnicity" value="Latino / Hispanic" ng-model="actor.Ethnicity"> Latino / Hispanic </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="Ethnicity" value="Middle Eastern" ng-model="actor.Ethnicity"> Middle Eastern </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="Ethnicity" value="Native American" ng-model="actor.Ethnicity"> Native American </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="Ethnicity" value="South Asian" ng-model="actor.Ethnicity"> South Asian </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Body type
+                                                        </label>
+
+                                                        <div class="form-inline">
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="body" value="Muscular" ng-model="actor.BodyType"> Muscular</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="body" value="Athletic" ng-model="actor.BodyType"> Athletic </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="body" value="Thin" ng-model="actor.BodyType"> Thin </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="body" value="Very Thin" ng-model="actor.BodyType"> Very Thin </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="body" value="Petite" ng-model="actor.BodyType"> Petite </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="body" value="Average" ng-model="actor.BodyType"> Average </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="body" value="Plus-sized / Full-figured" ng-model="actor.BodyType"> Plus-sized / Full-figured </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Eye color
+                                                        </label>
+
+                                                        <div class="form-inline">
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="eye" value="Brown" ng-model="actor.EyeColor"> Brown</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="eye" value="Blue" ng-model="actor.EyeColor"> Blue</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="eye" value="Gray" ng-model="actor.EyeColor"> Gray</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="eye" value="Green" ng-model="actor.EyeColor"> Green</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Hair length
+                                                        </label>
+
+                                                        <div class="form-inline">
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="hair" value="Shaved head" ng-model="actor.HairLength"> Shaved head</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="hair" value="Very short" ng-model="actor.HairLength"> Very short</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="hair" value="Short" ng-model="actor.HairLength"> Short</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="hair" value="Medium" ng-model="actor.HairLength"> Medium</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="hair" value="Long" ng-model="actor.HairLength"> Long</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="hair" value="Very long" ng-model="actor.HairLength"> Very long</label>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Hair color
+                                                        </label>
+
+                                                        <div class="form-inline">
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="haircolor" value="Auburn" ng-model="actor.HairColor"> Auburn</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="haircolor" value="Bald" ng-model="actor.HairColor"> Bald</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="haircolor" value="Black" ng-model="actor.HairColor"> Black</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="haircolor" value="Blonde" ng-model="actor.HairColor"> Blonde</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="haircolor" value="Brown" ng-model="actor.HairColor"> Brown</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="haircolor" value="Dark brown" ng-model="actor.HairColor"> Dark brown</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="haircolor" value="Gray" ng-model="actor.HairColor"> Gray</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label>
+                                                                    <input type="radio" name="haircolor" value="Multicolored / Dyed" ng-model="actor.HairColor"> Multicolored / Dyed
+                                                                </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label>
+                                                                    <input type="radio" name="haircolor" value="Red" ng-model="actor.HairColor"> Red
+                                                                </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label>
+                                                                    <input type="radio" name="haircolor" value="White" ng-model="actor.HairColor"> White
+                                                                </label>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Hair type
+
+                                                        </label>
+
+                                                        <div class="form-inline">
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="hairtype" value="Afro" ng-model="actor.HairType"> Afro</label>
+                                                            </div>
+
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="hairtype" value="Bald" ng-model="actor.HairType"> Bald</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label>
+                                                                    <input type="radio" name="hairtype" value="Curly" ng-model="actor.HairType"> Curly
+                                                                </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label>
+                                                                    <input type="radio" name="hairtype" value="Straight" ng-model="actor.HairType"> Straight
+
+                                                                </label>
+                                                            </div>
+
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label>
+                                                                    <input type="radio" name="hairtype" value="Wavy" ng-model="actor.HairType"> Wavy
+
+                                                                </label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label>
+                                                                    <input type="radio" name="hairtype" value="Wig / Toupee" ng-model="actor.HairType"> Wig / Toupee
+
+                                                                </label>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Facial hair
+                                                        </label>
+
+                                                        <div class="form-inline">
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="facialhair" value="None" ng-model="actor.FacialHair"> None</label>
+                                                            </div>
+
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="facialhair" value="Long beard" ng-model="actor.FacialHair"> Long beard</label>
+                                                            </div>
+
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="facialhair" value="Moustache" ng-model="actor.FacialHair"> Moustache</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="facialhair" value="Short beard" ng-model="actor.FacialHair"> Short beard</label>
+                                                            </div>
+                                                            <div class="radio m-1 radio badge badge-dark p-1 rounded mx-1">
+                                                                <label><input type="radio" name="facialhair" value="Stubble" ng-model="actor.FacialHair"> Stubble</label>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+
+                                                    <div class="form-check py-3">
+                                                        <input class="form-check-input" type="checkbox" ng-model="actor.WillCutHair">
+                                                        <label class="form-check-label">
+                                                            Will cut hair
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check py-3">
+                                                        <input class="form-check-input" type="checkbox" ng-model="actor.WillShave">
+                                                        <label class="form-check-label">
+                                                            Will shave
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check py-3">
+                                                        <input class="form-check-input" type="checkbox" ng-model="actor.WearsGlasses">
+                                                        <label class="form-check-label">
+                                                            Wears glasses
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check py-3">
+                                                        <input class="form-check-input" type="checkbox" ng-model="actor.HasTattoo">
+                                                        <label class="form-check-label">
+                                                            Has tattoos
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check py-3">
+                                                        <input class="form-check-input" type="checkbox" ng-model="actor.HasPiercings">
+                                                        <label class="form-check-label">
+                                                            Has piercings
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Appearance notes
+                                                        </label>
+                                                        <textarea rows="5" class="form-control" ng-required="true" name="Note" ng-model="actor.AppearanceNote"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="col-12 py-5 text-right">
+
+                                            <button class="btn btn-primary btn-sm text-right btn-back">Done</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+
+
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+                    <button class="btn btn-sm btn-dark btn-back "><i class="fa fa-arrow-left"></i></button>
+                    Sizes
+
+                </h3>
+
+            </div>
+            
+            <div class="modal-body " id="modal-body">
+
+                <div class="container-fluid">
+                    <h6>Here you can add the sizes of the actor.</h6>
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form name="SizeForm" >
+
+                                            <div class="row">
+                                                <div class="col-md-4 col-sm-6 d-none d-md-block d-sm-block" id="measuringDoll">
+                                                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="151.359px" height="384.719px" viewBox="0 0 151.359 384.719" style="enable-background:new 0 0 151.359 384.719;" xml:space="preserve">
+                                                    <g id="doll">
+                                                    <path id="outline" d="M64.914,384.449h30.833c0,0,7.25-5.084-16-9.833c-1.333-2.501,1.438-82.749,0.438-103.501
+c-1-20.751,3.188-67.5,3.188-82.813s-6.375-21.466-6.375-44.686s7.125-37.626,10.15-43.418
+c3.767-2.083,43.266,17.333,44.183,19.083s-7.502,44.785-7.583,47.085c-3.914,2.134-15.248,12.967-12.081,14.3
+s9.246-7.777,8.667-6.5c-3.963,8.739-5.115,20.036,1.833,20.167c8.833,0.167,17-19,10.733-25.708
+c0.651-1.804,17.598-48.695,18.098-51.009s-1.25-4.75-1.25-4.75s-37-47.751-99.875-51.188l0-8.063
+c18.208-9.668,14.334-53.333-7.687-53.333s-25.271,43.582-7.688,53.399v7.997"></path>
+                                                    <path id="crotch" d="M33.997,217.615c0,0,5.5,8.167,7.917,8.167s7.917-8.167,7.917-8.167"></path>
+                                                    <ellipse id="hip" cx="41.913" cy="188.303" rx="41.629" ry="10.438"></ellipse>
+                                                    <ellipse id="waist" cx="41.913" cy="143.999" rx="35.084" ry="8.504"></ellipse>
+                                                    <ellipse id="chest" cx="41.913" cy="109.705" rx="40.834" ry="8.504"></ellipse>
+                                                    <ellipse id="neck" cx="42.143" cy="61.68" rx="7.73" ry="1.417"></ellipse>
+            </g>
+                                                    <g id="measurings">
+                                                    <path id="footLength" d="M64.97,384.449h30.833"></path>
+                                                    <path id="waistKnee" d="M41.913,152.503v126.794"></path>
+                                                    <path id="outerLegLength" d="M41.913,152.503V374.25"></path>
+                                                    <path id="armLength" d="M132.899,168.626c0.651-1.804,17.598-48.695,18.098-51.009s-1.25-4.75-1.25-4.75
+		            s-22.644-29.222-62.603-43.592"></path>
+                                                    <path id="armBedLength" d="M132.899,168.626c0.651-1.804,17.598-48.695,18.098-51.009"></path>
+                                                    <path id="shoulderLength" d="M87.144,69.275c-11.121-3.999-23.583-6.848-37.271-7.596"></path>
+                                                    <path id="hipSize" d="M41.913,198.74c-22.991,0-41.629-4.673-41.629-10.438s18.639-10.438,41.629-10.438
+		            s41.629,4.673,41.629,10.438S64.904,198.74,41.913,198.74z"></path>
+                                                    <path id="headGirth" d="M42.203,31.075c-10.608,0-18.996-1.32-18.996-2.948c0-1.628,8.387-2.721,18.996-2.721
+		            c10.609,0,19.209,1.093,19.209,2.721C61.412,29.755,52.812,31.075,42.203,31.075z"></path>
+                                                    <path id="waistCircumference" d="M41.913,152.503c-19.376,0-35.084-3.808-35.084-8.504s15.708-8.504,35.084-8.504
+		            s35.084,3.808,35.084,8.504S61.289,152.503,41.913,152.503z"></path>
+                                                    <path id="underChestGirth" d="M41.913,126.209c-21.048,0-38.112-3.554-38.112-7.936c0-4.383,17.064-7.938,38.112-7.938
+		            s38.112,3.555,38.112,7.938C80.025,122.655,62.961,126.209,41.913,126.209z"></path>
+                                                    <path id="chestGirth" d="M41.913,118.209c-22.552,0-40.834-3.808-40.834-8.504s18.282-8.504,40.834-8.504
+		            s40.834,3.808,40.834,8.504S64.465,118.209,41.913,118.209z"></path>
+                                                    <path id="thighCircumference" d="M61.712,230.366c-10.935,0-19.799-2.052-19.799-4.584
+		            c0-2.531,8.865-4.584,19.799-4.584s19.799,2.053,19.799,4.584C81.512,228.313,72.647,230.366,61.712,230.366z"></path>
+                                                    <path id="kneeCircumference" d="M66.214,293.285c-7.828,0-14.174-1.511-14.174-3.377
+		            c0-1.865,6.346-3.376,14.174-3.376s14.173,1.512,14.173,3.376C80.387,291.774,74.042,293.285,66.214,293.285z"></path>
+                                                    <path id="calfGirth" d="M68.765,333.609c-6.105,0-11.055-1.208-11.055-2.701c0-1.492,4.95-2.701,11.055-2.701
+		            c6.106,0,11.055,1.209,11.055,2.701C79.82,332.401,74.871,333.609,68.765,333.609z"></path>
+                                                    <path id="backWidth" d="M82.747,102.089c0-4.696-18.282-8.504-40.834-8.504s-40.834,3.808-40.834,8.504"></path>
+                                                    <path id="neckGirth" d="M42.143,63.097c-4.269,0-7.73-0.635-7.73-1.417c0-0.782,3.461-1.417,7.73-1.417
+		            s7.73,0.635,7.73,1.417C49.873,62.462,46.412,63.097,42.143,63.097z"></path>
+                                                    <path id="frontWaistLenght" d="M41.913,60.263c52.771-10.439,11.667,87.519,0,92.24"></path>
+                                                    <path id="neckBreast" d="M41.913,60.263c32.721-6.473,29.492,27.574,19.359,56.932"></path>
+                                                    <path id="backLength" d="M41.913,135.495V60.263"></path>
+                                                    <path id="neckWaist" d="M41.913,152.503V63.097"></path>
+                                                    <path id="hipDepth" d="M83.372,188.685c0-15.313-6.375-21.466-6.375-44.686"></path>
+                                                    <path id="neckFloor" d="M41.913,384.449V60.263"></path>
+                                                    <path id="bodyHeight" d="M41.913,384.449V0.283"></path>
+                                                    <path id="kneeHeight" d="M41.913,384.449v-93.334"></path>
+                                                    <path id="insideLegLength" d="M41.913,384.449V225.782"></path>
+                                                    <path id="armBedGirth" d="M139.974,123.658c-4.883-0.608-8.763-1.732-8.666-2.508
+		            c0.097-0.776,4.134-0.913,9.017-0.304c4.882,0.608,8.763,1.731,8.666,2.507C148.894,124.129,144.857,124.266,139.974,123.658z"></path>
+                                                    <path id="upperArmGirth" d="M97.257,88.284c-2.88,6.874-5.8,12.201-6.522,11.899
+		            c-0.721-0.302,1.028-6.121,3.909-12.995c2.879-6.873,5.8-12.202,6.521-11.898C101.887,75.592,100.137,81.411,97.257,88.284z"></path>
+                                                    <path id="handGirth" d="M119.116,177.968l15.562,1.334"></path>
+            </g>
+        </svg>
+                                                </div>
+                                            
+                                                <div class="col-md-8 col-sm-6 col-12">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Shirt size</label>
+                                                                <input type="text" class="form-control" onfocus="animateSvg();" required ng-model="actor.ShirtSize" />
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Pants size</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.PantsSize" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Dress size</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.DressSize" />
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Bra size</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.BraSize" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Glove size</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.GloveSize" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Shoe size</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.ShoeSize" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Body height</label>
+                                                                <input type="text" class="form-control" onfocus="animateSvg('#bodyHeight')" required ng-model="actor.BodyHeight"  onblur="RemoveAnimateSvg('#bodyHeight')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Neck to floor</label>
+                                                                <input type="text" class="form-control" required onfocus="animateSvg('#neckFloor')" ng-model="actor.NeckToFloor"  onblur="RemoveAnimateSvg('#neckFloor')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Head girth</label>
+                                                                <input type="text" class="form-control" required onfocus="animateSvg('#headGirth')"  ng-model="actor.HeadGirth"  onblur="RemoveAnimateSvg('#headGirth')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Neck girth</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.NeckGirth"  onfocus="animateSvg('#neckGirth')"  onblur="RemoveAnimateSvg('#neckGirth')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Shoulder length</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.SoulderLength" onfocus="animateSvg('#shoulderLength')"  onblur="RemoveAnimateSvg('#shoulderLength')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Back width</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.BackWidth" onfocus="animateSvg('#backWidth')"  onblur="RemoveAnimateSvg('#backWidth')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Back length</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.BackLength" onfocus="animateSvg('#backLength')"  onblur="RemoveAnimateSvg('#backLength')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Chest girth</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.ChestGirth" onfocus="animateSvg('#chestGirth')"  onblur="RemoveAnimateSvg('#chestGirth')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Under chest girth</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.UnderChestGirth" onfocus="animateSvg('#underChestGirth')"  onblur="RemoveAnimateSvg('#underChestGirth')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Neck to breast</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.NeckToBreast" onfocus="animateSvg('#neckBreast')"  onblur="RemoveAnimateSvg('#neckBreast')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Neck to waist</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.NeckToWaist" onfocus="animateSvg('#neckWaist')"  onblur="RemoveAnimateSvg('#neckWaist')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>Front waist length</label>
+                                                                <input type="text" class="form-control" required ng-model="actor.FrontWaistLength" onfocus="animateSvg('#frontWaistLenght')"  onblur="RemoveAnimateSvg('#frontWaistLenght')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Waist circumferences
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.WaistCircumference" onfocus="animateSvg('#waistCircumference')"  onblur="RemoveAnimateSvg('#waistCircumference')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Hip size
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.HipSize" onfocus="animateSvg('#hipSize')"  onblur="RemoveAnimateSvg('#hipSize')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+                                                                    Hip height from waist
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.HipHeightFromWaist"  onfocus="animateSvg('#hipDepth')"  onblur="RemoveAnimateSvg('#hipDepth')"/>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+
+                                                                    Arm length
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.ArmLength"  onfocus="animateSvg('#armLength')"  onblur="RemoveAnimateSvg('#armLength')"/>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+
+
+                                                                    Upper arm girth
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.UpperArmGirth" onfocus="animateSvg('#upperArmGirth')"  onblur="RemoveAnimateSvg('#upperArmGirth')"/>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+
+
+                                                                    Arm bed girth
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.ArmBedGirth" onfocus="animateSvg('#armBedGirth')"  onblur="RemoveAnimateSvg('#armBedGirth')"/>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+
+
+                                                                    Arm bed length
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.ArmBedLength" onfocus="animateSvg('#armBedLength')"  onblur="RemoveAnimateSvg('#armBedLength')"/>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Hand girth
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.HandGirth" onfocus="animateSvg('#handGirth')"  onblur="RemoveAnimateSvg('#handGirth')"/>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+                                                                    Inseam
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.Inseam" onfocus="animateSvg('#insideLegLength')"  onblur="RemoveAnimateSvg('#insideLegLength')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+
+                                                                    Inner length of leg
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.InnerLengthOfLeg" onfocus="animateSvg('#insideLegLength')"  onblur="RemoveAnimateSvg('#insideLegLength')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+
+
+                                                                    Outer length of leg
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.OuterLengthOfLeg" onfocus="animateSvg('#outerLegLength')"  onblur="RemoveAnimateSvg('#outerLegLength')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+                                                                    Calf girth
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.CalfGirth" onfocus="animateSvg('#calfGirth')"  onblur="RemoveAnimateSvg('#calfGirth')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+
+                                                                    Thigh girth
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.ThighGirth" onfocus="animateSvg('#thighCircumference')"  onblur="RemoveAnimateSvg('#thighCircumference')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+                                                                    Knee height
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.KneeHeight" onfocus="animateSvg('#kneeHeight')"  onblur="RemoveAnimateSvg('#kneeHeight')"/>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+
+                                                                    Knee circumference
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.KneeCircumference" onfocus="animateSvg('#kneeCircumference')" onblur="RemoveAnimateSvg('#kneeCircumference')"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+                                                                    Ankle Width
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.AnkleWidth"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+
+                                                                    Foot length
+                                                                </label>
+                                                                <input type="text" class="form-control" onfocus="animateSvg('#footLength')" onblur="RemoveAnimateSvg('#footLength')" required ng-model="actor.FootLength" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Front foot width
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.FrontFootWidth" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    Foot width
+                                                                </label>
+                                                                <input type="text" class="form-control" required ng-model="actor.FootWidth" />
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="col-12 py-5 text-right">
+
+                                            <button class="btn btn-primary btn-sm text-right btn-back">Done</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+
+
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+                    <button class="btn btn-sm btn-dark btn-back "><i class="fa fa-arrow-left"></i></button>
+                    Catering information
+                </h3>
+
+            </div>
+            <div class="modal-body " id="modal-body">
+
+                <div class="container-fluid">
+                    <h6>Here you can add informations for the catering.</h6>
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form name="CateringInfo" >
+
+                                            <div class="row">
+                                                <div class="col-md-12 col-sm-12">
+
+                                                    <div class="form-check py-3">
+                                                        <input class="form-check-input" type="checkbox" ng-model="actor.IsVeg">
+                                                        <label class="form-check-label">
+                                                            Vegetarian
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check py-3">
+                                                        <input class="form-check-input" type="checkbox" ng-model="actor.IsVegan">
+                                                        <label class="form-check-label">
+                                                            Vegan
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check py-3">
+                                                        <input class="form-check-input" type="checkbox" ng-model="actor.IsHalal">
+                                                        <label class="form-check-label">
+                                                            Halal
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check py-3">
+                                                        <input class="form-check-input" type="checkbox" ng-model="actor.IsKosher">
+                                                        <label class="form-check-label">
+                                                            Kosher
+                                                        </label>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Allergies
+                                                        </label>
+                                                        <textarea rows="5" class="form-control" ng-required="true" name="Note" ng-model="actor.Allergies"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="col-12 py-5 text-right">
+
+                                            <button class="btn btn-primary btn-sm text-right btn-back">Done</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+
+
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+                    <button class="btn btn-sm btn-dark btn-back "><i class="fa fa-arrow-left"></i></button>
+                    Note
+
+                </h3>
+
+            </div>
+            <div class="modal-body " id="modal-body">
+
+                <div class="container-fluid">
+                    <h6>If you have any note, you can add the note here in this free text field.</h6>
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form name="NoteForm" id="NoteForm">
+
+                                            <div class="row">
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            Note
+                                                        </label>
+
+                                                        <textarea rows="5" class="form-control" ng-required="true" name="Note" ng-model="actor.Note"></textarea>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="col-12 py-5 text-right">
+
+                                            <button class="btn btn-primary btn-sm text-right btn-back">Done</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<script>
+    var animateSvg = function (id) {
+        $(id).addClass('animate')
+    }
+    var RemoveAnimateSvg = function (id) {
+        $(id).removeClass('animate')
+    }
+    setTimeout(function () {
+        if ($('body').hasClass("dark-mode")) {
+            $('.border-dashed').addClass('bg-dark');
+            $('.border-dashed').removeClass('border-dashed');
+            $('.char').addClass('bg-dark');
+            $('.char').removeClass('border-dashed');
+
+
+        } else {
+            $('.bg-dark').addClass('border-dashed');
+            $('.bg-dark').removeClass('bg-dark');
+            $('.char').addClass('bg-dark');
+            $('.char').removeClass('bg-dark');
+            $('.char').addClass('bg-light-gray');
+
+            $('.char').removeClass('border-dashed');
+        }
+    }, 400);
+    $('body').change(function () {
+
+
+        if ($('body').hasClass("dark-mode")) {
+            $('.border-dashed').addClass('bg-dark');
+            $('.border-dashed').removeClass('border-dashed');
+            $('.char').addClass('bg-dark');
+            $('.char').removeClass('border-dashed');
+        } else {
+            $('.bg-dark').addClass('border-dashed');
+            $('.bg-dark').removeClass('bg-dark');
+            $('.char').removeClass('bg-dark');
+            $('.char').removeClass('border-dashed');
+            $('.char').addClass('bg-light-gray');
+        }
+    });
+         $('.btn-back').click(() => {
+
+            $(".carousel").carousel(0);
+      
+
+        });
+</script>

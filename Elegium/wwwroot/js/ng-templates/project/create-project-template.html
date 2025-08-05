@@ -1,0 +1,761 @@
+﻿<link href="../../../css/step-wizard.css" rel="stylesheet" />
+
+<style>
+    .selectize-control.single .selectize-input {
+        background: none !important;
+        box-shadow: none !important;
+    }
+
+    .dark-mode .selectize-input {
+        border-color: #343a40 !important;
+        color: white !important;
+    }
+
+    .dark-mode .selectize-input {
+        border-color: #343a40 !important;
+        color: white !important;
+    }
+
+    .selectize-input:after {
+        background: none !important;
+    }
+
+    .is-invalid.selectize-control.single .selectize-input {
+        border-color: red !important;
+    }
+</style>
+
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">
+        {{title}}
+    </h3>
+    <div class="pull-right">
+        <button class="btn btn-secondary " ng-disabled="projectForm.$invalid" ng-click="save()">
+            <span ng-if="project.Id"><i class="fa fa-save"></i> Save</span>
+            <span ng-if="!project.Id"><i class="fa fa-plus"></i> Create</span>
+        </button>
+        <button class="btn btn-danger" ng-click="cancel()">
+            <i class="fa fa-times"></i> Close
+        </button>
+    </div>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid">
+        <div class="container">
+            <div class="stepwizard">
+                <div class="stepwizard-row setup-panel">
+                    <div class="stepwizard-step col-xs-3">
+                        <a href="#step-1" type="button" class="btn btn-default btn-circle btn-success">1</a>
+                        <p><small>Project Information</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3">
+                        <a href="#step-2" type="button" class="btn btn-default btn-circle">2</a>
+                        <p><small>Project Partners</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3">
+                        <a href="#step-3" type="button" class="btn btn-default btn-circle">3</a>
+                        <p>
+                            <small ng-show="!partnerReq.NeedFinancialParticipation">Project Funding</small>
+                            <small ng-show="partnerReq.NeedFinancialParticipation">Financial Participation</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <form role="form" name="projectForm">
+                <div class="panel panel-primary setup-content" id="step-1">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                        </h4>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Project name</label>
+                                            <input maxlength="200" ng-pattern-check="^[A-Za-z0-9 ]*$" type="text" required="required" name="projectName" class="form-control {{projectForm.projectName.$valid?'is-valid':'is-invalid'}}" placeholder="Project name" ng-model="project.Name" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <button class="btn btn-success float-right" ng-click="openCroppie()">
+                                                <i class="fa fa-upload"></i> Cover
+                                            </button>
+                                            <img class="box-radius-10" style="width:60%" ng-if="ProjectLogo" ng-src="{{ProjectLogo}}" width="100" />
+                                            <img class="box-radius-10" style="width: 20%; float:right" ng-if="!ProjectLogo" src="img/no-image.png" width="100" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Project Detail</label>
+                                            <textarea name="txtProjectDetail" ng-model="project.Detail" required="required"
+                                                      class="form-control {{projectForm.txtProjectDetail.$valid?'is-valid':'is-invalid'}}" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Project color</label>
+                                            <color-picker ng-model="project.Color" options="options" class="form-control"></color-picker>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Project currency</label>
+                                            <!--<select name="projectCurrency" class="form-control custom-select {{projectForm.projectCurrency.$valid?'is-valid':'is-invalid'}}" 
+                                                required="required" ng-options="item.Id as item.Name for item in currencies"
+                                                    ng-model="project.CurrencyId">
+                                            </select>-->
+
+                                            <ui-select name="projectProductionMode" class="form-control"
+                                                       ng-model="project.CurrencyId" theme="selectize" ng-required="true" sortable="true"
+                                                       close-on-select="true">
+                                                <ui-select-match placeholder="Project currency">
+                                                    {{$select.selected.Name}}
+                                                </ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in currencies">
+                                                    <div class="row p-10 clearfix">
+
+                                                        <div class="col-sm-12">
+                                                            <div ng-bind-html="item.Name | highlight: $select.search">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Select Overlay Colour for Background Picture</label>
+                                            <color-picker ng-model="project.BgColor" options="options" class="form-control"></color-picker>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Select Overlay Opacity</label>
+                                            <ui-select name="projectProductionMode" class="form-control"
+                                                       ng-model="project.BgOpacity" theme="selectize" ng-required="true" sortable="true"
+                                                       close-on-select="true">
+                                                <ui-select-match placeholder="Overlay color for background picture">
+                                                    {{$select.selected.Name}}
+                                                </ui-select-match>
+                                                <ui-select-choices repeat="item.Id as item in opacity">
+                                                    <div class="row p-10 clearfix">
+
+                                                        <div class="col-sm-12">
+                                                            <div ng-bind-html="item.Name | highlight: $select.search">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                            <select ng-if="false" ng-model="project.BgOpacity" class="form-control dropdown" ng-options="x for x in opacity">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Public visibility</label>
+                                            <label class="custom-switch">
+                                                <input type="checkbox" name="custom-switch-checkbox" ng-model="project.isVisible" class="custom-switch-input">
+                                                <span class="custom-switch-indicator"></span>
+                                                <span class="custom-switch-description">Visible to public?</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12" ng-show="project.isVisible">
+                                        <div class="form-group">
+                                            <label class="form-label">Visibility areas</label>
+                                            <ui-select multiple class="form-control" ng-model="lists.projectVisibilityAreas" theme="selectize" sortable="true" close-on-select="false">
+                                                <ui-select-match placeholder="Select where visible...">{{$item.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="visible.Id as visible in visibilityAreas">
+                                                    <div ng-bind-html="visible.Name | highlight: $select.search"></div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                <div class="card">
+                                    <div class="card-status bg-blue"></div>
+                                    <div class="card-header">
+                                        <h3 class="card-title">Contact person details</h3>
+                                        <!--<div class="card-options">
+                                            <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                            <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                                        </div>-->
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Name</label>
+                                                    <input maxlength="200" ng-pattern-check="^[A-Za-z ]*$" type="text" name="projectContactName" required="required" class="form-control  {{projectForm.projectContactName.$valid?'is-valid':'is-invalid'}}"
+                                                           placeholder="Name" ng-model="project.ContactName" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Email</label>
+                                                    <input maxlength="200" ng-pattern-check="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" required="required" name="projectContactEmail" class="form-control {{projectForm.projectContactEmail.$valid?'is-valid':'is-invalid'}}"
+                                                           placeholder="Email" ng-model="project.ContactEmail" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Phone</label>
+                                                    <input maxlength="200" type="text" ng-intl-tel-input required="required" name="projectContactPhone"
+                                                           class="telephone form-control {{projectForm.projectContactPhone.$valid?'is-valid':'is-invalid'}}"
+                                                           ng-model="project.ContactPhone" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Fax</label>
+                                                    <input maxlength="200" type="tel" name="projectContactFax" class="form-control"
+                                                           placeholder="Fax" ng-model="project.ContactFax" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                <div class="card">
+                                    <div class="card-status bg-blue"></div>
+                                    <div class="card-header">
+                                        <h3 class="card-title">Production detail data</h3>
+                                        <!--<div class="card-options">
+                                            <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                            <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                                        </div>-->
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Production type</label>
+                                                    <!--<select name="productionType" class="form-control custom-select {{projectForm.productionType.$valid?'is-valid':'is-invalid'}}" required="required" ng-options="item.Id as item.Name for item in productionTypes"
+                                                            ng-model="project.ProductionTypeId">
+                                                    </select>-->
+                                                    <ui-select name="productionType" class="form-control {{projectForm.productionType.$valid?'is-valid':'is-invalid'}}" 
+                                                               ng-model="project.ProductionTypeId" theme="selectize" required sortable="true" close-on-select="true">
+                                                        <ui-select-match placeholder="Production type">
+                                                            {{$select.selected.Name}}
+                                                        </ui-select-match>
+                                                        <ui-select-choices repeat="item.Id as item in productionTypes">
+                                                            <div class="row p-10 clearfix">
+
+                                                                <div class="col-sm-12">
+                                                                    <div ng-bind-html="item.Name | highlight: $select.search">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Length in mm:ss</label>
+                                                    <!--<input maxlength="200" type="text" required="required" name="projectProductionLength" ng-pattern-check="^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]):([0-5][0-9])$" class="form-control {{projectForm.projectProductionLength.$valid?'is-valid':'is-invalid'}}"
+                                                           placeholder="Length in mm:ss" ng-model="project.ProductionLength" />-->
+                                                    <div class="d-flex flex-row">
+                                                        <input type="number" min="0" max="59" value="0" name="ProductionLengthMM" ng-model="project.ProductionLengthMM" class="form-control" />
+                                                        <span class="font-weight-bold"> : </span>
+                                                        <input type="number" min="0" max="59" value="0" name="ProductionLengthSS" ng-model="project.ProductionLengthSS" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Recording method</label>
+                                                    <input maxlength="200" type="text" name="projectProductionRecordingMethod" 
+                                                           class="form-control"
+                                                           placeholder="Recording method" ng-model="project.ProductionRecordingMethod" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Aspect ratio</label>
+                                                    <input maxlength="200" type="text" name="projectProductionAspectRatio" 
+                                                           class="form-control"
+                                                           placeholder="Aspect ratio" ng-model="project.ProductionAspectRatio" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Mode</label>
+                                                    <!--<input maxlength="200" type="text" required="required" name="projectProductionMode" class="form-control {{projectForm.projectProductionMode.$valid?'is-valid':'is-invalid'}}"
+                                                           placeholder="Recording method" ng-model="project.ProductionMode" />-->
+
+                                                    <ui-select name="projectProductionMode" class="form-control"
+                                                               ng-model="project.ProductionMode" theme="selectize" sortable="true" close-on-select="true">
+                                                        <ui-select-match placeholder="Mode">
+                                                            {{$select.selected.Name}}
+                                                        </ui-select-match>
+                                                        <ui-select-choices repeat="item.Name as item in modes">
+                                                            <div class="row p-10 clearfix">
+
+                                                                <div class="col-sm-12">
+                                                                    <div ng-bind-html="item.Name | highlight: $select.search">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Color</label>
+                                                    <!--<color-picker ng-model="project.ProductionColor" options="options" class="form-control"></color-picker>-->
+                                                    <ui-select name="projectProductionMode" class="form-control"
+                                                               ng-model="project.ProductionColor" theme="selectize" sortable="true" 
+                                                               close-on-select="true">
+                                                        <ui-select-match placeholder="Production Color">
+                                                            {{$select.selected.Name}}
+                                                        </ui-select-match>
+                                                        <ui-select-choices repeat="item.Name as item in productionColorType">
+                                                            <div class="row p-10 clearfix">
+
+                                                                <div class="col-sm-12">
+                                                                    <div ng-bind-html="item.Name | highlight: $select.search">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Language</label>
+                                                    <!--<select name="language" class="form-control custom-select {{projectForm.language.$valid?'is-valid':'is-invalid'}}" required 
+                                                        ng-options="item.Id as item.Name for item in languages"
+                                                            ng-model="project.ProductionLanguageId">
+                                                    </select>-->
+                                                    <ui-select name="projectProductionMode" class="form-control {{projectForm.language.$valid?'is-valid':'is-invalid'}}"
+                                                               ng-model="project.ProductionLanguageId" theme="selectize" ng-required="true" sortable="true" close-on-select="true">
+                                                        <ui-select-match placeholder="Language">
+                                                            {{$select.selected.Name}}
+                                                        </ui-select-match>
+                                                        <ui-select-choices repeat="item.Id as item in languages">
+                                                            <div class="row p-10 clearfix">
+
+                                                                <div class="col-sm-12">
+                                                                    <div ng-bind-html="item.Name | highlight: $select.search">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <button class="btn btn-primary nextBtn btn-lg pull-right" type="button">
+                            Next <i class="fa fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel panel-primary setup-content" id="step-2">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            Project Partners
+                        </h4>
+                        <p>Please tell us, what are your requirements for the person who should be your Project Partner.</p>
+                    </div>
+                    <hr />
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Project budget</label>
+                                            <input maxlength="200" type="number" name="partnerReqBudget" ng-pattern-restrict="^[0-9]*$" required class="form-control {{projectForm.partnerReqBudget.$valid?'is-valid':'is-invalid'}}"
+                                                   placeholder="Project budget" ng-model="partnerReq.Budget" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">What is your financial share in project?</label>
+                                            <div class="row">
+                                                <div class="col-sm-11">
+                                                    <input type="text" name="partnerReqYourFinancialShare" class="form-control" ng-pattern-restrict="^[0-9][0-9]?$|^100$"
+                                                           placeholder="What is your financial share?" ng-model="partnerReq.YourFinancialShare" />
+                                                </div>
+                                                <div class="col-sm-1 form-control border-0">
+                                                    %
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Project management phase</label>
+                                            <select name="language" class="form-control custom-select" ng-options="item.Id as item.Name for item in ProjectManagementPhaseList"
+                                                    ng-model="partnerReq.ProjectManagementPhaseId">
+                                            </select>
+                                            <!--<ui-select multiple class="form-control" ng-model="lists.partnerReqManagementPhases" theme="selectize" sortable="true" close-on-select="false">
+                                                <ui-select-match placeholder="Select Project management phase...">{{$item.Name}}</ui-select-match>
+                                                <ui-select-choices repeat="phase.Id as phase in ProjectManagementPhaseList">
+                                                    <small ng-bind-html="phase.Name | highlight: $select.search"></small>
+                                                </ui-select-choices>
+                                            </ui-select>-->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-12">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="partnerReq.SynopsisCompleted" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Synopsis Completed?</span>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="partnerReq.PlotCompleted" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Plot & Outline Completed?</span>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="partnerReq.ScreenplayCompleted" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Screenplay Completed?</span>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="partnerReq.ScreenplayWorkRequired" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Screenplay work Required?</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                <div class="card">
+                                    <div class="card-status bg-blue"></div>
+                                    <div class="card-header">
+                                        <h3 class="card-title">Project partners requirement</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">How many project partners required?</label>
+                                                    <input type="number" class="form-control" ng-pattern-restrict="^[0-6]?$|^6$"
+                                                           placeholder="Maximum 6 partners are allowed" ng-model="partnerReq.ProjectPartnersCount" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <button class="btn btn-success float-right" ng-click="addPartner()">
+                                                    <i class="fa fa-user-plus"></i> Add Partner
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row p-2 m-1 rounded"
+                                             style="box-shadow: 1px 1px 7px 1px #c3c3c3;" ng-repeat="partner in partners">
+                                            <div class="col-md-1 col-sm-12">
+                                                <p class="form-control border-0">
+                                                    {{$index+1}}
+                                                </p>
+                                            </div>
+                                            <div class="col-md-4 col-sm-12">
+                                                <input type="text" class="form-control"
+                                                       placeholder="Partner role..." ng-model="partner.ProjectPartnerRole" />
+                                            </div>
+                                            <div class="col-md-4 col-sm-12">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" ng-model="partner.FinancialParticipationRequired" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Financial participation?</span>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-3 col-sm-12">
+                                                <input type="text" class="form-control" ng-if="partner.FinancialParticipationRequired"
+                                                       placeholder="Share/amount..." ng-model="partner.FinancialShare" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr />
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label class="custom-switch">
+                                            <input type="checkbox" name="custom-switch-checkbox"
+                                                   ng-model="partnerReq.NeedFinancialParticipation" class="custom-switch-input">
+                                            <span class="custom-switch-indicator"></span>
+                                            <span class="custom-switch-description">Independent Financial Participation Required?</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <small class="text-info">
+                                            Please tick yes, if your project also requires, or if you are also looking for independent, external Financial Participation from third parties.
+                                        </small>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <button class="btn btn-primary nextBtn btn-lg pull-right" type="button">
+                            Next <i class="fa fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel panel-primary setup-content" id="step-3">
+                    <div ng-show="!partnerReq.NeedFinancialParticipation">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                Project Funding
+                            </h4>
+                        </div>
+                        <hr />
+                        <div class="panel-body">
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">How much funding are you looking for?</label>
+                                                <input maxlength="200" type="text" ng-pattern-restrict="^[0-9]*$" class="form-control"
+                                                       placeholder="Please enter the funding required" ng-model="projectFunding.Amount" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">Currency</label>
+                                                <select class="form-control custom-select" ng-options="item.Id as item.Name for item in currencies"
+                                                        ng-model="projectFunding.CurrencyId">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">Do you want Fund only for the specific phase of the project?</label>
+                                                <select name="language" class="form-control custom-select" ng-options="item.Id as item.Name for item in ProjectManagementPhaseList"
+                                                        ng-model="projectFunding.ProjectManagementPhaseId">
+                                                </select>
+                                                <!--<ui-select multiple class="form-control" ng-model="lists.projectFundingManagementPhases" theme="selectize" sortable="true" close-on-select="false">
+                                                    <ui-select-match placeholder="Select Project management phase...">{{$item.Name}}</ui-select-match>
+                                                    <ui-select-choices repeat="phase.Id as phase in ProjectManagementPhaseList">
+                                                        <small ng-bind-html="phase.Name | highlight: $select.search"></small>
+                                                    </ui-select-choices>
+                                                </ui-select>-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">My Requirements</label>
+                                                <textarea class="form-control"
+                                                          placeholder="Please specify what do you want the funding for?" ng-model="projectFunding.Requirements"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">How many funders required?</label>
+                                                <select class="form-control custom-select" ng-options="item.Id as item.Name for item in fundersRequired | orderBy:item.Name"
+                                                        ng-model="projectFunding.FundersRequiredId">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">What benefits do you offer?</label>
+                                                <textarea class="form-control"
+                                                          placeholder="Please specify" ng-model="projectFunding.BenefitsOffer"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div ng-show="partnerReq.NeedFinancialParticipation">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                Financial Participation
+                            </h4>
+                        </div>
+                        <hr />
+                        <div class="panel-body">
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">What Financial share you looking for?</label>
+                                                <input maxlength="200" type="text" class="form-control"
+                                                       placeholder="Please put share or amount" ng-model="financialParticipation.Amount" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">Currency</label>
+                                                <select class="form-control custom-select" ng-options="item.Id as item.Name for item in currencies"
+                                                        ng-model="financialParticipation.CurrencyId">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">What phase of the project is Financial Participation for?</label>
+                                                <ui-select multiple class="form-control" ng-model="lists.financialParticipationManagementPhases" theme="selectize" sortable="true" close-on-select="false">
+                                                    <ui-select-match placeholder="Select Project management phase...">{{$item.Name}}</ui-select-match>
+                                                    <ui-select-choices repeat="phase.Id as phase in ProjectManagementPhaseList">
+                                                        <small ng-bind-html="phase.Name | highlight: $select.search"></small>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">How many Participators Required?</label>
+                                                <select class="form-control custom-select" ng-options="item.Id as item.Name for item in fundersRequired | orderBy:item.Name"
+                                                        ng-model="financialParticipation.FundersRequiredId">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">What benefits do you offer?</label>
+                                                <textarea class="form-control"
+                                                          placeholder="Please specify" ng-model="financialParticipation.BenefitsOffer"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">I would like to get Financial Pariticipation for only</label>
+                                                <textarea class="form-control"
+                                                          placeholder="Please specify what exactly is financial participation for?" ng-model="financialParticipation.Requirements"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">Other Requirements</label>
+                                                <textarea class="form-control"
+                                                          placeholder="Please tell us about your other requirements" ng-model="financialParticipation.OtherRequirements"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-secondary pull-right" ng-disabled="projectForm.$invalid" ng-click="save()">
+        <span ng-if="project.Id"><i class="fa fa-save"></i> Save</span>
+        <span ng-if="!project.Id"><i class="fa fa-plus"></i> Create</span>
+    </button>
+    <button class="btn btn-danger" ng-click="cancel()">
+        <i class="fa fa-times"></i> Close
+    </button>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        //$('.multiselect').multiselect({
+        //    enableFiltering: true,
+        //    enableCaseInsensitiveFiltering: true,
+        //    maxHeight: 200
+        //});
+
+        var navListItems = $('div.setup-panel div a'),
+            allWells = $('.setup-content'),
+            allNextBtn = $('.nextBtn');
+
+        allWells.hide();
+
+        navListItems.click(function (e) {
+            e.preventDefault();
+            var $target = $($(this).attr('href')),
+                $item = $(this);
+
+            if (!$item.hasClass('disabled')) {
+                navListItems.removeClass('btn-success').addClass('btn-default');
+                $item.addClass('btn-success');
+                allWells.hide();
+                $target.show();
+                $target.find('input:eq(0)').focus();
+            }
+        });
+
+        allNextBtn.click(function () {
+            var curStep = $(this).closest(".setup-content"),
+                curStepBtn = curStep.attr("id"),
+                nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+                curInputs = curStep.find("input[type='text'],input[type='url']"),
+                isValid = true;
+
+            $(".form-group").removeClass("has-error");
+            for (var i = 0; i < curInputs.length; i++) {
+                if (!curInputs[i].validity.valid) {
+                    isValid = false;
+                    $(curInputs[i]).closest(".form-group").addClass("has-error");
+                }
+            }
+
+            //if (isValid)
+            nextStepWizard.removeAttr('disabled').trigger('click');
+        });
+
+        $('div.setup-panel div a.btn-success').trigger('click');
+
+        //var input = document.querySelector(".telephone");
+        //window.intlTelInput(input, {
+        //    utilsScript: root + 'plugins/intl-tel-input/js/utils.js?20',
+        //});
+
+    });
+</script>

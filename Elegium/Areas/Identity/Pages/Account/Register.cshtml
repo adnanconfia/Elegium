@@ -1,0 +1,186 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+
+<div class="auth_left auth_left_register">
+    <div class="card" style="height: 95vh;overflow-y: scroll;">
+        <div class="text-center">
+            <a class="header-brand" href="#">
+                @*<i class="fe fe-command brand-logo"></i>*@
+                <img src="~/theme/assets/images/elegiumLogoLarge.png" width="150" />
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="card-title">Create new account</div>
+            <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Input.FirstName" class="form-label"></label>
+                            <input asp-for="Input.FirstName" class="form-control" placeholder="First name" />
+                            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Input.LastName" class="form-label"></label>
+                            <input asp-for="Input.LastName" class="form-control" placeholder="Last name" />
+                            <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Input.Company" class="form-label"></label>
+                            <input asp-for="Input.Company" class="form-control" placeholder="Company name" />
+                            <span asp-validation-for="Input.Company" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Input.IndustryId" class="form-label"></label>
+                            <select asp-for="Input.IndustryId" class="custom-select" asp-items="@(new SelectList(@Model.Industry, "Id", "Name"))"></select>
+                            @*<select asp-for="Input.Industry" class="custom-select">
+                                <option value="" selected=""></option>
+                                <option value="1">Film</option>
+                                <option value="2">TV</option>
+                                <option value="3">Theatre & Art</option>
+                                <option value="4">Music</option>
+                                <option value="5">Video & Animation</option>
+                                <option value="6">Streaming Media</option>
+                                <option value="7">Social Media</option>
+                                <option value="8">Interactive Media</option>
+                                <option value="9">Video Games</option>
+                                <option value="10">Events</option>
+                                <option value="11">Performance Art</option>
+                                <option value="12">Other</option>
+                            </select>*@
+                            <span asp-validation-for="Input.IndustryId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Email" class="form-label"></label>
+                    <input asp-for="Input.Email" class="form-control" placeholder="Business email" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Input.Password" class="form-label"></label>
+                            <input asp-for="Input.Password" class="form-control" placeholder="Password" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Input.ConfirmPassword" class="form-label"></label>
+                            <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirm password" />
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" name="chkTerms" class="custom-control-input">
+                        <span class="custom-control-label">Agree the <a href="#">terms and policy</a></span>
+                    </label>
+                </div>
+                <div class="form-footer">
+                    <button type="submit" class="btn btn-primary btn-block">Create new account</button>
+                </div>
+            </form>
+        </div>
+        <div class="text-center text-muted">
+            Already have account? <a asp-page="./Login">Sign in</a>
+        </div>
+    </div>
+</div>
+<div class="auth_right">
+    <section>
+        <h4>Use another service to register.</h4>
+        <hr />
+        @{
+            if ((Model.ExternalLogins?.Count ?? 0) == 0)
+            {
+                <div>
+                    <p>
+                        There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                        for details on setting up this ASP.NET application to support logging in via external services.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    <div>
+                        <p>
+                            @foreach (var provider in Model.ExternalLogins)
+                            {
+                            <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                @if (provider.Name == "Google")
+                                {
+                                    <i class="fa fa-google"></i>
+                                }
+                                @if (provider.Name == "Facebook")
+                                {
+                                    <i class="fa fa-facebook"></i>
+                                }
+                                @provider.DisplayName
+                            </button>
+                            }
+                        </p>
+                    </div>
+                </form>
+            }
+        }
+    </section>
+    @*<div class="carousel slide" data-ride="carousel" data-interval="3000">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="~/theme/assets/images/slider1.svg" class="img-fluid" alt="login page">
+                    <div class="px-4 mt-4">
+                        <h4>Fully Responsive</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="~/theme/assets/images/slider2.svg" class="img-fluid" alt="login page">
+                    <div class="px-4 mt-4">
+                        <h4>Quality Code and Easy Customizability</h4>
+                        <p>There are many variations of passages of Lorem Ipsum available.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="~/theme/assets/images/slider3.svg" class="img-fluid" alt="login page">
+                    <div class="px-4 mt-4">
+                        <h4>Powerful Production Management Software</h4>
+                        <p>Elegium is designed for every type of audio visual production</p>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<script>
+    $(form).submit(function (e) {
+        e.preventDefault();
+        if ($(this).find('input[name="chkTerms"]')[0].checked === false) {
+            swal("Please accept the terms and conditions!");
+            return false;
+        }
+        // rest of form
+    }
+</script>

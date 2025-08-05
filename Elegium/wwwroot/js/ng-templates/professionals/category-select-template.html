@@ -1,0 +1,18 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">What talent are you looking for?</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="selectgroup selectgroup-pills">
+                <label class="selectgroup-item" ng-repeat="item in promotionCategories" ng-click="ok(item.Id)">
+                    <input type="radio" name="icon-input" value="item.Id" class="selectgroup-input">
+                    <span class="selectgroup-button selectgroup-button-icon">{{item.Name}}</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    
+</div>

@@ -1,0 +1,394 @@
+﻿
+.wh-60px {
+    width: 60px !important;
+    height:60px !important;
+}.card .custom-title {
+    background: #f1f1f1;
+    padding: 1.1rem;
+    font-size: 1.3rem;
+    font-weight: 400;
+}
+
+.sticky {
+    width: 200px;
+    position: relative !important;
+    left: 53%;
+    top: 6px;
+}
+
+    .sticky li {
+        list-style-type: none;
+        display: inline-block;
+        background-color: #333;
+        color: #efefef;
+        padding: 0;
+        margin: 0 0 1px;
+        transition: all .25s ease-in-out;
+        cursor: pointer;
+        -webkit-filter: grey;
+        filter: gray;
+        text-align: right;
+        width: 30px !important
+    }
+ 
+.sharer .sticky li {
+    float: right;
+}
+.dark-mode #calendar.fc .fc-view-container .fc-view.fc-basic-view > table > thead tr th.fc-widget-header,
+.dark-mode #calendar.fc .fc-view-container .fc-view.fc-basic-view > table > thead tr td.fc-widget-header,
+.dark-mode #calendar.fc .fc-view-container .fc-view.fc-agenda > table > thead tr th.fc-widget-header,
+.dark-mode #calendar.fc .fc-view-container .fc-view.fc-agenda > table > thead tr td.fc-widget-header,
+.dark-mode .fc-agendaWeek-view .fc-head .fc-widget-header {
+    color: #E8E9E9;
+    background: #333537;
+}
+.sticky li.twitter {
+    background: #0084b4;
+}
+
+.sticky li.facebook {
+    background: #3b5998;
+}
+
+.sticky li.pinterest {
+    background: #bd081c;
+}
+
+.sticky li.linkedin {
+    background: #0084bf;
+}
+
+.sticky li a {
+    color: #fff;
+}
+
+.nav-unread-custom {
+    position: absolute !important;
+    top: 9px !important;
+    right: 5px !important;
+    min-height: 8px !important;
+    display: inline-block !important;
+    min-width: 5px !important;
+    box-shadow: 0 0 0 rgba(67, 74, 84, 0.9);
+    animation: pulse 2s infinite;
+}
+
+.stepwizard-step p {
+    margin-top: 0px;
+    color: #666;
+}
+
+.stepwizard-row {
+    display: table-row;
+}
+.bg-red {
+    background: #C91212 !important;
+    color:white !important;
+}
+.stepwizard {
+    display: table;
+    width: 100%;
+    position: relative;
+}
+
+.stepwizard-step button[disabled] {
+    /*opacity: 1 !important;
+    filter: alpha(opacity=100) !important;*/
+}
+
+.stepwizard .btn.disabled, .stepwizard .btn[disabled], .stepwizard fieldset[disabled] .btn {
+    opacity: 1 !important;
+    color: #bbb;
+}
+
+.stepwizard-row:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-index: 0;
+}
+
+.stepwizard-step {
+    display: table-cell;
+    text-align: center;
+    position: relative;
+}
+
+    .stepwizard-step > .btn-success {
+        color: white;
+    }
+
+.btn-circle {
+    /*width: 30px;
+        height: 30px;*/
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+}
+.btn-outline-transparent{
+    outline:0 !important;
+}
+    .btn-outline-transparent:hover {
+        background: #23272b !important;
+        color:#fff !important;
+    }
+.btn-transparent{
+    background-color:transparent !important;
+
+}
+.btn-transparent:hover{
+   background-color:rgba(0,0,0,0.1) !important;
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+.small{
+    font-size:60% !important;
+}
+.bg-black{
+    background-color:#000;
+}
+.h-200px{
+    height:200px !important;
+}
+.h-160px{
+    height:160px !important;
+}.h-50px{
+    height:50px !important;
+}
+.border-dashed {
+    border: 2px dashed #ccc;
+}
+.dark-mode .border-dashed {
+    border: 2px dashed #343a40;
+}
+.bg-lightyellow {
+    background: #f4e485 !important;
+    color:#000 !important;
+}
+.bg-Nightext {
+    background: rgb(118, 117, 188) !important;
+    color: rgb(255, 255, 255) !important;
+}
+.bg-Dayext {
+    background: rgb(97, 173, 129);
+    color: rgb(255, 255, 255) !important;
+}
+.bg-blue {
+    background: #5593CC !important;
+}
+.bg-pink {
+    background: #E62170 !important;
+}
+.bg-voilet {
+    background: #B82F94 !important;
+}
+.bg-brown {
+    background: #B8552F !important;
+}
+.bg-dark-blue {
+    background: #1F5080 !important;
+}
+.bg-light-green {
+    background: #83C500 !important;
+}
+.bg-sea-green {
+    background: #2EC682 !important;
+}
+.bg-dark-green {
+    background: #2A6264 !important;
+}
+.bg-light-sea-green {
+    background-color: #2EC682 !important;
+}   
+.scene-icon-svg {
+    filter: invert(100%) sepia(0%) saturate(306%) hue-rotate(175deg) brightness(100%) contrast(87%);
+}
+.w-3rem {
+    width: 2.29rem;
+    height: 2.05rem;
+}
+.bg-dark {
+    color: gray !important;
+}
+
+#measuringDoll svg {
+    /*height: 100%;*/
+    display: block;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-top: 17px;
+}
+#measuringDoll svg #doll path, #measuringDoll svg #doll ellipse {
+    stroke: #888;
+    stroke-width: 2;
+}
+#measuringDoll svg path, #measuringDoll svg ellipse {
+    fill: none;
+    stroke-miterlimit: 10;
+}
+#measuringDoll svg #measurings #footLength {
+    stroke-dasharray: 31;
+    stroke-dashoffset: 31;
+}
+.blue_theme #measuringDoll #measurings path, .blue_theme #measuringDoll #measurings ellipse, .blue_theme #measuringDoll #measurings line {
+    stroke: #2daee6;
+}
+#measuringDoll svg #measurings #waistKnee {
+    stroke-dasharray: 127;
+    stroke-dashoffset: 127;
+}
+#measuringDoll svg #measurings path, #measuringDoll svg #measurings ellipse, #measuringDoll svg #measurings line {
+    display: none;
+    stroke-width: 3;
+}
+#measuringDoll svg #measurings #outerLegLength {
+    stroke-dasharray: 222;
+    stroke-dashoffset: 222;
+}
+#measuringDoll svg #measurings #armLength {
+    stroke-dasharray: 136;
+    stroke-dashoffset: 136;
+}
+#measuringDoll svg #measurings #armBedLength {
+    stroke-dasharray: 54;
+    stroke-dashoffset: 54;
+}
+#measuringDoll svg #measurings path.animate, #measuringDoll svg #measurings ellipse.animate, #measuringDoll svg #measurings line.animate {
+    display: inline;
+    animation:dash 1s ease-out 0s 1 normal forwards;
+    stroke: #2daee6;
+   
+}
+@keyframes dash {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+#measuringDoll svg #measurings #shoulderLength {
+    stroke-dasharray: 38;
+    stroke-dashoffset: 38;
+}
+#measuringDoll svg #measurings #hipSize {
+    stroke-dasharray: 179;
+    stroke-dashoffset: 179;
+}
+#measuringDoll svg #measurings #headGirth {
+    stroke-dasharray: 79;
+    stroke-dashoffset: 79;
+}
+#measuringDoll svg #measurings #waistCircumference {
+    stroke-dasharray: 150;
+    stroke-dashoffset: 150;
+}
+#measuringDoll svg #measurings #underChestGirth {
+    stroke-dasharray: 161;
+    stroke-dashoffset: 161;
+}
+#measuringDoll svg #measurings #chestGirth {
+    stroke-dasharray: 173;
+    stroke-dashoffset: 173;
+}
+#measuringDoll svg #measurings #thighCircumference {
+    stroke-dasharray: 84;
+    stroke-dashoffset: 84;
+}
+#measuringDoll svg #measurings #kneeCircumference {
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+}
+#measuringDoll svg #measurings #calfGirth {
+    stroke-dasharray: 47;
+    stroke-dashoffset: 47;
+}
+#measuringDoll svg #measurings #backWidth {
+    stroke-dasharray: 86;
+    stroke-dashoffset: 86;
+}
+#measuringDoll svg #measurings #neckGirth {
+    stroke-dasharray: 32;
+    stroke-dashoffset: 32;
+}
+#measuringDoll svg #measurings #frontWaistLenght {
+    stroke-dasharray: 118;
+    stroke-dashoffset: 118;
+}
+#measuringDoll svg #measurings #neckBreast {
+    stroke-dasharray: 77;
+    stroke-dashoffset: 77;
+}
+#measuringDoll svg #measurings #backLength {
+    stroke-dasharray: 75;
+    stroke-dashoffset: 75;
+}
+#measuringDoll svg #measurings #neckWaist {
+    stroke-dasharray: 89;
+    stroke-dashoffset: 89;
+}
+#measuringDoll svg #measurings #hipDepth {
+    stroke-dasharray: 45;
+    stroke-dashoffset: 45;
+}
+#measuringDoll svg #measurings #neckFloor {
+    stroke-dasharray: 324;
+    stroke-dashoffset: 324;
+}
+#measuringDoll svg #measurings #bodyHeight {
+    stroke-dasharray: 384;
+    stroke-dashoffset: 384;
+}
+#measuringDoll svg #measurings #kneeHeight {
+    stroke-dasharray: 93;
+    stroke-dashoffset: 93;
+}
+#measuringDoll svg #measurings #insideLegLength {
+    stroke-dasharray: 159;
+    stroke-dashoffset: 159;
+}
+#measuringDoll svg #measurings #armBedGirth {
+    stroke-dasharray: 37;
+    stroke-dashoffset: 37;
+}
+#measuringDoll svg #measurings #upperArmGirth {
+    stroke-dasharray: 55;
+    stroke-dashoffset: 55;
+}
+#measuringDoll svg #measurings #handGirth {
+    stroke-dasharray: 16;
+    stroke-dashoffset: 16;
+}
+.rating {
+    color: #a9a9a9;
+    margin: 0;
+    padding: 0;
+}
+
+ul.rating {
+    display: inline-block;
+}
+
+.rating li {
+    list-style-type: none;
+    display: inline-block;
+    padding: 1px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.rating .filled {
+    color: orangered;
+}
+
+.clear {
+    margin-top: 20px;
+}

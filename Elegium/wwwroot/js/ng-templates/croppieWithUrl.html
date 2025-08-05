@@ -1,0 +1,29 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+    <span class="pull-right label label-primary"></span>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-sm-12">
+            <!-- Croppie needs a container -> using 'boundary' option -->
+            <div class="gallery_loading">
+                <i class="fa fa-spin fa-2x fa-circle-o-notch"></i>
+            </div>
+            <croppiewithurl ng-if="cropped.source" src="cropped.source" ng-model="cropped.image" options="options"></croppiewithurl>
+        </div>
+    </div>
+</div>
+<div class="modal-footer" data-exclude="true">
+    <button class="btn btn-primary" ng-click="ok()">Save</button>
+    <br />
+    <button class="btn btn-danger" ng-click="Cancel()">Cancel</button>
+</div>
+<style>
+    .gallery_loading {
+        position: absolute;
+        top: 50%;
+        text-align: center;
+        margin-top: -40px;
+        width: 100%;
+    }
+</style>

@@ -1,0 +1,26 @@
+﻿<div class="popover" tabindex="-1">
+    <div class="arrow"></div>
+    <h3 class="popover-title">New Appointment</h3>
+    <div class="popover-content">
+        <form name="newApptForm" novalidate>
+            <div class="form-group">
+                <label class="control-label">Device</label>
+                <select class="form-control" name="devices">
+                    <option value="">Select Device</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Office</label>
+                <select class="form-control" name="offices">
+                    <option value="">Select Office</option>
+                </select>
+            </div>
+
+
+            <hr />
+            <div class="form-group pull-right">
+                <button type="button" class="btn btn-primary" ng-disabled="newApptForm.$invalid" ng-click="SaveAppointment();$hide()"><i class="fa fa-save"></i> Create Appointment</button>
+            </div>
+        </form>
+    </div>
+</div>

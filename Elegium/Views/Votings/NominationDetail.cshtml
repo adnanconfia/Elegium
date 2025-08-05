@@ -1,0 +1,187 @@
+﻿<link href="~/assets/css/voting.css" rel="stylesheet" />
+
+<div class="section-body" style="max-width:1300px" ui-view=""
+     ng-controller="NominationDetailCtrl">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-sm-12">
+                @*<img class="w-100" ng-src="/api/Projects/GetProjectCover/{{nomination.ProjectId}}/1000/400" />
+                    <button class="btn btn-primary w-100" style="height: 70px; font-size: 20px; border-radius: unset;">
+                        Vote Now
+                    </button>*@
+
+
+
+                <div class="box-screenshot {{votingFinished?'style3':''}}">
+                    <figure class="rollover m-0">
+                        <img class="lazy lazy-loaded"
+                             ng-src="/api/Projects/GetProjectCover/{{nomination.ProjectId}}/1000/400">
+                        <div class="ribbon">
+                            <img src="https://assets.awwwards.com/assets/images/ribbons/nominee_white_left.png" srcset="https://assets.awwwards.com/assets/images/ribbons/nominee_white_left@2x.png 2x" alt="Nominee">
+                        </div>
+                        <div class="hover-item bottom">
+                            <a class="button x-small border-black circle">
+                                <svg class="ico-svg h-11" viewBox="0 0 22.24 14">
+                                    <use xlink:href="https://www.awwwards.com/assets/images/sprite-icons.svg#link"></use>
+                                </svg>
+
+                            </a>
+                        </div>
+                    </figure>
+                    <div class="clear"></div>
+                    <div class="overlay" ng-if="nomination.AlreadyVoted || votingFinished"></div>
+                    <div class="box-notes is-voted" ng-if="nomination.AlreadyVoted">
+                        <div class="content">
+                            <div class="top">
+                                USERS AVERAGE
+                            </div>
+                            <div class="total-note" id="total-note-voted">{{nomination.AverageScore.toFixed(2)}}</div>
+                            @*<div class="bottom">
+                                    <div class="average positive">+0.7</div>
+                                    <div class="hover">
+                                        <div class="button x-small border-white rounded">
+                                            YOUR VOTE
+                                            <strong>8.60 - 7.90</strong>
+                                        </div>
+                                    </div>
+                                </div>*@
+                        </div>
+                    </div>
+                    <div class="box-vote-site" ng-class="{voting:votingFinished}" ng-if="!nomination.AlreadyVoted">
+                        <div class="button js-votenow" ng-if="!votingStarted && !votingFinished"
+                             ng-click="startvoting()">VOTE NOW</div>
+                        <div class="slides" ng-if="votingStarted || votingFinished">
+                            <div class="slide slide-result" ng-if="votingFinished">
+                                <div class="box-notes">
+                                    <div class="content">
+                                        @*<ul class="top">
+                                                <li><strong>14</strong> VOTES</li>
+                                            </ul>*@
+                                        <div class="total-note" id="total-note">{{totalScore}}</div>
+                                        <div class="box-bt js-editvote" ng-click="editVote()">
+                                            <span>EDIT YOUR VOTE</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="button bt-sendvote js-sendvote" ng-click="confirmVote()">
+                                    CONFIRM YOUR VOTE
+                                </div>
+
+                            </div>
+                            <div class="slide slide-{{$index+1}} {{votingStarted?'active':''}}" ng-repeat="param in nomination.VotingParameters"
+                                 ng-if="votingStarted && step==$index+1">
+                                <ul class="m-0 vote-site ">
+                                    <li ng-click="voted($event, param)">1</li>
+                                    <li ng-click="voted($event, param)">2</li>
+                                    <li ng-click="voted($event, param)">3</li>
+                                    <li ng-click="voted($event, param)">4</li>
+                                    <li ng-click="voted($event, param)">5</li>
+                                    <li ng-click="voted($event, param)">6</li>
+                                    <li ng-click="voted($event, param)">7</li>
+                                    <li ng-click="voted($event, param)">8</li>
+                                    <li ng-click="voted($event, param)">9</li>
+                                    <li ng-click="voted($event, param)">10</li>
+                                </ul>
+                                <div class="step">
+                                    <span>
+                                        {{param.Name}}
+                                    </span>
+                                    <span>
+                                        {{$index+1}}/{{nomination.VotingParameters.length}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="card" ng-style="(votingStarted||votingFinished)&& !nomination.AlreadyVoted &&{'margin-top': '90px'}"
+                     style="border-top-left-radius:0px; border-top-right-radius:0px">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-8">
+                                <h3>
+                                    {{nomination.ProjectName}}
+                                </h3>
+                            </div>
+                            <div class="col-sm-12 col-md-4 text-right">
+                                <span><b>{{remainingTime[0].days}}</b> DAYS  <b>{{remainingTime[0].hours}}</b> HOURS  <b>{{remainingTime[0].minutes}}</b> MIN</span>
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                by {{nomination.UserName}} ({{nomination.Location}})
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-12">
+                                <p>{{nomination.ProjectDetail}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            Last User Votes
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row border-bottom pb-2" ng-repeat="vote in recentVotes">
+                            <div class="col-sm-12 col-md-9">
+                                <img class="rounded-circle p-2 cursor-pointer" ui-sref="professionaldetails({userId:'{{vote.UserVotedId}}'})"
+                                     src="/api/UserProfiles/GetUserPhoto/{{vote.UserVotedId}}/60/60">
+                                <span class="ml-2">
+                                    <a ui-sref="professionaldetails({userId:'{{vote.UserVotedId}}'})">
+                                        {{vote.UserVotedName}}
+                                    </a>
+                                    <i>from</i> {{vote.UserVotedLocation}}
+                                </span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 my-auto">
+                                <div class="flex-center">
+                                    <div class="progress-wrapper"
+                                         ng-repeat="param in vote.NominationVoteDetails"
+                                         title="{{param.VotingParameter.Name}}"
+                                         data-toggle="tooltip"
+                                         data-placement="top" tooltip>
+                                        <div class="progress"
+                                             style="top: 13px; color:{{progressColors[$index]}}; left: 15px; font-size: 15px; background:none">
+                                            {{param.Score}}
+                                        </div>
+                                        <div class="round-progress-wrapper"
+                                             round-progress
+                                             max="10"
+                                             current="param.Score"
+                                             color="{{progressColors[$index]}}"
+                                             bgcolor="transparent"
+                                             radius="20"
+                                             stroke="1"
+                                             semi="false"
+                                             rounded="true"
+                                             clockwise="true"
+                                             responsive="false"
+                                             duration="1000"
+                                             animation="easeInOutQuart"
+                                             animation-delay="200"></div>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="m-auto">{{vote.TotalScore.toFixed(2)}}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,202 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = null;
+}
+
+<style>
+    .fa-stack {
+        font-size: 0.55em;
+    }
+
+    i {
+        vertical-align: middle;
+    }
+</style>
+
+<div class="section-body inner-page mt-3" ng-controller="AdminController">
+    <h1 class="displaynone"> admin dashboard</h1>
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <a href="javascript:void(0)" ng-click="getUsers('')">
+                    <div class="card {{flag==''?'bg-success':''}}" style="height:90% !important">
+                        <div class="card-body">
+                            <div class="widgets2">
+                                <div class="state">
+                                    <h6>All Users</h6>
+                                    <h2>{{summaryObj.totalUsers}}</h2>
+                                </div>
+                                <div class="icon">
+                                    <i class="fe fe-users"></i>
+                                </div>
+                            </div>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar bg-green" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100" ng-style="{'width':summaryObj.increaseOrDecrese+'%'}"></div>
+                            </div>
+                            <span class="text-small">{{summaryObj.Message}}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <a href="javascript:void(0)" ng-click="getUsers('A')">
+                    <div class="card {{flag=='A'?'bg-success':''}}" style="height:90% !important">
+                        <div class="card-body">
+                            <div class="widgets2">
+                                <div class="state">
+                                    <h6>Active Users</h6>
+                                    <h2>{{summaryObj.activeUsers}}</h2>
+                                </div>
+                                <div class="icon">
+                                    <i class="fe fe-user-check"></i>
+                                </div>
+                            </div>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar bg-green" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100" ng-style="{'width':summaryObj.percentageOfActiveUsers+'%'}"></div>
+                            </div>
+                            <span class="text-small">{{summaryObj.percentageOfActiveUsers}}% Active users</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <a href="javascript:void(0)" ng-click="getUsers('I')">
+                    <div class="card {{flag=='I'?'bg-success':''}}" style="height:90% !important">
+                        <div class="card-body">
+                            <div class="widgets2">
+                                <div class="state">
+                                    <h6>Inactive Users</h6>
+                                    <h2>{{summaryObj.inActiveUsers}}</h2>
+                                </div>
+                                <div class="icon">
+                                    @*<img height="37" src="data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjMDAwMDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI0IDI0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PGc+PGc+PGc+PHBhdGggZD0iTTAuNSwyNGMtMC4xMzMsMC0wLjI2LTAuMDUzLTAuMzU0LTAuMTQ2UzAsMjMuNjMzLDAsMjMuNWMwLTMuMTIzLDEuMDY1LTQuOTA3LDMuMjU4LTUuNDU1bDMuODMtMC45NThsMC4zNDgtMS4zOTMgICAgIGMtMC45NjYtMC45OTgtMS42MzEtMi4zNDgtMS44MzktMy43MjJjLTAuNjI1LTAuMTIyLTEuMTIxLTAuNjM0LTEuMjAyLTEuMjg3bC0wLjI1LTJjLTAuMDUzLTAuNDI3LDAuMDgtMC44NTcsMC4zNjQtMS4xNzkgICAgIEM0LjY5LDcuMzAxLDQuOTI0LDcuMTUxLDUuMTgxLDcuMDdDNS4xMDksNi40Niw1LDUuNDQ5LDUsNWMwLTEuOTMsMC41NzktMy45MDksNC44NC0zLjk5OEMxMS4zMzMsMCwxMi45MzYsMCwxMy42MzEsMCAgICAgYzEuNzY0LDAsMy4wMzgsMC41ODEsMy43ODcsMS43MjZjMC45NzcsMS40OSwwLjUxLDIuNTE3LTAuMDU0LDMuMTE3TDE2Ljk5LDUuMjE3TDE2Ljg5OCw3LjFjMC4yMjksMC4wODcsMC40MzYsMC4yMjksMC42LDAuNDE3ICAgICBjMC4yOCwwLjMyMSwwLjQxLDAuNzQ3LDAuMzU3LDEuMTY5bC0wLjI1LDJjLTAuMDc2LDAuNjExLTAuNTE2LDEuMDk5LTEuMDg0LDEuMjU4Yy0wLjIwOCwxLjQzMS0wLjkwOSwyLjgyNC0xLjkzNiwzLjgzOSAgICAgbDAuMzk5LDEuNTk1YzAuMDY2LDAuMjY4LTAuMDk2LDAuNTM5LTAuMzY0LDAuNjA2Yy0wLjI2NiwwLjA2NS0wLjU0LTAuMDk2LTAuNjA2LTAuMzY0bC0wLjQ3LTEuODc5ICAgICBjLTAuMDQ1LTAuMTgsMC4wMTQtMC4zNywwLjE1MS0wLjQ5M2MxLjA2MS0wLjk1MSwxLjc2MS0yLjM2NywxLjg3NC0zLjc4OWMwLjAyMS0wLjI2LDAuMjM3LTAuNDYsMC40OTgtMC40NiAgICAgYzAuMzAxLDAsMC41MTQtMC4xODgsMC41NDUtMC40MzhsMC4yNS0yYzAuMDE4LTAuMTQyLTAuMDI0LTAuMjgtMC4xMTgtMC4zODhjLTAuMDk2LTAuMTA5LTAuMjI4LTAuMTctMC4zNzMtMC4xNzIgICAgIGMtMC4xMzYtMC4wMDEtMC4yNjUtMC4wNTktMC4zNTgtMC4xNTdjLTAuMDkzLTAuMDk5LTAuMTQyLTAuMjMxLTAuMTM1LTAuMzY3bDAuMTIyLTIuNTAyYzAuMDA2LTAuMTI0LDAuMDU4LTAuMjQxLDAuMTQ2LTAuMzI5ICAgICBsMC41LTAuNWMwLjMxMy0wLjMzMywwLjYtMC44NTgtMC4wNjQtMS44NzNDMTYuMDI4LDEuNDI5LDE1LjAzNSwxLDEzLjYzMSwxYy0xLjAyNCwwLTIuMjIzLDAuMTA4LTMuMzQsMC45MDcgICAgIEMxMC4yMDcsMS45NjYsMTAuMTA3LDEuOTk5LDEwLjAwNSwyQzYuMzA3LDIuMDM3LDYsMy40NCw2LDVjMCwwLjQ4OSwwLjE2OCwxLjkyNSwwLjIzMiwyLjQzOEM2LjI1LDcuNTgsNi4yMDYsNy43MjMsNi4xMTEsNy44MzEgICAgIEM2LjAxNyw3LjkzOCw1Ljg4LDgsNS43MzYsOEg1LjYzM0M1LjQ4Nyw4LDUuMzU0LDguMDYsNS4yNTksOC4xNjljLTAuMDk3LDAuMTA5LTAuMTQsMC4yNDktMC4xMjIsMC4zOTRsMC4yNSwyICAgICBDNS40MTgsMTAuODEyLDUuNjMxLDExLDUuODgzLDExaDAuMTYyYzAuMjYxLDAsMC40NzgsMC4yLDAuNDk4LDAuNDZjMC4xMSwxLjM3OCwwLjc3OSwyLjc2NywxLjc4OSwzLjcxNCAgICAgYzAuMTMzLDAuMTI0LDAuMTg4LDAuMzEsMC4xNDQsMC40ODZsLTAuNDksMS45NjFDNy45NCwxNy44LDcuODAxLDE3Ljk0LDcuNjIxLDE3Ljk4NUwzLjUsMTkuMDE1ICAgICBDMS45MDUsMTkuNDE0LDEuMTA3LDIwLjY4NSwxLjAxLDIzbDEzLjQ5LTAuMDAyYzAuMjc2LDAsMC41LDAuMjI0LDAuNSwwLjVjMCwwLjI3Ni0wLjIyNCwwLjUtMC41LDAuNUwwLjUsMjR6Ij48L3BhdGg+PC9nPjxnPjxwYXRoIGQ9Ik0yMy41LDIwaC0yYy0wLjE4NSwwLTAuMzU0LTAuMTAyLTAuNDQtMC4yNjRjLTAuMDg4LTAuMTYzLTAuMDc4LTAuMzYsMC4wMjQtMC41MTNMMjIuNTY1LDE3SDIxLjUgICAgIGMtMC4yNzYsMC0wLjUtMC4yMjQtMC41LTAuNXMwLjIyNC0wLjUsMC41LTAuNWgyYzAuMTg1LDAsMC4zNTQsMC4xMDIsMC40NCwwLjI2NGMwLjA4OCwwLjE2MywwLjA3OCwwLjM2LTAuMDI0LDAuNTEzTDIyLjQzNSwxOSAgICAgSDIzLjVjMC4yNzYsMCwwLjUsMC4yMjQsMC41LDAuNVMyMy43NzYsMjAsMjMuNSwyMHoiPjwvcGF0aD48L2c+PGc+PHBhdGggZD0iTTIwLjUsMjRoLTRjLTAuMTkyLDAtMC4zNjctMC4xMS0wLjQ1LTAuMjgzYy0wLjA4NC0wLjE3My0wLjA2MS0wLjM3OSwwLjA2LTAuNTI5TDE5LjQ2LDE5SDE2LjUgICAgIGMtMC4yNzYsMC0wLjUtMC4yMjQtMC41LTAuNXMwLjIyNC0wLjUsMC41LTAuNWg0YzAuMTkyLDAsMC4zNjcsMC4xMSwwLjQ1LDAuMjgzYzAuMDg0LDAuMTczLDAuMDYxLDAuMzc5LTAuMDYsMC41MjlMMTcuNTQsMjMgICAgIGgyLjk2YzAuMjc2LDAsMC41LDAuMjI0LDAuNSwwLjVTMjAuNzc2LDI0LDIwLjUsMjR6Ij48L3BhdGg+PC9nPjwvZz48L2c+PC9zdmc+" />*@
+                                    <i class="fe fe-user-x"></i>
+                                </div>
+                            </div>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar bg-red" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100" ng-style="{'width':summaryObj.percentageOfInactiveUsers+'%'}"></div>
+                            </div>
+                            <span class="text-small">{{summaryObj.percentageOfInactiveUsers}}% Inactive Users</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <a href="javascript:void(0)" ng-click="getUsers('B')">
+                    <div class="card {{flag=='B'?'bg-success':''}}" style="height:90% !important">
+                        <div class="card-body">
+                            <div class="widgets2">
+                                <div class="state">
+                                    <h6>Banned Users</h6>
+                                    <h2>{{summaryObj.bannedUsers}}</h2>
+                                </div>
+                                <div class="icon">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-ban fa-stack-2x text-red"></i>
+                                        <i class="fa fa-user fa-stack-1x"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar bg-primary" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100" ng-style="{'width':summaryObj.percentageOfBannedUsers+'%'}"></div>
+                            </div>
+                            <span class="text-small">{{summaryObj.percentageOfBannedUsers}}% Banned Users</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{title}}</h3>
+                    <div class="card-options">
+                        <a href="javascript:void(0)" ng-click="addUser()" class="btn btn-primary btn-sm">
+                            <i class=" fe fe-user-plus"></i> Add User
+                        </a>
+                        <form ng-if="false">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" placeholder="Search something..." name="s">
+                                <span class="input-group-btn ml-2"><button class="btn btn-sm btn-default" type="submit"><span class="fe fe-search"></span></button></span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <label class="text-center form-label" ng-if="users.length==0">No users to show!</label>
+                    <div class="table-responsive-sm" ng-if="users.length>0">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="w60">Name</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>Registered Date</th>
+                                    <th>Position</th>
+                                    <th class="w100">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="user in users track by user.UserId">
+                                    <td>
+                                        <img ng-src="api/Admin/GetUserPhoto/{{user.UserProfileId}}/g" data-toggle="tooltip" data-placement="top" title="" alt="{{user.FirstTwoCharacters}}" class="avatar" data-original-title="Avatar Name">
+                                    </td>
+                                    <td>
+                                        <h6 class="mb-0">{{user.Name}}{{index}}</h6>
+                                        <span>{{user.Email}}</span>
+                                    </td>
+                                    <td><span class="tag tag-dark">{{user.RoleName}}</span></td>
+                                    <td>{{user.Created}}</td>
+                                    <td>{{user.PositonName}}</td>
+                                    <td>
+                                        <div class="item-action dropdown ml-2">
+                                            <a href="javascript:void(0)" data-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-vertical"></i></a>
+                                            <div id="actionMenu" class="dropdown-menu dropdown-menu-right" style="position: relative; z-index:1 !important; transform: translate3d(-174px, -164px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                <a href="#/professionaldetails/{{user.UserId}}" target="_blank" class="dropdown-item"><i class="dropdown-icon fa fa-eye"></i> View Details </a>
+                                                <a href="javascript:void(0)" ng-click="viewProjects(user)" class="dropdown-item"><i class="dropdown-icon fa fa-folder-open"></i> Projects</a>
+                                                @*<a href="javascript:void(0)" ng-click="copyToClipboard(user)" class="dropdown-item"><i class="dropdown-icon fa fa-share-alt"></i> Copy Link</a>*@
+                                                <a href="javascript:void(0)" ng-click="copyToClipboard(user)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i> Copy Link</a>
+                                                <div class="dropdown-divider"></div>
+                                                <a href="javascript:void(0)" data-keepOpenOnClick class="dropdown-item">
+                                                    <label class="custom-switch">
+                                                        <input type="checkbox" name="custom-switch-checkbox" ng-change="ChangeBanActive(user, $index, 'B')" ng-model="user.Banned" class="custom-switch-input">
+                                                        <span class="custom-switch-indicator"></span>
+                                                        <span class="custom-switch-description">{{user.Banned?'Unban this user!':'Ban this user!'}}</span>
+                                                    </label>
+                                                </a>
+                                                <a href="javascript:void(0)" data-keepOpenOnClick class="dropdown-item">
+                                                    <label class="custom-switch">
+                                                        <input type="checkbox" name="custom-switch-checkbox" ng-change="ChangeBanActive(user, $index, 'A')" ng-model="user.Active" class="custom-switch-input">
+                                                        <span class="custom-switch-indicator"></span>
+                                                        <span class="custom-switch-description">{{user.Active?'Deactivate this user!':'Activate this user!'}}</span>
+                                                    </label>
+                                                </a>
+                                                <div class="dropdown-divider"></div>
+                                                <a href="javascript:void(0)" ng-click="editUser(user)" class="dropdown-item"><i class="dropdown-icon fa fa-edit"></i> Edit</a>
+                                                <a href="javascript:void(0)" ng-click="deleteUser(user)" class="dropdown-item"><i class="dropdown-icon fa fa-trash"></i> Delete</a>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/js/ng-controllers/AdminModule/admin-module.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            setTimeout(function () {
+                alert('aa');    
+                $("#actionMenu").on("click", "[data-keepOpenOnClick]", function (e) {
+                    e.stopPropagation();
+                });
+            }, 1000);
+        });
+    </script>
+}

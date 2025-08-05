@@ -1,0 +1,816 @@
+﻿<link href="../../../css/step-wizard.css" rel="stylesheet" />
+<style>
+    .thumbnail_overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        text-align: center;
+        background-color: rgba(0,0,0,.6);
+        color: #fff;
+        transition: opacity linear .5s;
+        opacity: 0;
+        font-size: 15px;
+        font-family: 'Work Sans',sans-serif;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        line-height: 220px;
+        display: block;
+    }
+
+    .cat-image:hover .thumbnail_overlay {
+        opacity: 1;
+    }
+
+
+    .selectize-control.single .selectize-input {
+        background: none !important;
+    
+        box-shadow:none !important;
+    }
+    .dark-mode .selectize-input {
+        border-color: #343a40 !important;
+        color: white !important;
+    }
+    .selectize-input:after{
+        background:none !important;
+    }
+    textarea:focus .comment_info {
+        display: block !important;
+    }
+
+    textarea:focus {
+        border: 1px #0d96ce solid !important;
+    }
+
+
+
+    textarea {
+        height: 160px !important;
+        background: none;
+        border: 0;
+        border: 1px #888 solid;
+        color: #363636;
+        padding: 5px 10px;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -moz-transition: border .3s linear;
+        -o-transition: border .3s linear;
+        -webkit-transition: border .3s linear;
+        transition: border .3s linear;
+        font-size: 12px;
+        font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+        border-radius: 5px;
+    }
+
+    .project-hover-files {
+        visibility: hidden;
+        display: flex;
+    }
+
+        .project-hover-files::before {
+            visibility: visible;
+            font-size: 20px;
+            position: absolute !important;
+            opacity: 1 !important;
+            border: 3px dashed #0c0;
+            height: 100%;
+            width: 100%;
+            display: inline-block;
+            content: "";
+        }
+
+        .project-hover-files::after {
+            content: "Drop your files here!";
+            position: absolute !important;
+            height: 20px;
+            visibility: visible;
+            top: 70%;
+            margin-left: 42%;
+        }
+
+    .filetype {
+        pointer-events: none;
+        width: 100% !important;
+        height: 130px;
+        display: block;
+        /* position: absolute; */
+        top: 0;
+        left: 0;
+        background: #272727;
+        color: #fff;
+        text-align: center;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+        .filetype.preview .extention {
+            font-size: 35px;
+            line-height: 130px;
+        }
+
+        .filetype .extention {
+            pointer-events: all;
+            font-family: 'Work Sans',sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 90%;
+            display: inline-block;
+            line-height: 55px;
+            font-size: 15px;
+        }
+
+    #uppy-uploader {
+        font-size: 12px;
+        display: none;
+        width: 300px !important;
+        right: 60px;
+        bottom: 20px;
+        border-radius: 10px;
+        padding: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,.5);
+        background: #272727 !important;
+        z-index: 1;
+        display: block;
+        position: fixed;
+    }
+</style>
+<div id="demo" class="carousel slide" data-interval="false" data-ride="carousel" data-pause="hover">
+
+
+    <div class="carousel-inner">
+
+
+        <div class="carousel-item active">
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+
+                    {{title}}
+
+                </h3>
+
+                <div class="pull-right">
+                    <button class="btn btn-secondary " ng-disabled="ShotForm.$invalid" ng-click="save()">
+                        <i class="fa fa-save"></i> Save
+                    </button>
+                    <button class="btn btn-danger" ng-click="cancel()">
+                        <i class="fa fa-times"></i> close
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body p-0" id="modal-body">
+                <div class="container-fluid p-0">
+                    <div class="container">
+                        <p>To create a shot, enter the ID of the shot and other information.</p>
+                        <div class="stepwizard">
+                            <div class="stepwizard-row setup-panel">
+                                <div class="stepwizard-step col-xs-3">
+
+                                    <a href="#step-1" type="button" class="btn btn-default btn-circle btn-success"><i class="fa fa-info-circle"></i></a>
+                                    <p><small>General Information</small></p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="panel panel-primary setup-content" id="step-1">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                </h4>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="row clearfix">
+                                    <div class="col-sm-12">
+
+
+                                        <div class="card">
+                                            <div class="card-body">
+
+
+                                                <div class="row">
+                                                    <form role="form" name="ShotForm" id="ShotForm" class="row">
+                                                        <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Id (Required)</label>
+                                                                <input maxlength="200" required="required" name="index" class="form-control {{ShotForm.index.$valid?'is-valid':'is-invalid'}}"
+                                                                       placeholder="Id" ng-model="Shot.Index" />
+                                                            </div>
+                                                        </div>
+                                                        <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Subject</label>
+                                                                <input maxlength="200" name="subject" class="form-control }"
+                                                                       placeholder="Subject" ng-model="Shot.Subject" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label class="form-label">
+                                                                    Visual
+                                                                </label>
+
+                                                                <textarea rows="5" class="form-control" placeholder="" ng-model="Shot.Visual"></textarea>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label class="form-label">
+                                                                    Audio
+                                                                </label>
+
+                                                                <textarea rows="5" class="form-control" placeholder="" ng-model="Shot.Audio"></textarea>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12 col-sm-12" ng-show="ViewImage">
+                                                            <div class="row clearfix">
+                                                                <div class="col-sm-12">
+                                                                    <div class="progressFiles">
+
+                                                                    </div>
+                                                                    <div id="draggableContainer">
+                                                                        <div id="uppy-uploader" class="w-100" ng-show="hasFilesinUppy">
+
+                                                                        </div>
+                                                                        <input type="file" multiple hidden id="projectFile" />
+                                                                        <div class="row clearfix mb-3" ng-if="files.length>0">
+                                                                            <div class="col-sm-12">
+                                                                                <button type="button" class="btn btn-success" data-toggle="collapse" ng-click="openProjectFileDialog()" data-target="#createFiles" aria-expanded="false" aria-controls="collapseExample">
+                                                                                    Add file <i class="fa fa-plus-circle"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix" ng-if="files.length==0">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="list-empty text-center d-block p-3" style="border: 3px dashed #ccc;">
+                                                                                    <div class="row clearfix">
+                                                                                        <div class="col-sm-12">
+                                                                                            <div class="row">
+                                                                                                <div class="col-sm-12">
+                                                                                                    <span class="material-icons font-20">
+                                                                                                        insert_drive_file
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="row">
+                                                                                                <div class="col-sm-12">
+                                                                                                    <span class="col-form-label">
+                                                                                                        There are no files yet. You can drop files here.
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="row clearfix">
+                                                                                        <div class="col-sm-12 mt-3">
+                                                                                            <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#createLink" aria-expanded="false" ng-click="openProjectFileDialog()" aria-controls="collapseExample">Add file</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-sm-6 col-md-4 mb-3" ng-repeat="file in files" style="height:160px !important">
+                                                                                <div class="card border">
+                                                                                    <div class="cursor-pointer" ng-click="openProjectFileViewer(file)">
+                                                                                        <div ng-if="file.Type=='image'" class="img-fluid pointer-event cat-image"
+                                                                                             style="height: 130px;
+                                                                                background-image: url('/api/UserProfiles/GetFileThumbnail/{{file.FileId}}/200/200');
+                                                                                background-size: cover;
+                                                                                background-repeat: no-repeat;
+                                                                                -webkit-transition: background-image 1s ease-in-out;
+                                                                                transition: background-image 1s ease-in-out;
+                                                                                border-top-left-radius: 5px;
+                                                                                border-top-right-radius: 5px; ">
+                                                                                        </div>
+                                                                                        <div ng-if="file.Type!='image'" class="preview filetype filetype_json" style="pointer-events: all;">
+                                                                                            <span class="extention" style="pointer-events: all;"> <i class="fa fa-file"></i> {{file.Extension}}</span>
+                                                                                        </div>
+                                                                                        <div ng-if="file.LatestVersion" class="tags hide_in_colorlist" style=" position: absolute; right: 10px; top: 10px; color: #fff; font-size: 10px;">
+                                                                                            <span class="bg-dark text-white" style="padding: 2px 4px; border-radius: 5px;">{{file.LatestVersion}}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="card-body p-1">
+                                                                                        <div class="row clearfix">
+                                                                                            <div class="col-10 text-nowrap overflow-ellipsis" title="{{file.Name}}">
+                                                                                                {{file.Name}}
+                                                                                            </div>
+                                                                                            <div class="col-2 text-right">
+                                                                                                <div class="item-action dropdown">
+                                                                                                    <a href="javascript:void(0)" data-toggle="dropdown" class="icon" aria-expanded="false">
+                                                                                                        <i class="fe fe-more-vertical"></i>
+                                                                                                    </a>
+                                                                                                    <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                                                        <a href="javascript:void(0)" ng-click="deleteFile($event,file)" class="dropdown-item">
+                                                                                                            <i class="fa fa-trash">
+                                                                                                            </i> Delete
+                                                                                                        </a>
+                                                                                                        <a href="javascript:void(0)" ng-if="false" ng-click="makeDefault($event,file)" class="dropdown-item">
+                                                                                                            <i class="fa fa-file-picture-o">
+                                                                                                            </i> Select Thumbnail
+                                                                                                        </a>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-12" ng-show="files.length>0">
+                                                                                <i class="fa fa-info-circle"> You can drop files into the folder.</i>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row clearfix" ng-if="files.length>0">
+                                                                            <div class="col-sm-12">
+                                                                                <ul uib-pagination
+                                                                                    total-items="tabContentLength.filesCount"
+                                                                                    ng-model="filesPaging.page"
+                                                                                    items-per-page="12"
+                                                                                    previous-text="&lsaquo;"
+                                                                                    next-text="&rsaquo;"
+                                                                                    class="pull-right font-15"
+                                                                                    ng-change="getDocumentCatFiles()"
+                                                                                    boundary-link-numbers="true"
+                                                                                    rotate="false">
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    <div class="col-md-12 col-sm-12 mt-3">
+                                                        <label class="form-label">Do you want to add more?</label>
+                                                        <div class="row">
+                                                            <div class="col-lg-6 col-md-6 my-2 col-sm-6 col-12">
+                                                                <button class="text-center cursor-pointer shooting-info btn btn-dark btn-lg py-5 h-100 w-100" href="#">
+                                                                    <i class="fa fa-camera text-white fa-3x"></i>
+                                                                    <i class="fa fa-check text-success fa-2x" ng-show="ShootingInfo.$dirty || checkempty()"></i>
+                                                                    <p>Add shooting information</p>
+                                                                </button>
+                                                            </div>
+
+                                                            <div class="col-lg-6 col-md-6 my-2 col-sm-6  col-12">
+                                                                <button class="text-center cursor-pointer add-color btn btn-dark btn-lg py-5 h-100 w-100" href="#">
+                                                                    <i class="fa fa-paint-brush text-white fa-3x"></i>
+                                                                    <i class="fa fa-check text-success fa-2x color-check" ng-show="Color.$dirty || Shot.Id"></i>
+                                                                    <p>Add color</p>
+                                                                </button>
+                                                            </div>
+
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!--<div class="card comments" style="height:90% !important">
+                                                    <div class="card-body">
+                                                        <i class="fa fa-info-circle"></i>
+                                                        View and manage the employees / staff members of your company. You can choose which global rights they receive and which sections in the company area they can access
+                                                    </div>
+                                                </div>-->
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary pull-right" ng-disabled="ShotForm.$invalid" ng-click="save()">
+                    <i class="fa fa-save"></i> Save
+                </button>
+                <button class="btn btn-danger" ng-click="cancel()">
+                    <i class="fa fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+
+
+
+
+
+        <!-- Shooting info -->
+        <div class="carousel-item">
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+                    <button class="btn btn-sm btn-dark btn-back "><i class="fa fa-arrow-left"></i></button>
+                    Add shooting information
+
+                </h3>
+
+            </div>
+            <div class="modal-body " id="modal-body">
+
+                <div class="container-fluid ">
+                    <h6>Select the scheduled time and the unit.</h6>
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form name="ShootingInfo" id="ShootingInfo">
+
+                                            <div class="row">
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Size
+                                                        </label>
+
+                                                        <ui-select  class="form-control" ng-model="Shot.Size" theme="selectize" ng-required="true" sortable="true" close-on-select="true">
+                                                            <ui-select-match>{{Shot.Size.Name}}</ui-select-match>
+                                                            <ui-select-choices group-by="groupSize" repeat="visible as visible in size">
+                                                                <div class="row p-10 clearfix">
+
+                                                                    <div class="col-sm-12">
+                                                                        <div ng-bind-html="visible.Name | highlight: $select.search">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                       
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Type
+                                                        </label>
+
+                                                        <ui-select multiple class="form-control" ng-model="Shot.Type" theme="selectize" ng-required="true" sortable="true" close-on-select="false">
+                                                            <ui-select-match>{{$item.Name}}</ui-select-match>
+                                                            <ui-select-choices group-by="groupType" repeat="visible as visible in type">
+                                                                <div class="row p-10 clearfix">
+
+                                                                    <div class="col-sm-12">
+                                                                        <div ng-bind-html="visible.Name | highlight: $select.search">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Movement
+                                                        </label>
+                                                        <ui-select class="form-control" ng-model="Shot.Movement" theme="selectize" ng-required="true" sortable="true" close-on-select="true">
+                                                            <ui-select-match>{{Shot.Movement.Name}}</ui-select-match>
+                                                            <ui-select-choices group-by="groupSize" repeat="visible as visible in movement">
+                                                                <div class="row p-10 clearfix">
+
+                                                                    <div class="col-sm-12">
+                                                                        <div ng-bind-html="visible.Name | highlight: $select.search">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                       
+
+                                                    </div>
+                                                </div>    
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Equipment
+                                                        </label>
+
+                                                        <ui-select multiple class="form-control" ng-model="Shot.Equipment" ng-required="true" theme="selectize" sortable="true" close-on-select="false">
+                                                            <ui-select-match>{{$item.Name}}</ui-select-match>
+                                                            <ui-select-choices group-by="groupEquipment" repeat="visible as visible in equipment">
+                                                                <div class="row p-10 clearfix">
+
+                                                                    <div class="col-sm-12">
+                                                                        <div ng-bind-html="visible.Name | highlight: $select.search">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            VFX
+                                                        </label>
+
+                                                        <ui-select multiple class="form-control" ng-model="Shot.Vfx" theme="selectize" ng-required="true" sortable="true" close-on-select="false">
+                                                            <ui-select-match>{{$item.Name}}</ui-select-match>
+                                                            <ui-select-choices group-by="groupVfx" repeat="visible as visible in vfx">
+                                                                <div class="row p-10 clearfix">
+
+                                                                    <div class="col-sm-12">
+                                                                        <div ng-bind-html="visible.Name | highlight: $select.search">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Camera
+                                                        </label>
+
+                                                        <ui-select multiple class="form-control" ng-model="Shot.Camera" theme="selectize" ng-required="true" sortable="true" close-on-select="false">
+                                                            <ui-select-match>{{$item.Name}}</ui-select-match>
+                                                            <ui-select-choices group-by="groupCamera" repeat="visible as visible in camera">
+                                                                <div class="row p-10 clearfix">
+
+                                                                    <div class="col-sm-12">
+                                                                        <div ng-bind-html="visible.Name | highlight: $select.search">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Lens
+                                                        </label>
+
+                                                        <ui-select multiple class="form-control" ng-model="Shot.Lens" theme="selectize" ng-required="true" sortable="true" close-on-select="false">
+                                                            <ui-select-match>{{$item.Name}}</ui-select-match>
+                                                            <ui-select-choices group-by="groupLens" repeat="visible as visible in lens">
+                                                                <div class="row p-10 clearfix">
+
+                                                                    <div class="col-sm-12">
+                                                                        <div ng-bind-html="visible.Name | highlight: $select.search">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Framerate
+                                                        </label>
+
+                                                        <ui-select class="form-control" ng-model="Shot.Fps" theme="selectize" ng-required="true" sortable="true" close-on-select="true">
+                                                            <ui-select-match>{{Shot.Fps.Name}}</ui-select-match>
+                                                            <ui-select-choices group-by="groupSize" repeat="visible as visible in fps">
+                                                                <div class="row p-10 clearfix">
+
+                                                                    <div class="col-sm-12">
+                                                                        <div ng-bind-html="visible.Name | highlight: $select.search">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Special Equipment
+                                                        </label>
+
+                                                        <ui-select multiple class="form-control" ng-model="Shot.SpecialEquipment" ng-required="true" theme="selectize" sortable="true" close-on-select="false">
+                                                            <ui-select-match>{{$item.Name}}</ui-select-match>
+                                                            <ui-select-choices group-by="groupSpecialequipment" repeat="visible as visible in specialequipment">
+                                                                <div class="row p-10 clearfix">
+
+                                                                    <div class="col-sm-12">
+                                                                        <div ng-bind-html="visible.Name | highlight: $select.search">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+
+                                                    </div>
+                                                </div>
+                                                <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Sound</label>
+                                                        <input maxlength="200" ng-required="true"  name="sound" class="form-control"
+                                                               placeholder="" ng-model="Shot.Sound" />
+                                                    </div>
+                                                </div>  
+                                                <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Lighting</label>
+                                                        <input maxlength="200" ng-required="true"  name="lighting" class="form-control"
+                                                               placeholder="" ng-model="Shot.Lighting" />
+                                                    </div>
+                                                </div>   
+                                                <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                    <div>
+                                                        <label class="form-label">Position</label>
+                                                        <input maxlength="200"  ng-required="true" name="position" class="form-control"
+                                                               placeholder="" ng-model="Shot.Position" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Estimated time (mm:ss) <i class="fa fa-info-circle" tooltip data-toggle="tooltip" title="The time it will take to shoot the scene"></i>
+                                                        </label>
+                                                        <div class="d-flex flex-row">
+                                                            <input type="number" min="0" max="59" value="0" required ng-model="Shot.Schedule_hh" class="form-control" />
+                                                            <span class="font-weight-bold"> : </span>
+                                                            <input type="number" min="0" max="59" value="0" required ng-model="Shot.Schedule_mm" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Unit
+                                                        </label>
+
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                <input type="text" class="form-control" required ng-model="unit" ng-click="unit_view_list()" ng-keyup="unitcomplete(unit)">
+                                                            </div>
+                                                            <button class="btn  m-0 p-0" type="button" ng-click="unit_view_list()"><i class="fa fa-caret-down"></i></button>
+
+                                                        </div>
+                                                        <div class="h-200px mt-1 row   m-0 p-0 overflow-auto" ng-hide="unitlist">
+
+
+                                                            <div class="w-100 ml-2 my-1 " ng-repeat="data in unitfiltered_pages">
+
+                                                                <div class="cursor-pointer align-middle bg-light-gray text-left" ng-click="unitfillTextbox(data.Name,data.Id)" href="#">
+                                                                    <i class="fa fa-users bg-white rounded p-3 text-dark"></i>
+                                                                    <span class=" pl-1 ">
+                                                                        {{data.Name}}
+                                                                    </span>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="col-12 py-5 text-right">
+
+                                            <button class="btn btn-primary btn-sm text-right btn-back">Done</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Color -->
+
+        <div class="carousel-item">
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+                    <button class="btn btn-sm btn-dark btn-back "><i class="fa fa-arrow-left"></i></button>
+                    Add Color
+
+                </h3>
+
+            </div>
+            <div class="modal-body " id="modal-body">
+
+                <div class="container-fluid">
+                    <h6>Here you can select a color.</h6>
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form name="Color" id="Color">
+
+                                            <div class="row">
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Project color</label>
+                                                        <color-picker ng-model="Shot.Color" options="options" 
+                                                                      class="form-control"></color-picker>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="col-12 py-5 text-right">
+
+                                            <button class="btn btn-primary btn-sm text-right btn-back">Done</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+    </div>
+    </div>
+
+
+
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            if ($('body').hasClass("dark-mode")) {
+                $('.border-dashed').addClass('bg-dark');
+                $('.border-dashed').removeClass('border-dashed');
+             
+
+
+            } else {
+                $('.bg-dark').addClass('border-dashed');
+                $('.bg-dark').removeClass('bg-dark');
+             
+            }
+        }, 400);
+        $('body').change(function () {
+
+
+            if ($('body').hasClass("dark-mode")) {
+                $('.border-dashed').addClass('bg-dark');
+                $('.border-dashed').removeClass('border-dashed');
+             
+            } else {
+                $('.bg-dark').addClass('border-dashed');
+                $('.bg-dark').removeClass('bg-dark');
+            
+            }
+        });
+        $('.btn-back').click(() => {
+
+            $(".carousel").carousel(0);
+            //$('.color-check').removeClass('d-none');
+            //$('.color-check').addClass('d-inline-block');
+
+        });
+
+
+
+
+
+        $('.shooting-info').click(() => {
+
+            $(".carousel").carousel(1);
+        }); $('.add-color').click(() => {
+
+            $(".carousel").carousel(2);
+        });
+
+    });
+</script>

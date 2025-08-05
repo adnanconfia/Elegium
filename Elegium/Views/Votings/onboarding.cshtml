@@ -1,0 +1,111 @@
+﻿<div class="section-body" style="max-width:1300px" ui-view=""
+     ng-controller="OnBoardingController">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-sm-12 col-md-5">
+                <div class="form-group">
+                    <label class="form-label">Select Project</label>
+                    <ui-select name="projectProductionMode" class="form-control"
+                               ng-model="ProjectId" theme="selectize" sortable="true"
+                               close-on-select="true" ng-change="getProjectOnboarding(ProjectId)">
+                        <ui-select-match placeholder="Project currency">
+                            {{$select.selected.Name}}
+                        </ui-select-match>
+                        <ui-select-choices repeat="item.Id as item in projectsList">
+                            <div class="row p-10 clearfix">
+
+                                <div class="col-sm-12">
+                                    <div ng-bind-html="item.Name | highlight: $select.search">
+                                    </div>
+                                </div>
+                            </div>
+                        </ui-select-choices>
+                    </ui-select>
+                    <select ng-if="false" name="language" class="form-control custom-select" required ng-options="item.Id as item.Name for item in projectsList"
+                            ng-model="ProjectId" ng-change="getProjectOnboarding(ProjectId)">
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-7" ng-if="ProjectId">
+                <div class="row clearfix mt-4">
+                    <div class="col-sm-4">
+                        <label class="form-check-label text-primary font-15 font-weight-bold">
+                            In Progress {{(OnBoardingDtoList | filter:{completed:false}).length}}
+                        </label>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="form-check-label text-green font-15 font-weight-bold">
+                            Completed {{(OnBoardingDtoList | filter:{completed:true}).length}}
+                        </label>
+                    </div>
+                    <div class="col-sm-4" ng-if="!projectDto.OnBoardingCompleted&&(OnBoardingDtoList | filter:{completed:true}).length==OnBoardingDtoList.length">
+                        <button class="btn btn-success" type="button" ng-click="SubmitForOnboarding()">
+                            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                            <label class="form-check-label">Submit Project</label>
+                        </button>
+                    </div>
+                    <div class="col-sm-4" ng-if="projectDto.OnBoardingCompleted">
+                        <label class="col-form-label">
+                            Onboarding is complete for this project!
+                        </label>
+                    </div>
+                    <div class="col-sm-4" ng-if="!projectDto.OnBoardingCompleted&&(OnBoardingDtoList | filter:{completed:true}).length!=OnBoardingDtoList.length">
+                        <label class="col-form-label">
+                            You must complete all the steps to submit your project!
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clear mt-2">
+            <div class="col-sm-12" ng-repeat="(key,items) in OnBoardingDtoList |  groupBy:'parent_description'" ng-init="parentIdx = $index">
+                <div class="row  p-3 clearfix" ng-if="$first" ng-repeat="k in items">
+                    <div class="col font-weight-bold font-15 text-blue">
+                        {{key}}
+                    </div>
+                    <div class="progress-wrapper col"
+                         data-toggle="tooltip"
+                         data-placement="top" tooltip>
+                        <div class="progress text-center" style="top: 15px !important; height:20px !important; color:{{progressColors[$index]}}
+    !important; left: 15px !important; font-size: 15px !important; background:none !important">
+                            {{k.parent_percentage}}%
+                        </div>
+                        <div class="round-progress-wrapper wrapper-circle"
+                             round-progress
+                             max="100"
+                             current="k.parent_percentage"
+                             color="{{progressColors[0]}}"
+                             bgcolor="{{progressBG}}"
+                             radius="20"
+                             stroke="2"
+                             semi="false"
+                             rounded="true"
+                             clockwise="true"
+                             responsive="false"
+                             duration="1000"
+                             animation="easeInOutQuart"
+                             animation-delay="200"></div>
+                    </div>
+                </div>
+                <a class="card" href="{{board.url_hash}}" ng-repeat="board in items">
+                    <div class="row clearfix card-body p-3">
+                        <div class="col-1">
+                            {{$index+1+parentIdx}}
+                        </div>
+                        <div class="col-9">
+                            <label class="font-15 font-weight-bold">{{board.description}}</label>
+                        </div>
+                        <div class="col-2 text-right">
+                            <div class="spinner-grow text-primary" role="status" ng-if="!board.completed">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <span class="material-icons text-green" ng-if="board.completed">
+                                check_circle
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,165 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Funding Requests";
+}
+
+<div class="section-body" ng-controller="FundingRequestsList">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <ul class="nav nav-tabs page-header-tab">
+                <li class="nav-item"><a class="nav-link active" id="my-requests-tab" data-toggle="tab" data-target="#my-requests">My Requests</a></li>
+                <li class="nav-item"><a class="nav-link" id="my-offers-tab" data-toggle="tab" data-target="#my-offers">Offers to me</a></li>
+            </ul>
+        </div>
+        <div class="row clearfix">
+            <div class="col-sm-12">
+                <div class="tab-content">
+                    <div class="tab-pane fade active show" id="my-requests" role="tabpanel">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-12" ng-repeat="offer in myRequests">
+                                <div class="card">
+                                    <div class="card-header pb-0">
+                                        <h3 class="card-title">
+                                            <a ui-sref="publicprojectdetail({projectId:'{{offer.ProjectId}}'})">{{offer.ProjectName}}</a><small>
+                                                <label>{{offer.FundingOrFP=='F'?'Funding Request':'Financial Partner Request' }}</label>
+                                            </small>
+                                        </h3>
+                                        <div class="card-options" ng-if="offer.Status=='P'">
+                                            <a href="javascript:void(0)" ng-click="openChatBox(offer.OwnerId)" title="Start Chat" data-toggle="tooltip" data-placement="top" tooltip="" class="card-options-fullscreen">
+                                                <span class="material-icons">message</span>
+                                            </a>
+                                            <div class="item-action dropdown ml-2">
+                                                <a href="javascript:void(0)" data-toggle="dropdown" aria-expanded="false">
+                                                    <span class="material-icons">
+                                                        more_vert
+                                                    </span>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(18px, 25px, 0px);">
+                                                    <a href="javascript:void(0)" ng-click="takeAction('C',offer)" class="dropdown-item">
+                                                        <span class="material-icons position-relative" style="top:5px !important">
+                                                            cancel
+                                                        </span> Withdraw
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <span class="tag tag-blue mb-3" ng-if="offer.Status=='P'">Pending</span>
+                                        <span class="tag tag-red mb-3" ng-if="offer.Status=='R'">Rejected</span>
+                                        <span class="tag tag-green mb-3" ng-if="offer.Status=='A'">Approved</span>
+                                        <span class="tag tag-danger mb-3" ng-if="offer.Status=='C'">Withdrawn</span>
+                                        <p>{{offer.Description}}</p>
+                                        <div class="row">
+                                            <div class="col-5 py-1" ng-if="offer.OfferOrLooking=='O'"><strong>Project Owner:</strong></div>
+                                            <div class="col-5 py-1" ng-if="offer.OfferOrLooking=='L'&&offer.FundingOrFP=='F'"><strong>Funder:</strong></div>
+                                            <div class="col-5 py-1" ng-if="offer.OfferOrLooking=='L'&&offer.FundingOrFP=='FP'"><strong>Financial Partner:</strong></div>
+                                            <div class="col-7 py-1"><a class="font-weight-normal" ui-sref="professionaldetails({userId:'{{offer.OwnerId}}'})">{{offer.Owner}}</a></div>
+                                            <div class="col-5 py-1" ng-if="offer.FundingOrFP=='F'"><strong>Financial Offer:</strong></div>
+                                            <div class="col-7 py-1" ng-if="offer.FundingOrFP=='F'">${{offer.Offer}}</div>
+                                            <div class="col-5 py-1" ng-if="offer.FundingOrFP=='FP'"><strong>Financial Share:</strong></div>
+                                            <div class="col-7 py-1" ng-if="offer.FundingOrFP=='FP'">{{offer.Offer}}%</div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer p-2">
+                                        <div class="clearfix">
+                                            <div class="float-right">
+                                                <small class="text-muted" ng-if="offer.OfferOrLooking=='L'&&offer.FundingOrFP=='F'">
+                                                    Looking for Funding
+                                                </small>
+                                                <small class="text-muted" ng-if="offer.OfferOrLooking=='L'&&offer.FundingOrFP=='FP'">
+                                                    Looking for Financial Partner
+                                                </small>
+                                                <small class="text-muted" ng-if="offer.OfferOrLooking=='O'&&offer.FundingOrFP=='F'">
+                                                    Offering Funding
+                                                </small>
+                                                <small class="text-muted" ng-if="offer.OfferOrLooking=='O'&&offer.FundingOrFP=='FP'">
+                                                    Offering Financial Partnership
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="my-offers" role="tabpanel">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-12" ng-repeat="offer in myOffers">
+                                <div class="card">
+                                    <div class="card-header pb-0">
+                                        <h3 class="card-title">
+                                            <a ui-sref="publicprojectdetail({projectId:'{{offer.ProjectId}}'})">{{offer.ProjectName}}</a><small>
+                                                <label>{{offer.FundingOrFP=='F'?'Funding Request':'Financial Partner Request' }}</label>
+                                            </small>
+                                        </h3>
+                                        <div class="card-options" ng-if="offer.Status=='P'">
+                                            <a href="javascript:void(0)" ng-click="openChatBox(offer.SenderId)" title="Start Chat" data-toggle="tooltip" data-placement="top" tooltip="" class="card-options-fullscreen">
+                                                <span class="material-icons">message</span>
+                                            </a>
+                                            <div class="item-action dropdown ml-2">
+                                                <a href="javascript:void(0)" data-toggle="dropdown" aria-expanded="false">
+                                                    <span class="material-icons">
+                                                        more_vert
+                                                    </span>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(18px, 25px, 0px);">
+                                                    <a href="javascript:void(0)" class="dropdown-item" ng-click="takeAction('A',offer)">
+                                                        <i class="material-icons position-relative" style="top:5px !important">
+                                                            done_all
+                                                        </i> Approve
+                                                    </a>
+                                                    <div class="dropdown-divider"></div>
+                                                    <a href="javascript:void(0)" ng-click="takeAction('R',offer)" class="dropdown-item">
+                                                        <span class="material-icons position-relative" style="top:5px !important">
+                                                            cancel
+                                                        </span> Reject
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <span class="tag tag-blue mb-3" ng-if="offer.Status=='P'">Pending</span>
+                                        <span class="tag tag-red mb-3" ng-if="offer.Status=='R'">Rejected</span>
+                                        <span class="tag tag-green mb-3" ng-if="offer.Status=='A'">Approved</span>
+                                        <span class="tag tag-danger mb-3" ng-if="offer.Status=='C'">Sender Withdrawn</span>
+                                        <p>{{offer.Description}}</p>
+                                        <div class="row">
+                                            <div class="col-5 py-1" ng-if="offer.OfferOrLooking=='L'"><strong>Project Owner:</strong></div>
+                                            <div class="col-5 py-1" ng-if="offer.OfferOrLooking=='O'&&offer.FundingOrFP=='F'"><strong>Funder:</strong></div>
+                                            <div class="col-5 py-1" ng-if="offer.OfferOrLooking=='O'&&offer.FundingOrFP=='FP'"><strong>Financial Partner:</strong></div>
+                                            <div class="col-7 py-1"><a class="font-weight-normal" ui-sref="professionaldetails({userId:'{{offer.SenderId}}'})">{{offer.Sender}}</a></div>
+                                            <div class="col-5 py-1" ng-if="offer.FundingOrFP=='F'"><strong>Financial Offer:</strong></div>
+                                            <div class="col-7 py-1" ng-if="offer.FundingOrFP=='F'">${{offer.Offer}}</div>
+                                            <div class="col-5 py-1" ng-if="offer.FundingOrFP=='FP'"><strong>Financial Share:</strong></div>
+                                            <div class="col-7 py-1" ng-if="offer.FundingOrFP=='FP'">{{offer.Offer}}%</div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer p-2">
+                                        <div class="clearfix">
+                                            <div class="float-right">
+                                                <small class="text-muted" ng-if="offer.OfferOrLooking=='L'&&offer.FundingOrFP=='F'">
+                                                    Looking for Funding
+                                                </small>
+                                                <small class="text-muted" ng-if="offer.OfferOrLooking=='L'&&offer.FundingOrFP=='FP'">
+                                                    Looking for Financial Partner
+                                                </small>
+                                                <small class="text-muted" ng-if="offer.OfferOrLooking=='O'&&offer.FundingOrFP=='F'">
+                                                    Offering Funding
+                                                </small>
+                                                <small class="text-muted" ng-if="offer.OfferOrLooking=='O'&&offer.FundingOrFP=='FP'">
+                                                    Offering Financial Partnership
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Notification Settings";
+    Layout = null;
+}
+
+<div class="section-body inner-page mt-3" ng-controller="notificationTypesCtrl">
+    <div class="container-fluid">
+        <div class="panel panel-primary setup-content" id="step-4" style="">
+            <hr>
+            <div class="panel-body">
+                <div class="row clearfix">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button class="btn btn-success" type="button" ng-click="addNotificationType()"><i class="fa fa-plus"></i> Add a new notification</button>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <button class="btn btn-success" type="button" ng-disabled="userForm.$invalid||notificationTypes.length==0" ng-click="Save()"><i class="fa fa-file"></i> Save</button>
+                            </div>
+                        </div>
+                        <br>
+                        <form name="userForm" class="card">
+                            <div class="card-body">
+                                <div class="row" ng-repeat="item in notificationTypes | filter:{Action:'!D'} track by $index" style="">
+                                    <div class="col-sm-12">
+                                        <button type="button" class="btn btn-secondary" style="width:100% !important" data-toggle="collapse" data-target="#cardSkill{{$index}}" aria-expanded="true">
+                                            {{item.Type}}
+                                        </button>
+                                        <div id="cardSkill{{$index}}" class="collapse show" style="">
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-11">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Name</label>
+                                                                <input type="text" required="required" ng-model="item.Name" name="Name{{$index}}" class="form-control {{userForm['Name'+$index].$valid?'is-valid':'is-invalid'}}" placeholder="Notification Name" style="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-8 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Notification Type</label>
+                                                                <select name="NotificationType{{$index}}"
+                                                                        ng-change="verifyDuplicate($index)"
+                                                                        class="form-control custom-select {{userForm['NotificationType'+$index].$valid?'is-valid':'is-invalid'}}"
+                                                                        required="required" ng-options="item as item for item in notificationKind"
+                                                                        ng-model="item.Type">
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="form-label">Title</label>
+                                                        <input type="text" required="required" ng-model="item.Title" name="Title{{$index}}" class="form-control {{userForm['Title'+$index].$valid?'is-valid':'is-invalid'}}" placeholder="Notification Title" style="">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="form-label">Template</label>
+                                                        <textarea required="required"
+                                                                  rows="2"
+                                                                  ng-model="item.Template"
+                                                                  name="Template{{$index}}"
+                                                                  class="form-control {{userForm['Template'+$index].$valid?'is-valid':'is-invalid'}}"
+                                                                  placeholder="Notification Template">
+</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-1 text-right">
+                                                    <button class="btn btn-danger" role="button" ng-click="deleteNotificationType(item)"><i class="fa fa-trash"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/ng-controllers/AdminModule/notification-types.js"></script>
+}

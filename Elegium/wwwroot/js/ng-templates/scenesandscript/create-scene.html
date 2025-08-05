@@ -1,0 +1,938 @@
+﻿<link href="../../../css/step-wizard.css" rel="stylesheet" />
+<style>
+    .thumbnail_overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        text-align: center;
+        background-color: rgba(0,0,0,.6);
+        color: #fff;
+        transition: opacity linear .5s;
+        opacity: 0;
+        font-size: 15px;
+        font-family: 'Work Sans',sans-serif;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        line-height: 220px;
+        display: block;
+    }
+
+    .cat-image:hover .thumbnail_overlay {
+        opacity: 1;
+    }
+
+
+
+    textarea:focus .comment_info {
+        display: block !important;
+    }
+
+    textarea:focus {
+        border: 1px #0d96ce solid !important;
+    }
+    .select2-dropdown-open .select2-choice {
+    box-shadow:none !important;
+    }
+        .select2-container .select2-choice {
+        display: block;
+        height: 26px;
+        padding: 0 0 0 8px;
+        overflow: hidden;
+        position: relative;
+        border: none !important;
+        white-space: nowrap;
+        line-height: 26px;
+        color: #444;
+        text-decoration: none;
+        border-radius: 4px;
+        background-clip: padding-box;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-color: transparent !important;
+        background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eee), color-stop(0.5, #fff));
+        background-image: -webkit-linear-gradient(center bottom, #eee 0%, #fff 50%);
+        background-image: -moz-linear-gradient(center bottom, #eee 0%, #fff 50%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffffff', endColorstr = '#eeeeee', GradientType = 0);
+        background-image: none !important;
+    }
+
+    textarea {
+        height: 160px !important;
+        background: none;
+        border: 0;
+        border: 1px #888 solid;
+        color: #363636;
+        padding: 5px 10px;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -moz-transition: border .3s linear;
+        -o-transition: border .3s linear;
+        -webkit-transition: border .3s linear;
+        transition: border .3s linear;
+        font-size: 12px;
+        font-family: Verdana,Geneva,'DejaVu Sans',sans-serif;
+        border-radius: 5px;
+    }
+
+    .project-hover-files {
+        visibility: hidden;
+        display: flex;
+    }
+
+        .project-hover-files::before {
+            visibility: visible;
+            font-size: 20px;
+            position: absolute !important;
+            opacity: 1 !important;
+            border: 3px dashed #0c0;
+            height: 100%;
+            width: 100%;
+            display: inline-block;
+            content: "";
+        }
+
+        .project-hover-files::after {
+            content: "Drop your files here!";
+            position: absolute !important;
+            height: 20px;
+            visibility: visible;
+            top: 70%;
+            margin-left: 42%;
+        }
+
+    .filetype {
+        pointer-events: none;
+        width: 100% !important;
+        height: 130px;
+        display: block;
+        /* position: absolute; */
+        top: 0;
+        left: 0;
+        background: #272727;
+        color: #fff;
+        text-align: center;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+        .filetype.preview .extention {
+            font-size: 35px;
+            line-height: 130px;
+        }
+
+        .filetype .extention {
+            pointer-events: all;
+            font-family: 'Work Sans',sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 90%;
+            display: inline-block;
+            line-height: 55px;
+            font-size: 15px;
+        }
+
+    #uppy-uploader {
+        font-size: 12px;
+        display: none;
+        width: 300px !important;
+        right: 60px;
+        bottom: 20px;
+        border-radius: 10px;
+        padding: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,.5);
+        background: #272727 !important;
+        z-index: 1;
+        display: block;
+        position: fixed;
+    }
+</style>
+<div id="demo" class="carousel slide" data-interval="false" data-ride="carousel" data-pause="hover">
+
+
+    <div class="carousel-inner">
+
+
+        <div class="carousel-item active">
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+
+                    {{title}}
+
+                </h3>
+
+                <div class="pull-right">
+                    <button class="btn btn-secondary " ng-disabled="SceneForm.$invalid" ng-click="save()">
+                        <i class="fa fa-save"></i> Save
+                    </button>
+                    <button class="btn btn-danger" ng-click="cancel()">
+                        <i class="fa fa-times"></i> close
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container-fluid">
+                    <div class="container">
+
+                        <div class="stepwizard">
+                            <div class="stepwizard-row setup-panel">
+                                <div class="stepwizard-step col-xs-3">
+
+                                    <a href="#step-1" type="button" class="btn btn-default btn-circle btn-success"><i class="fa fa-info-circle"></i></a>
+                                    <p><small>General Information</small></p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="panel panel-primary setup-content" id="step-1">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                </h4>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="row clearfix">
+                                    <div class="col-sm-12">
+
+
+                                        <div class="card">
+                                            <div class="card-body">
+
+
+                                                <div class="row">
+                                                    <form role="form" name="SceneForm" id="SceneForm" class="row">
+                                                        <div class=" col-lg-6 col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Id (Required)</label>
+                                                                <input maxlength="200" required name="index" class="form-control {{SceneForm.index.$valid?'is-valid':'is-invalid'}}"
+                                                                       placeholder="Id" ng-model="Scene.Index" />
+                                                            </div>
+                                                        </div>
+                                                        <div class=" col-lg-6 col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Environment</label>
+                                                                <select name="env" class="form-control custom-select" ng-model="Scene.environment_id">
+                                                                    <option ng-repeat="e in env" value="{{e.Id}}">{{e.Evironment_Name}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" col-lg-6 col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label class="form-label">
+
+                                                                    Point in time (Flashback, Year, etc.)
+                                                                </label>
+                                                                <input maxlength="200" type="text" name="point_in_time" class="form-control"
+                                                                       placeholder="Point in time (Flashback, Year, etc.)" ng-model="Scene.point_in_time" />
+                                                            </div>
+                                                        </div>
+                                                        <div class=" col-lg-6 col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label class="form-label">
+                                                                    Set
+                                                                </label>
+                                                                <input maxlength="200" type="text" name="set" class="form-control"
+                                                                       placeholder="Set" ng-model="SetName" ng-click="toggle_set()" ng-keyup="complete_set($event,SetName)" />
+                                                                <div class="h-200px bg-dark rounded overflow-auto mt1 col-12" ng-hide="show_set_check">
+                                                                    <div class="col-12 text-center text-white my-5 " ng-show="filtered_set.length<=0 && setbtn">
+                                                                        <p class="fa fa-folder-o fa-3x mb-0"></p>
+                                                                        <p>There are not items to select.Enter a name to create a new item</p>
+                                                                    </div>
+                                                                    <div class=" col-md-12  col-sm-12 col-lg-12 col-12 rounded m-0 p-0" ng-repeat=" c in filtered_set  | orderBy:'Id'">
+
+                                                                        <span class="cursor-pointer align-middle col-md-12  col-sm-12 col-lg-12 col-12  text-left btn btn-dark btn-lg" href="#" ng-click="set_set(c.Id,c.Set_name)">
+                                                                            <i class="fa fa-image bg-white circle p-3 text-dark"></i>
+
+                                                                            <span class="text-white pl-1 ">
+                                                                                {{c.Set_name}}
+                                                                            </span>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="col-md-12  col-sm-12 col-lg-12 col-12 " ng-hide="setbtn">
+
+                                                                        <span class="cursor-pointer align-middle col-md-12  col-sm-12 col-lg-12 col-12   text-left btn btn-dark btn-lg" href="#" ng-click="createSet(SetName)">
+
+                                                                            <span class="text-white pl-1 ">
+                                                                                "{{SetName}}"   create Set
+                                                                            </span>
+                                                                            <i class="fa fa-plus-circle rounded"></i>
+                                                                        </span>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label class="form-label">
+                                                                    Description
+                                                                </label>
+
+                                                                <textarea rows="5" class="form-control" placeholder="Here can be your description" ng-model="Scene.Description"></textarea>
+
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    <div class="col-md-12 col-sm-12">
+                                                        <label class="form-label">Do you want to add more?</label>
+                                                        <div class="row">
+                                                            <div class="col-lg-3 col-md-5 my-2 col-sm-5 col-12">
+                                                                <button class="text-center cursor-pointer btn btn-dark btn-lg h-100 add-char py-5 w-100" href="#">
+                                                                    <i class="fa fa-user-plus text-white fa-3x"></i>
+                                                                    <i class="fa fa-check text-success fa-3x" ng-hide="addedchar.length<='0'"></i>
+                                                                    <p>Add character</p>
+
+                                                                </button>
+                                                            </div>
+
+                                                            <div class="col-lg-3 col-md-5 my-2 col-sm-5  col-12">
+                                                                <button class="text-center cursor-pointer add-extra btn btn-dark btn-lg py-5 h-100 w-100" href="#">
+                                                                    <i class="fa fa-user-plus text-white fa-3x"></i>
+                                                                    <i class="fa fa-check text-success fa-3x" ng-hide="addedext.length<='0'"></i>
+                                                                    <p>Add extra</p>
+                                                                </button>
+                                                            </div>
+                                                            <div class="col-lg-3 col-md-5 my-2 col-sm-5  col-12">
+                                                                <button class="text-center cursor-pointer shooting-info btn btn-dark btn-lg py-5 h-100 w-100" href="#">
+                                                                    <i class="fa fa-camera text-white fa-3x"></i>
+                                                                    <i class="fa fa-check text-success fa-3x" ng-hide="ShootingInfo.$invalid"></i>
+                                                                    <p>Add shooting information</p>
+                                                                </button>
+                                                            </div>
+
+                                                            <div class="col-lg-3 col-md-5 my-2 col-sm-5  col-12">
+                                                                <button class="text-center cursor-pointer add-img btn btn-dark btn-lg py-5 h-100 w-100" href="#">
+                                                                    <i class="fa fa-file text-white fa-3x"></i>
+                                                                    <i class="fa fa-check text-success fa-3x" ng-if="files.length>0"></i>
+                                                                    <p>
+                                                                        Add images and files
+                                                                    </p>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!--<div class="card comments" style="height:90% !important">
+                                                    <div class="card-body">
+                                                        <i class="fa fa-info-circle"></i>
+                                                        View and manage the employees / staff members of your company. You can choose which global rights they receive and which sections in the company area they can access
+                                                    </div>
+                                                </div>-->
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary pull-right" ng-disabled="SceneForm.$invalid" ng-click="save()">
+                    <i class="fa fa-save"></i> Save
+                </button>
+                <button class="btn btn-danger" ng-click="cancel()">
+                    <i class="fa fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+                    <button class="btn btn-sm btn-dark btn-back "><i class="fa fa-arrow-left"></i></button>
+                    Add character
+
+                </h3>
+
+            </div>
+            <div class="modal-body" id="modal-body">
+
+                <div class="container-fluid">
+                    <h6>To add a character to this scene, select a character from the list below. You can use the text field to search for a specific character or create a new one by entering a new name.</h6>
+
+                    <div class="m-0 p-0 my-1 col-12" ng-hide="addedchar.length<='0'">
+
+                        <div class="align-middle  text-left">
+                            <button class="btn btn-primary btn-sm add-char-btn" ng-click="show_char()">Add character <i class="fa fa-plus-circle"></i></button>
+                        </div>
+                    </div>
+                    <div class="col-12 rounded my-1 bg-black srch" ng-hide="char_to_add">
+
+                        <div class="form-group col-md-3 pt-3 col-sm-6 col-12">
+                            <label class="form-label text-white">Search or create</label>
+                            <input type="text" ng-model="char_srch" required ng-keyup="complete_char($event,char_srch)" class="form-control bg-transparent border-top-0 border-right-0 border-left-0" />
+
+                        </div>
+                        <div class="h-200px overflow-auto border border-light mx-1 py-1 rounded  row">
+                            <div class="col-12 text-center text-white my-5 " ng-show="filtered_chars.length<=0 && charbtn">
+                                <p class="fa fa-folder-o fa-3x mb-0"></p>
+                                <p>There are not items to select.Enter a name to create a new item</p>
+                            </div>
+                            <div class="col-lg-3 col-md-6 my-1 col-sm-12 col-12" ng-repeat=" c in filtered_chars | orderBy:'Id' ">
+
+                                <div class="align-middle text-truncate p-2 text-left bg-dark cursor-pointer rounded d-flex flex-row" ng-click="add_char(c.Id)">
+                                    <div>
+                                        <i class="fa fa-image bg-white circle p-3 text-dark"></i>
+                                    </div>
+                                    <div class=" pl-1 col-8 overflow-ellipsis">
+                                        {{c.Index}} {{c.Name}}
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-auto col-md-auto mx-auto my-1 col-sm-auto col-12" ng-hide="charbtn">
+
+                                <button class="cursor-pointer align-middle  text-left btn btn-dark btn-lg" href="#" ng-click="createchar(char_srch)">
+
+                                    <span class="text-white pl-1 ">
+                                        "{{char_srch}}"   create character
+                                    </span>
+                                    <i class="fa fa-plus-circle rounded"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                        <div class="col-12 text-right py-3">
+                            <button class="btn btn-danger btn-sm close-srch" ng-click="show_add_char()">Close</button>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-white text-center py-5  justify-content-center rounded" ng-hide="add_char_check">
+
+                        <div class="h-200px overflow-auto  border border-light mx-1 py-1 rounded   row">
+
+                            <div class="col-lg-3 col-md-6 text-center m-2 my-1 col-sm-12 col-12" ng-repeat=" c in addedchar  | orderBy:'Id'">
+
+                                <div class="align-middle text-left h-100px bg-dark p-2 row">
+                                    <div class="col-4">
+                                        <i class="fa fa-image bg-white circle p-3 text-dark"></i>
+                                    </div>
+                                    <div class=" pl-1 col-6 text-truncate">
+                                        <span class="text-white text-wrap  ">
+                                            {{c.Name}}
+                                        </span>
+                                    </div>
+                                    <div class="col-2">
+                                        <i class="fa fa-close cursor-pointer" ng-click="remove_char(c.Id)"></i>
+                                        <!--<button class="btn bg-black text-white btn-sm rounded-circle">
+                                        </button>-->
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 bg-dark text-white text-center py-5 add-char-div justify-content-center rounded" ng-hide="!add_char_check">
+
+
+
+                        <span class="fa fa-2x fa-user-plus"></span>
+                        <p>Add character</p>
+                        <button class="btn btn-primary btn-sm add-char-btn" ng-click="show_char()">Add character <i class="fa fa-plus-circle"></i></button>
+                    </div>
+                    <div class="col-12 py-5 text-right">
+                        <button class="btn btn-primary btn-sm text-right btn-back">Done</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+                    <button class="btn btn-sm btn-dark btn-back "><i class="fa fa-arrow-left"></i></button>
+                    Add extra
+
+                </h3>
+
+            </div>
+            <div class="modal-body" id="modal-body">
+
+                <div class="container-fluid">
+                    <h6>To add an extra to this scene, select the extra in the following list. The text field enables you to search a specific extra or create a new extra by entering a new name.</h6>
+
+                    <div class="m-0 p-0 my-1 col-12" ng-hide="addedext.length<=0">
+
+                        <div class="align-middle  text-left">
+                            <button class="btn btn-primary btn-sm add-char-btn" ng-click="show_ext()">Add extra <i class="fa fa-plus-circle"></i></button>
+                        </div>
+                    </div>
+                    <div class="col-12 rounded my-1 bg-black srch" ng-hide="ext_to_add">
+
+                        <div class="form-group col-md-3 pt-3 col-sm-6 col-12">
+                            <label class="form-label text-white">Search or create</label>
+                            <input type="text" ng-model="ext_srch" required ng-keyup="complete_ext($event,ext_srch)" class="form-control bg-transparent border-top-0 border-right-0 border-left-0" />
+
+                        </div>
+                        <div class="h-200px overflow-auto border border-light mx-1 py-1 rounded  row">
+                            <div class="col-12 text-center text-white my-5 " ng-show="filtered_ext.length<=0 && extbtn">
+                                <p class="fa fa-folder-o fa-3x mb-0"></p>
+                                <p>There are not items to select.Enter a name to create a new item</p>
+                            </div>
+                            <div class="col-lg-3 col-md-4 text-center my-1 col-sm-6 col-12" ng-repeat=" c in filtered_ext | orderBy:'id' ">
+                                <div class="align-middle text-truncate p-2 text-left bg-dark cursor-pointer rounded d-flex flex-row" ng-click="add_ext(c.Id)">
+                                    <div>
+                                        <i class="fa fa-image bg-white circle p-3 text-dark"></i>
+                                    </div>
+                                    <div class=" pl-1 col-8 overflow-ellipsis">
+
+                                        {{c.Index}} {{c.Name}}
+                                    </div>
+                                    <!--<span class="text-white pl-1 ">
+
+                                    </span>-->
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mx-auto text-center my-1 col-sm-6 col-12" ng-hide="extbtn">
+
+                                <button class="cursor-pointer align-middle  text-left btn btn-dark btn-lg" href="#" ng-click="createext(ext_srch)">
+
+                                    <span class="text-white pl-1 ">
+                                        "{{ext_srch}}"   create Extra
+                                    </span>
+                                    <i class="fa fa-plus-circle rounded"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                        <div class="col-12 text-right py-3">
+                            <button class="btn btn-danger btn-sm close-srch" ng-click="show_add_ext()">Close</button>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-white text-center py-5  justify-content-center rounded" ng-hide="add_ext_check">
+
+                        <div class="h-200px overflow-auto  border border-light mx-1 py-1 rounded   row">
+
+                            <div class="col-lg-3 col-md-6 text-center m-2 my-1 col-sm-6 col-12" ng-repeat=" c in addedext">
+
+                                <div class="align-middle text-left h-100px bg-dark p-2 row">
+                                    <div class="col-4">
+                                        <i class="fa fa-image bg-white circle p-3 text-dark"></i>
+                                    </div>
+                                    <div class=" pl-1 col-6 text-truncate">
+                                        <span class="text-white text-wrap  ">
+                                            {{c.Name}}
+                                        </span>
+                                    </div>
+                                    <!--<span class="text-white pl-1 ">
+
+    </span>-->
+                                    <div class="col-2">
+                                        <i class="fa fa-close cursor-pointer" ng-click="remove_ext(c.Id)"></i>
+                                        <!--<button class="btn bg-black text-white btn-sm rounded-circle ml-2">
+        </button>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="col-lg-3 col-md-4 text-center ml-2 my-1 col-sm-6 col-12" ng-hide="!ext_to_add || filtered_ext.length<=0">
+
+                                <div class="align-middle  text-left">
+                                    <button class="btn btn-primary btn-sm add-char-btn" ng-click="show_ext()">Add extra <i class="fa fa-plus-circle"></i></button>
+                                </div>
+                            </div>-->
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 bg-dark text-white text-center py-5 add-char-div justify-content-center rounded" ng-hide="!add_ext_check">
+
+
+
+                        <span class="fa fa-2x fa-user-plus"></span>
+                        <p>Add extra</p>
+                        <button class="btn btn-primary btn-sm add-char-btn" ng-click="show_ext()">Add extra <i class="fa fa-plus-circle"></i></button>
+                    </div>
+                    <div class="col-12 py-5 text-right">
+                        <button class="btn btn-primary btn-sm btn-back text-right">Done</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+                    <button class="btn btn-sm btn-dark btn-back "><i class="fa fa-arrow-left"></i></button>
+                    Add shooting information
+
+                </h3>
+
+            </div>
+            <div class="modal-body" id="modal-body">
+
+                <div class="container-fluid">
+                    <h6>Select the scheduled time and the unit.</h6>
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form name="ShootingInfo" id="ShootingInfo">
+
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Number of script pages
+                                                        </label>
+                                                      
+                                                        <ui-select ng-model="Scene.ScriptPages" theme="select2" class="form-control">
+                                                            <ui-select-match>    <p ng-bind-html="Scene.ScriptPages"></p></ui-select-match>
+                                                            <ui-select-choices repeat="p in pages | filter:$select.search">
+                                                                <div ng-bind-html="p | highlight: $select.search"></div>
+
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                        <!--<ui-select class="form-control" ng-model="Scene.ScriptPages"  search-enabled="true" theme="selectize" sortable="true" close-on-select="true">
+        <ui-select-match>
+            <p >{{Scene.ScriptPages}}</p>
+        </ui-select-match>
+        <ui-select-choices  repeat="visible as visible in pages | filter:$select.search">
+            <div class="row p-10 clearfix">
+
+                <div class="col-sm-12">
+                    <div ng-bind-html="visible | highlight: $select.search">
+                    </div>
+                </div>
+            </div>
+        </ui-select-choices>
+    </ui-select>-->
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Estimated time (mm:ss) <i class="fa fa-info-circle" tooltip data-toggle="tooltip" title="The time that scene is estimated to take in actual film"></i>
+                                                        </label>
+                                                        <div class="d-flex flex-row w-50">
+                                                            <input type="number" min="0" max="59" value="0" required ng-model="Scene.Estime_mm" class="form-control" />
+                                                            <span class="font-weight-bold"> : </span>
+                                                            <input type="number" min="0" max="59" value="0" required ng-model="Scene.Estime_ss" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Scheduled duration (hh:mm) <i class="fa fa-info-circle" tooltip data-toggle="tooltip" title="The time it will need to shoot the scene"></i>
+                                                        </label>
+                                                        <div class="d-flex flex-row w-50">
+                                                            <input type="number" min="0" max="59" value="0" required ng-model="Scene.scheduled_hh" class="form-control" />
+                                                            <span class="font-weight-bold"> : </span>
+                                                            <input type="number" min="0" max="59" value="0" required ng-model="Scene.scheduled_mm" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Unit
+                                                        </label>
+
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                <input type="text" class="form-control" required ng-model="Scene.unit" ng-click="unit_view_list()" ng-keyup="unitcomplete($event,Scene.unit)">
+                                                            </div>
+                                                            <!--<button class="btn  m-0 p-0" type="button" ng-click="unit_view_list()"><i class="fa fa-caret-down"></i></button>-->
+
+                                                        </div>
+                                                        <div class="mt-1 row   m-0 p-0 overflow-auto" ng-hide="unitlist">
+                                                            <div class="w-100 ml-2 my-1 " ng-show="unitfiltered_pages.length<=0 && Scene.unit">
+                                                                <div class="cursor-pointer align-middle bg-light-gray text-left"  ng-click="createUnit(Scene.unit)" href="#">
+                                                                    <i class="fa fa-users bg-white rounded p-3 text-dark"></i>
+                                                                    <span class=" pl-1 ">
+                                                                        " {{Scene.unit}} " create unit
+                                                                    </span>
+
+                                                                </div>
+                                                              </div>
+                                                                <div class="w-100 ml-2 my-1 " ng-repeat="data in unitfiltered_pages">
+
+                                                                    <div class="cursor-pointer align-middle bg-light-gray text-left" ng-click="unitfillTextbox(data.Name,data.Id)" href="#">
+                                                                        <i class="fa fa-users bg-white rounded p-3 text-dark"></i>
+                                                                        <span class=" pl-1 ">
+                                                                            {{data.Name}}
+                                                                        </span>
+
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="col-12 py-5 text-right">
+
+                                            <button class="btn btn-primary btn-sm text-right btn-back">Done</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="carousel-item">
+            <div class="modal-header">
+
+                <h3 class="modal-title" id="modal-title">
+                    <button class="btn btn-sm btn-dark btn-back "><i class="fa fa-arrow-left"></i></button>
+                    Add images and files
+
+                </h3>
+
+            </div>
+            <div class="modal-body" id="modal-body">
+
+                <div class="container-fluid">
+                    <h6>Here you can add images and files.</h6>
+                    <div class="panel-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+
+
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <div class="tab-pane fade show active" id="images-files">
+                                            <div class="row clearfix">
+                                                <div class="col-sm-12">
+                                                    <div class="progressFiles">
+
+                                                    </div>
+                                                    <div id="draggableContainer">
+                                                        <div id="uppy-uploader" class="w-100" ng-show="hasFilesinUppy">
+
+                                                        </div>
+                                                        <input type="file" multiple hidden id="projectFile" />
+                                                        <div class="row clearfix mb-3" ng-if="files.length>0">
+                                                            <div class="col-sm-12">
+                                                                <button type="button" class="btn btn-success" data-toggle="collapse" ng-click="openProjectFileDialog()" data-target="#createFiles" aria-expanded="false" aria-controls="collapseExample">
+                                                                    Add file <i class="fa fa-plus-circle"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row clearfix" ng-if="files.length==0">
+                                                            <div class="col-sm-12">
+                                                                <div class="list-empty text-center d-block p-3" style="border: 3px dashed #ccc;">
+                                                                    <div class="row clearfix">
+                                                                        <div class="col-sm-12">
+                                                                            <div class="row">
+                                                                                <div class="col-sm-12">
+                                                                                    <span class="material-icons font-20">
+                                                                                        insert_drive_file
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-sm-12">
+                                                                                    <span class="col-form-label">
+                                                                                        There are no files yet. You can drop files here.
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row clearfix">
+                                                                        <div class="col-sm-12 mt-3">
+                                                                            <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#createLink" aria-expanded="false" ng-click="openProjectFileDialog()" aria-controls="collapseExample">Add file</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row clearfix">
+                                                            <div class="col-sm-6 col-md-4 col-lg-3 col-xxl-2 col-xxxl-2 mb-3" ng-repeat="file in files" style="height:160px !important">
+                                                                <div class="card box-shadow">
+                                                                    <div class="cursor-pointer" ng-click="openProjectFileViewer(file)">
+                                                                        <div ng-if="file.Type=='image'" class="img-fluid pointer-event cat-image"
+                                                                             style="height: 130px;
+                                                                                background-image: url('/api/UserProfiles/GetFileThumbnail/{{file.FileId}}/200/200');
+                                                                                background-size: cover;
+                                                                                background-repeat: no-repeat;
+                                                                                -webkit-transition: background-image 1s ease-in-out;
+                                                                                transition: background-image 1s ease-in-out;
+                                                                                border-top-left-radius: 5px;
+                                                                                border-top-right-radius: 5px; ">
+                                                                        </div>
+                                                                        <div ng-if="file.Type!='image'" class="preview filetype filetype_json" style="pointer-events: all;">
+                                                                            <span class="extention" style="pointer-events: all;"> <i class="fa fa-file"></i> {{file.Extension}}</span>
+                                                                        </div>
+                                                                        <div ng-if="file.LatestVersion" class="tags hide_in_colorlist" style=" position: absolute; right: 10px; top: 10px; color: #fff; font-size: 10px;">
+                                                                            <span class="bg-dark text-white" style="padding: 2px 4px; border-radius: 5px;">{{file.LatestVersion}}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="card-body p-1">
+                                                                        <div class="row clearfix">
+                                                                            <div class="col-10 text-nowrap overflow-ellipsis" title="{{file.Name}}">
+                                                                                {{file.Name}}
+                                                                            </div>
+                                                                            <div class="col-2 text-right">
+                                                                                <div class="item-action dropdown">
+                                                                                    <a href="javascript:void(0)" data-toggle="dropdown" class="icon" aria-expanded="false">
+                                                                                        <i class="fe fe-more-vertical"></i>
+                                                                                    </a>
+                                                                                    <div class="dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-178px, -285px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                                        <a href="javascript:void(0)" ng-click="deleteFile($event,file)" class="dropdown-item">
+                                                                                            <i class="fa fa-trash">
+                                                                                            </i> Delete
+                                                                                        </a>
+                                                                                        <a href="javascript:void(0)" ng-if="false" ng-click="makeDefault($event,file)" class="dropdown-item">
+                                                                                            <i class="fa fa-file-picture-o">
+                                                                                            </i> Select Thumbnail
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12" ng-show="files.length>0">
+                                                                <i class="fa fa-info-circle"> You can drop files into the folder.</i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row clearfix" ng-if="files.length>0">
+                                                            <div class="col-sm-12">
+                                                                <ul uib-pagination
+                                                                    total-items="tabContentLength.filesCount"
+                                                                    ng-model="filesPaging.page"
+                                                                    items-per-page="12"
+                                                                    previous-text="&lsaquo;"
+                                                                    next-text="&rsaquo;"
+                                                                    class="pull-right font-15"
+                                                                    ng-change="getDocumentCatFiles()"
+                                                                    boundary-link-numbers="true"
+                                                                    rotate="false">
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 py-5 text-right">
+                                            <button class="btn btn-primary btn-sm text-right btn-back">Done</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        //$('.multiselect').multiselect({
+        //    enableFiltering: true,
+        //    enableCaseInsensitiveFiltering: true,
+        //    maxHeight: 200
+        //});
+
+        $('.btn-back').click(() => {
+
+            $(".carousel").carousel(0);
+
+        })
+
+        $('.add-char').click(() => {
+
+            $(".carousel").carousel(1);
+        });
+        $('.add-extra').click(() => {
+
+            $(".carousel").carousel(2);
+        }); $('.shooting-info').click(() => {
+
+            $(".carousel").carousel(3);
+        }); $('.add-img').click(() => {
+
+            $(".carousel").carousel(4);
+        });
+        var navListItems = $('div.setup-panel div a'),
+            allWells = $('.setup-content'),
+            allNextBtn = $('.nextBtn');
+
+        allWells.hide();
+
+        navListItems.click(function (e) {
+            e.preventDefault();
+            var $target = $($(this).attr('href')),
+                $item = $(this);
+
+            if (!$item.hasClass('disabled')) {
+                navListItems.removeClass('btn-success').addClass('btn-default');
+                $item.addClass('btn-success');
+                allWells.hide();
+                $target.show();
+                $target.find('input:eq(0)').focus();
+            }
+        });
+
+        allNextBtn.click(function () {
+            var curStep = $(this).closest(".setup-content"),
+                curStepBtn = curStep.attr("id"),
+                nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+                curInputs = curStep.find("input[type='text'],input[type='url']"),
+                isValid = true;
+
+            $(".form-group").removeClass("has-error");
+            for (var i = 0; i < curInputs.length; i++) {
+                if (!curInputs[i].validity.valid) {
+                    isValid = false;
+                    $(curInputs[i]).closest(".form-group").addClass("has-error");
+                }
+            }
+
+            //if (isValid)
+            nextStepWizard.removeAttr('disabled').trigger('click');
+        });
+
+        $('div.setup-panel div a.btn-success').trigger('click');
+
+        var input = document.querySelector(".telephone");
+        window.intlTelInput(input, {
+            utilsScript: root + 'plugins/intl-tel-input/js/utils.js?20',
+        });
+
+    });
+</script>

@@ -1,0 +1,110 @@
+﻿
+<style>
+    .uppy-size--md .uppy-Dashboard-Item-preview {
+        height: 30px !important;
+    }
+
+    @media screen and (min-width: 1000px) {
+        .icon-container {
+            margin-left: 25% !important;
+        }
+    }
+
+    @media screen and (max-width: 800px) {
+        .icon-container {
+            margin-left: 30% !important;
+        }
+    }
+</style>
+<div class="modal-header">
+    <div class="row clearfix">
+        <div class="col-sm-12">
+            <h4 class="modal-title" id="modal-title" ng-if="data.OfferOrLooking=='O'">
+                <label ng-if="data.dto.ProjectPartnerRequirement.NeedFinancialParticipation">Become a financial partner of  {{data.dto.ProjectOwner.FirstName}}'s project</label>
+                <label ng-if="!data.dto.ProjectPartnerRequirement.NeedFinancialParticipation">Become a funder of <u>{{data.dto.ProjectOwner.FirstName}}</u>'s project</label>
+            </h4>
+            <h4 class="modal-title" id="modal-title" ng-if="data.OfferOrLooking=='L'">
+                <label ng-if="data.FundingOrFP=='FP'">Offer Your Project to <u>{{data.UserFundingAndFPDto.User.FirstName}}</u> as financial partner</label>
+                <label ng-if="data.FundingOrFP=='F'">Offer Your Project to <u>{{data.UserFundingAndFPDto.User.FirstName}}</u> as invester</label>
+            </h4>
+        </div>
+    </div>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 col-sm-12">
+                <div ng-if="data.OfferOrLooking=='O'" class="icon-container {{userProfile.Online?'avatar-online':'avatar-offline'}} d-block {{data.dto.ProjectOwner.UserId}}">
+                    <img class="card-profile-img" ng-src="/api/UserProfiles/GetUserPhoto/{{data.dto.ProjectOwner.UserId}}/100/100" alt="">
+                    <span class="status-circle"></span>
+                </div>
+                <div ng-if="data.OfferOrLooking=='L'" class="icon-container {{userProfile.Online?'avatar-online':'avatar-offline'}} d-block {{data.UserFundingAndFPDto.User.UserId}}">
+                    <img class="card-profile-img" ng-src="/api/UserProfiles/GetUserPhoto/{{data.UserFundingAndFPDto.User.UserId}}/100/100" alt="">
+                    <span class="status-circle"></span>
+                </div>
+                <p class="m-1 mt-2 text-center font-weight-bold">
+                    {{data.UserFundingAndFPDto.User.FirstName}} {{data.UserFundingAndFPDto.User.LastName}}
+                </p>
+                <p class="m-1 text-center font-weight-bold" ng-if="data.UserFundingAndFPDto.User.CompanyPosition.Name">
+                    {{data.UserFundingAndFPDto.User.CompanyPosition.Name}}
+                </p>
+                <p class="m-1 text-center font-weight-bold" ng-if="data.UserFundingAndFPDto.User.CompanyName">
+                    {{data.UserFundingAndFPDto.User.CompanyName}}
+                </p>
+                <p class="text-center">
+                    <i ng-if="data.UserFundingAndFPDto.User.Country || data.UserFundingAndFPDto.User.CityName" class="fa fa-map-marker text-gray"></i>
+                    <span>{{data.UserFundingAndFPDto.User.Country.Name}}</span>
+                    <span ng-if="data.UserFundingAndFPDto.User.Country && data.UserFundingAndFPDto.User.CityName">,</span>
+                    <span>{{data.UserFundingAndFPDto.User.CityName}}</span>
+                </p>
+            </div>
+            <div class="col-md-9 col-sm-12">
+                <form class="" name="form" style="width:100%">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group" ng-if="data.OfferOrLooking=='L'">
+                                <label class="form-label">Select Project:</label>
+                                <ui-select class="form-control" ng-model="data.ProjectId" theme="selectize" sortable="true" close-on-select="true">
+                                    <ui-select-match placeholder="Select Project...">{{$select.selected.Name}}</ui-select-match>
+                                    <ui-select-choices repeat="item.Id as item in projectsList | filter: $select.search">
+                                        <div ng-bind-html="item.Name | highlight: $select.search"></div>
+
+                                    </ui-select-choices>
+                                </ui-select>
+                                <!--<select name="language" ng-required="data.OfferOrLooking=='L'" class="form-control custom-select" ng-options="item.Id as item.Name for item in projectsList"
+                                        ng-model="data.ProjectId">
+                                </select>-->
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <fieldset ng-if="data.OfferOrLooking=='O'">
+                                    <label class="form-label" ng-if="!data.dto.ProjectPartnerRequirement.NeedFinancialParticipation">How much funding are you offering?</label>
+                                    <label class="form-label" ng-if="data.dto.ProjectPartnerRequirement.NeedFinancialParticipation">What Financial share are you offering?</label>
+                                </fieldset>
+                                <fieldset ng-if="data.OfferOrLooking=='L'">
+                                    <label class="form-label" ng-if="data.FundingOrFP=='F'">How much funding are you looking for?</label>
+                                    <label class="form-label" ng-if="data.FundingOrFP=='FP'">What Financial share are you looking for?</label>
+                                </fieldset>
+                                <input type="number" required ng-model="data.Offer" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Message</label>
+                                <textarea rows="4" required ng-model="data.Description" class="form-control" placeholder="Additional notes"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="DashboardContainer"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning btn-sm" type="button" ng-click="cancel()"><span class="fa fa-close"></span> Close</button>
+    <button class="btn btn-primary btn-sm" ng-disabled="form.$invalid" type="button" ng-click="send()"><span class="fa fa-send"></span> Send</button>
+</div>

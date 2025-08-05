@@ -1,0 +1,81 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">
+        {{nomination.Name}} (Final voting)
+    </h3>
+    <span class="pull-right label label-primary">
+        <button class="btn btn-success" ng-if="!nomination.IsResultApproved"
+                ng-click="approveResults()">
+            Approve Results
+        </button>
+        <button class="btn btn-danger" ng-click="cancel()">Close</button>
+    </span>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="table-responsive">
+            <table class="table table-hover table-vcenter table_custom text-nowrap spacing5 mb-0">
+                <tbody>
+                    <tr ng-repeat="application in nominationApplications">
+                        <td class="w60">
+                            <img class="avatar" src="/api/UserProfiles/GetUserPhoto/{{application.UserId}}/100/100" alt="">
+                        </td>
+                        <td>
+                            <div class="font-15">{{application.ProjectName}}</div>
+                            <span class="text-muted">by {{application.UserName}} ({{application.Location}})</span>
+                        </td>
+                        <td>
+                            <div class="progress-wrapper">
+                                <div class="progress"
+                                     style="top: 25px; color:{{progressColors[application.AverageScore>8?0:application.AverageScore>7?1:application.AverageScore>5?2:3]}}; left: 10px; font-size: 15px; background:none">
+                                    {{application.AverageScore.toFixed(1)}}
+                                </div>
+
+                                <div class="round-progress-wrapper"
+                                     round-progress
+                                     max="10"
+                                     current="application.AverageScore.toFixed(1)"
+                                     color="{{progressColors[application.AverageScore>8?0:application.AverageScore>7?1:application.AverageScore>5?2:3]}}"
+                                     bgcolor="{{progressBG}}"
+                                     radius="20"
+                                     stroke="2"
+                                     semi="false"
+                                     rounded="true"
+                                     clockwise="true"
+                                     responsive="false"
+                                     duration="1000"
+                                     animation="easeInOutQuart"
+                                     animation-delay="200"></div>
+                            </div>
+                            <a href="javascript:void(0);" ng-click="openUsersVoted(application)">
+                                <span class="mr-1">{{application.UsersVotedCount}} votes</span>
+                            </a>
+                        </td>
+                        <td class="text-right">
+                            <p ng-if="application.IsWinner">
+                                <span>
+                                    <i class="fa fa-trophy"></i> This project is winner for this nomination
+                                </span>
+                                <small ng-if="application.IsSystemSuggested">
+                                    <br />Suggested by system
+                                </small>
+                                <small ng-if="!application.IsSystemSuggested">
+                                    <br />Hand picked
+                                </small>
+                            </p>
+
+                            <button class="btn btn-secondary" ng-if="!application.IsWinner && !nomination.IsResultApproved"
+                                    ng-click="makeWinner(application)">
+                                <i class="fa fa-trophy"></i><span class="ml-2">Make it Winner</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal-footer" data-exclude="true">
+    <button class="btn btn-success" ng-if="!nomination.IsResultApproved"
+            ng-click="approveResults()">Approve Results</button>
+    <button class="btn btn-danger" ng-click="cancel()">Close</button>
+</div>

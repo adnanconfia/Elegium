@@ -1,0 +1,236 @@
+﻿<div class="section-body" style="max-width:1300px" ui-view=""
+     ng-controller="VotingSettingsCtrl">
+    <div class="container-fluid">
+        <div class="row clearfix">
+
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <button type="button" class="btn btn-success d-flex" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
+                            <span class="mr-2"> Create new nomination </span><i class="material-icons p-0">add_circle_outline</i>
+                        </button>
+                        <div class="collapse" id="collapseExample">
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card card-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h5>
+                                                    <span class="col-form-label">Nomination</span>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12">
+                                                <h6>
+                                                    <small>
+                                                        {{CreateOrEdit}} nomination so that project owners can apply for.
+                                                    </small>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                        <form role="form" name="nominationForm">
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Name <small>(required)</small></label>
+                                                        <input maxlength="200" type="text" class="form-control {{nominationForm.name.$valid?'is-valid':'is-invalid'}}"
+                                                               required="required" name="name"
+                                                               placeholder="Name" ng-model="nomination.Name" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Start date</label>
+                                                        <input maxlength="200" type="date" class="form-control {{nominationForm.start.$valid?'is-valid':'is-invalid'}}"
+                                                               required="required" name="start"
+                                                               placeholder="Start date" ng-model="nomination.StartDate" />
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">End date</label>
+                                                        <input maxlength="200" type="date" class="form-control {{nominationForm.end.$valid?'is-valid':'is-invalid'}}"
+                                                               required="required" name="end"
+                                                               placeholder="End date" ng-model="nomination.EndDate" />
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 div col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Production type</label>
+                                                        <select class="form-control custom-select"
+                                                                ng-options="item.Id as item.Name for item in productionTypes"
+                                                                ng-model="nomination.ProductionTypeId">
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 div col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Country</label>
+                                                        <select class="form-control custom-select"
+                                                                ng-options="item.Id as item.Name for item in countries"
+                                                                ng-model="nomination.CountryId">
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 div col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Currency</label>
+                                                        <select class="form-control custom-select {{nominationForm.currency.$valid?'is-valid':'is-invalid'}}"
+                                                                required="required" name="currency"
+                                                                ng-options="item.Id as item.Name for item in currencies"
+                                                                ng-model="nomination.CurrencyId">
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Price <small>(required)</small></label>
+                                                        <input maxlength="200" type="number" class="form-control {{nominationForm.price.$valid?'is-valid':'is-invalid'}}"
+                                                               required="required" name="price"
+                                                               placeholder="Price" ng-model="nomination.Price" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Description</label>
+                                                        <textarea class="form-control" placeholder="Description" rows="5"
+                                                                  ng-model="nomination.Description">
+                                                    </textarea>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Terms and Conditions</label>
+                                                        <textarea class="form-control" placeholder="Terms and Conditions" rows="5"
+                                                                  ng-model="nomination.TermsAndConditions">
+                                                    </textarea>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 text-right">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <button type="button" class="btn btn-primary d-flex float-right"
+                                                                    ng-disabled="nominationForm.$invalid"
+                                                                    ng-if="CreateOrEdit == 'Create'"
+                                                                    ng-click="createNomination()">
+                                                                Save
+                                                            </button>
+                                                            <button type="button" class="btn btn-primary d-flex float-right"
+                                                                    ng-disabled="nominationForm.$invalid"
+                                                                    ng-if="CreateOrEdit == 'Edit'"
+                                                                    ng-click="updateNomination()">
+                                                                Update
+                                                            </button>
+                                                            <button type="button" class="btn btn-default d-flex float-right mr-2" ng-click="resetCreateNominationFields()">
+                                                                Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <ul class="recent_comments list-unstyled">
+                            <li ng-repeat="nomination in nominations | orderBy: '-Id'">
+                                <div class="comment_body">
+                                    <p>
+                                        <span class="badge badge-primary" style="float:unset">{{nomination.ProductionType.Name}}</span>
+                                    </p>
+                                    <h6>
+                                        {{nomination.Name}} <small class="float-right">{{nomination.CreatedDate | date:'dd-MMM-yyyy'}}</small>
+                                    </h6>
+                                    <p>
+                                        {{nomination.Description}}
+                                    </p>
+                                    <p>
+                                        <b>
+                                            Price:
+                                        </b>
+                                        <span>{{nomination.Price}} {{nomination.Currency.Name}}</span>
+                                    </p>
+                                    <p><b>Start:</b> {{nomination.StartDate | date:'dd-MMM-yyyy'}} <b>End:</b> {{nomination.EndDate | date:'dd-MMM-yyyy'}}</p>
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-12 my-auto">
+                                            <a href="javascript:void(0);" ng-if="!nomination.IsVotingFinished && !nomination.IsVotingStarted"
+                                               ng-click="deleteNomination(nomination)"><i class="icon-trash"></i></a>
+                                            <a href="javascript:void(0);" ng-if="!nomination.IsVotingFinished && !nomination.IsVotingStarted"
+                                               ng-click="editNomination(nomination)"><i class="icon-pencil"></i></a>
+                                            <span>
+                                                <a href="javascript:void(0);" ng-click="openProjectsApplied(nomination)">
+                                                    {{nomination.ProjectsAppliedCount}} projects applied
+                                                </a>
+                                            </span>
+
+                                        </div>
+                                        <div class="col-md-6 col-sm-12 my-auto text-right">
+                                            <a href="javascript:void(0);" ng-if="!nomination.IsVotingStarted"
+                                               ng-click="startFinalVoting(nomination)" class="btn btn-secondary">
+                                                <i class="fa fa-play"></i>
+                                                <span class="ml-2">Start final voting for this nomination</span>
+                                            </a>
+                                            <a href="javascript:void(0);" ng-if="!nomination.IsVotingFinished && nomination.IsVotingStarted"
+                                               ng-click="finishFinalVoting(nomination)" class="btn btn-warning">
+                                                <i class="fa fa-pause"></i>
+                                                <span class="ml-2">Finish final voting for this nomination</span>
+                                            </a>
+                                            <p ng-if="nomination.IsVotingFinished && nomination.IsVotingStarted">
+                                                <a href="javascript:void(0);" ng-click="openApproveResults(nomination)">
+                                                    <span ng-if="nomination.IsResultApproved">See results</span>
+                                                    <span ng-if="!nomination.IsResultApproved">Approve results</span>
+                                                </a>
+                                                <span class="tag tag-primary">Voting Done</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            @*<div class="col-12" ng-if="false">
+                    <div class="card">
+                        <table class="table card-table">
+                            <tbody>
+                                <tr>
+                                    <td>{{nominationSetting.SettingDesc}}</td>
+                                    <td class="text-right">
+                                        <label class="custom-switch">
+                                            <input type="checkbox" name="custom-switch-checkbox"
+                                                   ng-change="saveSetting(nominationSetting)"
+                                                   ng-model="nominationSetting.SettingValue" class="custom-switch-input">
+                                            <span class="custom-switch-indicator"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{votingSetting.SettingDesc}}</td>
+                                    <td class="text-right">
+                                        <label class="custom-switch">
+                                            <input type="checkbox" name="custom-switch-checkbox"
+                                                   ng-change="saveSetting(votingSetting)"
+                                                   ng-model="votingSetting.SettingValue" class="custom-switch-input">
+                                            <span class="custom-switch-indicator"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>*@
+        </div>
+    </div>
+</div>
